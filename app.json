@@ -1,29 +1,78 @@
 {
   "expo": {
-    "name": "Aura",
-    "slug": "Aura",
+    "name": "Aura - Digital Fashion",
+    "slug": "aura-digital-fashion",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
+    "scheme": "aura",
+    "description": "Discover, try on, and style designer fashion with AI-powered virtual try-on technology. Your digital fashion aura awaits.",
+    "keywords": ["fashion", "virtual try-on", "AI styling", "digital fashion", "shopping", "style"],
+    "privacy": "public",
+    "platforms": ["ios", "android", "web"],
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#319795"
     },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.aura.digitalfashion",
+      "buildNumber": "1",
+      "infoPlist": {
+        "NSCameraUsageDescription": "This app uses the camera to create your digital avatar for virtual try-on experiences.",
+        "NSPhotoLibraryUsageDescription": "This app accesses your photo library to save and share your fashion looks.",
+        "NSMicrophoneUsageDescription": "This app may use the microphone for video content creation."
+      },
+      "config": {
+        "usesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#319795"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.aura.digitalfashion",
+      "versionCode": 1,
+      "permissions": [
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE",
+        "INTERNET",
+        "ACCESS_NETWORK_STATE"
+      ]
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
+    },
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow Aura to access your camera to create your digital avatar."
+        }
+      ],
+      [
+        "expo-media-library",
+        {
+          "photosPermission": "Allow Aura to access your photos to save and share your fashion looks.",
+          "savePhotosPermission": "Allow Aura to save photos to your device.",
+          "isAccessMediaLocationEnabled": true
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+      }
     }
   }
 }
