@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -18,6 +18,7 @@ import { useAppDispatch } from '../../store';
 import { addToCart } from '../../store/slices/cartSlice';
 import { mockProducts, mockCategories } from '../../data/mockProducts';
 import { Product } from '../../types/product';
+import ProductionDataService from '../../services/productionData';
 
 const { width } = Dimensions.get('window');
 
@@ -25,11 +26,39 @@ export default function DiscoverScreen() {
   const navigation = useNavigation();
   const dispatch = useAppDispatch();
   const [activeTab, setActiveTab] = useState<'all' | 'featured'>('all');
+  const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Load data on component mount
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  const loadData = async () => {
+    try {
+      setLoading(true);
+      const [productsData, categoriesData] = await Promise.all([
+        ProductionDataService.getProducts(),
+        ProductionDataService.getCategories(),
+      ]);
+
+      setProducts(productsData);
+      setCategories(categoriesData);
+    } catch (error) {
+      console.error('Error loading data:', error);
+      // Fallback to mock data
+      setProducts(mockProducts);
+      setCategories(mockCategories);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const getCurrentProducts = () => {
-    return activeTab === 'featured' 
-      ? mockProducts.filter(p => p.is_featured)
-      : mockProducts;
+    return activeTab === 'featured'
+      ? products.filter(p => p.is_featured)
+      : products;
   };
 
   const handleProductPress = (product: Product) => {
@@ -113,7 +142,7 @@ export default function DiscoverScreen() {
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.categoriesContainer}
           >
-            {mockCategories.map(renderCategory)}
+            {categories.map(renderCategory)}
           </ScrollView>
         </View>
 

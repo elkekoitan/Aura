@@ -1,6 +1,6 @@
 {
   "name": "aura-fashion-app",
-  "buildCommand": null,
+  "buildCommand": "echo 'Static site - no build needed'",
   "outputDirectory": "public",
   "devCommand": "npm run web",
   "installCommand": "npm install --legacy-peer-deps",

@@ -9,11 +9,13 @@
     },
     "preview": {
       "distribution": "internal",
-      "ios": {
-        "simulator": true
-      },
       "android": {
-        "buildType": "apk"
+        "buildType": "apk",
+        "env": {
+          "EXPO_PUBLIC_APP_ENV": "development",
+          "EXPO_PUBLIC_ENABLE_ANALYTICS": "false",
+          "EXPO_PUBLIC_ENABLE_VIRTUAL_TRYON": "true"
+        }
       }
     },
     "production": {
@@ -51,8 +53,8 @@
       },
       "android": {
         "serviceAccountKeyPath": "./google-service-account.json",
-        "track": "production",
-        "releaseStatus": "completed",
+        "track": "internal",
+        "releaseStatus": "draft",
         "changesNotSentForReview": false
       }
     }
