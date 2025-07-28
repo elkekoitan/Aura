@@ -4,14 +4,17 @@ import { StyleSheet, View } from 'react-native';
 import { Provider } from 'react-redux';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { StripeProvider } from '@stripe/stripe-react-native';
 import { store } from './src/store';
 import { supabase } from './src/config/supabase';
 import { setSession } from './src/store/slices/authSlice';
 import WelcomeScreen from './src/screens/onboarding/WelcomeScreen';
+import StripeTestScreen from './src/screens/test/StripeTestScreen';
 
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [showOnboarding, setShowOnboarding] = useState(true);
+  const [showStripeTest, setShowStripeTest] = useState(false);
 
   useEffect(() => {
     // Get initial session
@@ -32,6 +35,7 @@ export default function App() {
 
   const handleGetStarted = () => {
     setShowOnboarding(false);
+    setShowStripeTest(true); // Show Stripe test instead of main app
   };
 
   if (isLoading) {
@@ -44,18 +48,22 @@ export default function App() {
 
   return (
     <Provider store={store}>
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <SafeAreaProvider>
-          <StatusBar style="light" />
-          {showOnboarding ? (
-            <WelcomeScreen onGetStarted={handleGetStarted} />
-          ) : (
-            <View style={styles.container}>
-              {/* Main app will be implemented here */}
-            </View>
-          )}
-        </SafeAreaProvider>
-      </GestureHandlerRootView>
+      <StripeProvider publishableKey={process.env.EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY || ''}>
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <SafeAreaProvider>
+            <StatusBar style="light" />
+            {showOnboarding ? (
+              <WelcomeScreen onGetStarted={handleGetStarted} />
+            ) : showStripeTest ? (
+              <StripeTestScreen />
+            ) : (
+              <View style={styles.container}>
+                {/* Main app will be implemented here */}
+              </View>
+            )}
+          </SafeAreaProvider>
+        </GestureHandlerRootView>
+      </StripeProvider>
     </Provider>
   );
 }
