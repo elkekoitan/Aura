@@ -65,7 +65,7 @@ export default function DiscoverScreen() {
   ];
 
   const renderCategoryItem = ({ item }: { item: any }) => (
-    <GlassCard style={[styles.categoryCard, { borderColor: item.color }]}>
+    <GlassCard style={[styles.categoryCard, { borderColor: item.color } as any]}>
       <Text style={styles.categoryIcon}>{item.icon}</Text>
       <Text style={styles.categoryName}>{item.name}</Text>
     </GlassCard>

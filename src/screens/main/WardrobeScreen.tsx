@@ -150,7 +150,7 @@ export default function WardrobeScreen() {
                 style={[
                   styles.categoryCard,
                   category.active && styles.activeCategoryCard,
-                ]}
+                ] as any}
               >
                 <Text
                   style={[

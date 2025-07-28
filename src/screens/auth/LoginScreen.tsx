@@ -8,17 +8,23 @@ import {
   Alert,
   KeyboardAvoidingView,
   Platform,
+  TouchableOpacity,
+  Dimensions,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useNavigation } from '@react-navigation/native';
 import { GlassCard, GlassButton } from '../../components/ui';
 import { Colors, Typography, Spacing } from '../../constants';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { signIn } from '../../store/slices/authSlice';
 
+const { width, height } = Dimensions.get('window');
+
 export default function LoginScreen() {
+  const navigation = useNavigation();
   const dispatch = useAppDispatch();
   const { loading, error } = useAppSelector((state) => state.auth);
-  
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -97,6 +103,29 @@ export default function LoginScreen() {
               gradientColors={Colors.gradients.primary}
               style={styles.loginButton}
             />
+
+            {/* Navigation Links */}
+            <View style={styles.linkContainer}>
+              <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword' as never)}>
+                <Text style={styles.linkText}>Forgot Password?</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity onPress={() => navigation.navigate('Register' as never)}>
+                <Text style={styles.linkText}>Create Account</Text>
+              </TouchableOpacity>
+            </View>
+
+            {/* Legal Links */}
+            <View style={styles.legalContainer}>
+              <Text style={styles.legalText}>By signing in, you agree to our </Text>
+              <TouchableOpacity onPress={() => navigation.navigate('Terms' as never)}>
+                <Text style={styles.legalLink}>Terms of Service</Text>
+              </TouchableOpacity>
+              <Text style={styles.legalText}> and </Text>
+              <TouchableOpacity onPress={() => navigation.navigate('Privacy' as never)}>
+                <Text style={styles.legalLink}>Privacy Policy</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </GlassCard>
       </KeyboardAvoidingView>
@@ -160,5 +189,35 @@ const styles = StyleSheet.create({
   },
   loginButton: {
     marginTop: Spacing.lg,
+  },
+  linkContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: Math.max(Spacing.lg, height * 0.02),
+    paddingHorizontal: Spacing.md,
+  },
+  linkText: {
+    ...Typography.styles.button,
+    fontSize: Math.min(Typography.sizes.sm, width * 0.035),
+    color: Colors.primary[500],
+  },
+  legalContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: Math.max(Spacing.lg, height * 0.02),
+    paddingHorizontal: Spacing.md,
+  },
+  legalText: {
+    ...Typography.styles.caption,
+    fontSize: Math.min(Typography.sizes.xs, width * 0.03),
+    color: Colors.text.secondary,
+  },
+  legalLink: {
+    ...Typography.styles.caption,
+    fontSize: Math.min(Typography.sizes.xs, width * 0.03),
+    color: Colors.primary[500],
+    textDecorationLine: 'underline',
   },
 });
