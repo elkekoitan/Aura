@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aura Fashion - App Store Screenshots</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .screenshot-container {
+            width: 375px;
+            height: 812px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 40px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            margin: 20px;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .screenshot-container.iphone-pro-max {
+            width: 428px;
+            height: 926px;
+        }
+
+        .screenshot-container.ipad {
+            width: 820px;
+            height: 1180px;
+            border-radius: 20px;
+        }
+
+        .device-frame {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .status-bar {
+            height: 44px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .app-content {
+            height: calc(100% - 44px);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .app-logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .app-title {
+            color: white;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .app-subtitle {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 16px;
+            font-weight: 400;
+        }
+
+        .feature-showcase {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .feature-icon {
+            width: 120px;
+            height: 120px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .feature-title {
+            color: white;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        .feature-description {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 16px;
+            text-align: center;
+            line-height: 1.5;
+            max-width: 280px;
+        }
+
+        .cta-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: 600;
+            margin-top: 30px;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .screenshot-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            pointer-events: none;
+        }
+
+        .text-overlay {
+            position: absolute;
+            bottom: 60px;
+            left: 20px;
+            right: 20px;
+            text-align: center;
+            color: white;
+            font-size: 20px;
+            font-weight: 700;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .product-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 80px;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+
+        .product-name {
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .product-price {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 11px;
+        }
+
+        .tryon-interface {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 20px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .camera-preview {
+            width: 200px;
+            height: 300px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 48px;
+        }
+
+        .tryon-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .control-button {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .ai-recommendations {
+            margin: 20px 0;
+        }
+
+        .recommendation-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 10px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .recommendation-title {
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .recommendation-items {
+            display: flex;
+            gap: 10px;
+        }
+
+        .recommendation-item {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            border-radius: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .screenshot-container {
+                width: 320px;
+                height: 568px;
+            }
+            
+            .app-title {
+                font-size: 24px;
+            }
+            
+            .feature-title {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Screenshot 1: Home Screen -->
+    <div class="screenshot-container" id="home-screen">
+        <div class="device-frame">
+            <div class="status-bar">
+                <span>9:41</span>
+                <span>📶 📶 📶 🔋</span>
+            </div>
+            <div class="app-content">
+                <div class="header">
+                    <div class="app-logo">A</div>
+                    <div class="app-title">Aura Fashion</div>
+                    <div class="app-subtitle">Your Digital Fashion Aura</div>
+                </div>
+                <div class="feature-showcase">
+                    <div class="feature-icon">✨</div>
+                    <div class="feature-title">Welcome to the Future</div>
+                    <div class="feature-description">
+                        Experience revolutionary virtual try-on technology and AI-powered styling recommendations
+                    </div>
+                    <button class="cta-button">Get Started</button>
+                </div>
+            </div>
+        </div>
+        <div class="text-overlay">Welcome to the Future of Fashion</div>
+    </div>
+
+    <!-- Screenshot 2: Product Catalog -->
+    <div class="screenshot-container" id="product-catalog">
+        <div class="device-frame">
+            <div class="status-bar">
+                <span>9:41</span>
+                <span>📶 📶 📶 🔋</span>
+            </div>
+            <div class="app-content">
+                <div class="header">
+                    <div class="app-title">Discover</div>
+                    <div class="app-subtitle">Curated Collections</div>
+                </div>
+                <div class="product-grid">
+                    <div class="product-card">
+                        <div class="product-image"></div>
+                        <div class="product-name">Silk Dress</div>
+                        <div class="product-price">$299</div>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-image"></div>
+                        <div class="product-name">Designer Jacket</div>
+                        <div class="product-price">$599</div>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-image"></div>
+                        <div class="product-name">Premium Sneakers</div>
+                        <div class="product-price">$199</div>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-image"></div>
+                        <div class="product-name">Luxury Handbag</div>
+                        <div class="product-price">$899</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="text-overlay">Discover Curated Designer Collections</div>
+    </div>
+
+    <!-- Screenshot 3: Virtual Try-On -->
+    <div class="screenshot-container" id="virtual-tryon">
+        <div class="device-frame">
+            <div class="status-bar">
+                <span>9:41</span>
+                <span>📶 📶 📶 🔋</span>
+            </div>
+            <div class="app-content">
+                <div class="header">
+                    <div class="app-title">Virtual Try-On</div>
+                    <div class="app-subtitle">See How It Looks</div>
+                </div>
+                <div class="tryon-interface">
+                    <div class="camera-preview">📸</div>
+                    <div class="feature-description" style="color: white;">
+                        Revolutionary camera-based virtual try-on technology
+                    </div>
+                    <div class="tryon-controls">
+                        <div class="control-button">📷</div>
+                        <div class="control-button">🔄</div>
+                        <div class="control-button">💾</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="text-overlay">Revolutionary Virtual Try-On Technology</div>
+    </div>
+
+    <!-- Screenshot 4: AI Styling -->
+    <div class="screenshot-container" id="ai-styling">
+        <div class="device-frame">
+            <div class="status-bar">
+                <span>9:41</span>
+                <span>📶 📶 📶 🔋</span>
+            </div>
+            <div class="app-content">
+                <div class="header">
+                    <div class="app-title">AI Stylist</div>
+                    <div class="app-subtitle">Personalized for You</div>
+                </div>
+                <div class="ai-recommendations">
+                    <div class="recommendation-card">
+                        <div class="recommendation-title">🤖 Perfect for Dinner Date</div>
+                        <div class="recommendation-items">
+                            <div class="recommendation-item"></div>
+                            <div class="recommendation-item"></div>
+                            <div class="recommendation-item"></div>
+                            <div class="recommendation-item"></div>
+                        </div>
+                    </div>
+                    <div class="recommendation-card">
+                        <div class="recommendation-title">✨ Trending This Week</div>
+                        <div class="recommendation-items">
+                            <div class="recommendation-item"></div>
+                            <div class="recommendation-item"></div>
+                            <div class="recommendation-item"></div>
+                            <div class="recommendation-item"></div>
+                        </div>
+                    </div>
+                    <div class="recommendation-card">
+                        <div class="recommendation-title">🎯 Based on Your Style</div>
+                        <div class="recommendation-items">
+                            <div class="recommendation-item"></div>
+                            <div class="recommendation-item"></div>
+                            <div class="recommendation-item"></div>
+                            <div class="recommendation-item"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="text-overlay">AI-Powered Personal Styling</div>
+    </div>
+
+    <!-- Screenshot 5: Shopping Experience -->
+    <div class="screenshot-container" id="shopping-cart">
+        <div class="device-frame">
+            <div class="status-bar">
+                <span>9:41</span>
+                <span>📶 📶 📶 🔋</span>
+            </div>
+            <div class="app-content">
+                <div class="header">
+                    <div class="app-title">Your Cart</div>
+                    <div class="app-subtitle">Ready to Checkout</div>
+                </div>
+                <div class="feature-showcase">
+                    <div class="feature-icon">🛍️</div>
+                    <div class="feature-title">Secure Checkout</div>
+                    <div class="feature-description">
+                        Seamless shopping experience with secure payment processing and fast delivery
+                    </div>
+                    <button class="cta-button">Complete Purchase</button>
+                </div>
+            </div>
+        </div>
+        <div class="text-overlay">Seamless & Secure Shopping</div>
+    </div>
+
+    <script>
+        // Add interactive elements for demonstration
+        document.querySelectorAll('.cta-button').forEach(button => {
+            button.addEventListener('click', function() {
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 150);
+            });
+        });
+
+        // Add hover effects for product cards
+        document.querySelectorAll('.product-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px)';
+                this.style.boxShadow = '0 10px 30px rgba(255, 255, 255, 0.1)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+                this.style.boxShadow = 'none';
+            });
+        });
+
+        // Add animation to feature icons
+        document.querySelectorAll('.feature-icon').forEach(icon => {
+            setInterval(() => {
+                icon.style.transform = 'scale(1.1)';
+                setTimeout(() => {
+                    icon.style.transform = 'scale(1)';
+                }, 500);
+            }, 3000);
+        });
+    </script>
+</body>
+</html>

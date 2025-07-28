@@ -16,7 +16,7 @@ import { useNavigation } from '@react-navigation/native';
 import { GlassCard, GlassButton } from '../../components/ui';
 import { Colors, Typography, Spacing } from '../../constants';
 import { useAppDispatch, useAppSelector } from '../../store';
-import { signIn } from '../../store/slices/authSlice';
+import { signIn, clearError } from '../../store/slices/authSlice';
 
 const { width, height } = Dimensions.get('window');
 
@@ -27,6 +27,11 @@ export default function LoginScreen() {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  // Clear any existing errors when component mounts
+  React.useEffect(() => {
+    dispatch(clearError());
+  }, [dispatch]);
 
   const handleLogin = async () => {
     if (!email || !password) {

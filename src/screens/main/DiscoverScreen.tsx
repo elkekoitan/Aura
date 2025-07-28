@@ -1,103 +1,322 @@
-import React, { useState } from 'react';
+/**
+ * Enhanced DiscoverScreen
+ * Complete product discovery interface with search, filtering, and real-time data
+ * Integrates with Redux state management and Supabase backend
+ */
+
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   SafeAreaView,
   ScrollView,
-  TextInput,
-  Image,
-  FlatList,
+  TouchableOpacity,
   Dimensions,
+  RefreshControl,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { GlassCard, GlassButton } from '../../components/ui';
+import { SearchBar } from '../../components/ui/SearchBar';
+import { ProductGrid } from '../../components/product/ProductGrid';
 import { Colors, Typography, Spacing } from '../../constants';
+import { useAppDispatch, useAppSelector } from '../../store';
+import {
+  fetchProducts,
+  fetchFeaturedProducts,
+  searchProducts,
+  setSearchQuery,
+  setFilters,
+  clearFilters,
+  setSortBy,
+  setSortOrder,
+} from '../../store/slices/productSlice';
+import { fetchFeaturedBrands } from '../../store/slices/brandSlice';
+import { fetchCategories } from '../../store/slices/categorySlice';
+import { Product, ProductFilters, ProductSortOption } from '../../store/types/product';
 
 const { width, height } = Dimensions.get('window');
 
 export default function DiscoverScreen() {
-  const [searchQuery, setSearchQuery] = useState('');
+  // Navigation
+  const navigation = useNavigation();
 
-  const categories = [
-    { id: 1, name: 'Dresses', icon: '👗', color: Colors.holographic.pink },
-    { id: 2, name: 'Tops', icon: '👚', color: Colors.holographic.purple },
-    { id: 3, name: 'Bottoms', icon: '👖', color: Colors.holographic.blue },
-    { id: 4, name: 'Shoes', icon: '👠', color: Colors.holographic.cyan },
-    { id: 5, name: 'Accessories', icon: '👜', color: Colors.holographic.green },
-    { id: 6, name: 'Outerwear', icon: '🧥', color: Colors.holographic.yellow },
-  ];
+  // Redux state
+  const dispatch = useAppDispatch();
+  const {
+    products,
+    featuredProducts,
+    searchQuery,
+    filters,
+    sortBy,
+    sortOrder,
+    loading,
+    searchLoading,
+    error,
+    hasMore,
+    currentPage
+  } = useAppSelector((state) => state.products);
 
-  const trendingProducts = [
-    {
-      id: 1,
-      name: 'Turquoise Silk Dress',
-      brand: 'Zara',
-      price: '$299',
-      image: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=300',
-      rating: 4.8,
-    },
-    {
-      id: 2,
-      name: 'Holographic Sneakers',
-      brand: 'Nike',
-      price: '$159',
-      image: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=300',
-      rating: 4.9,
-    },
-    {
-      id: 3,
-      name: 'Glass Effect Jacket',
-      brand: 'H&M',
-      price: '$199',
-      image: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=300',
-      rating: 4.7,
-    },
-    {
-      id: 4,
-      name: 'Crystal Handbag',
-      brand: 'Gucci',
-      price: '$899',
-      image: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=300',
-      rating: 4.9,
-    },
-  ];
+  const { featuredBrands, brands } = useAppSelector((state) => state.brands);
+  const { categories } = useAppSelector((state) => state.categories);
 
-  const renderCategoryItem = ({ item }: { item: any }) => (
-    <GlassCard style={[styles.categoryCard, { borderColor: item.color }] as any}>
-      <Text style={styles.categoryIcon}>{item.icon}</Text>
-      <Text style={styles.categoryName}>{item.name}</Text>
-    </GlassCard>
+  // Local state
+  const [activeTab, setActiveTab] = useState<'all' | 'featured' | 'brands'>('all');
+  const [showFilters, setShowFilters] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+  const [searchSuggestions, setSearchSuggestions] = useState<string[]>([]);
+
+  /**
+   * Initialize data on screen focus
+   */
+  useFocusEffect(
+    useCallback(() => {
+      loadInitialData();
+    }, [])
   );
 
-  const renderProductItem = ({ item }: { item: any }) => (
-    <GlassCard style={styles.productCard}>
-      <Image source={{ uri: item.image }} style={styles.productImage} />
-      <View style={styles.productInfo}>
-        <Text style={styles.productName}>{item.name}</Text>
-        <Text style={styles.productBrand}>{item.brand}</Text>
-        <View style={styles.productFooter}>
-          <Text style={styles.productPrice}>{item.price}</Text>
-          <View style={styles.rating}>
-            <Ionicons name="star" size={14} color={Colors.holographic.yellow} />
-            <Text style={styles.ratingText}>{item.rating}</Text>
-          </View>
-        </View>
-      </View>
-    </GlassCard>
+  /**
+   * Load initial data for the screen
+   */
+  const loadInitialData = async () => {
+    try {
+      await Promise.all([
+        dispatch(fetchProducts({ page: 1, limit: 20 })),
+        dispatch(fetchFeaturedProducts(10)),
+        dispatch(fetchFeaturedBrands(6)),
+        dispatch(fetchCategories()),
+      ]);
+    } catch (error) {
+      console.error('Failed to load initial data:', error);
+    }
+  };
+
+  /**
+   * Handle refresh
+   */
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    try {
+      await loadInitialData();
+    } finally {
+      setRefreshing(false);
+    }
+  };
+
+  /**
+   * Handle search query change
+   */
+  const handleSearchChange = (query: string) => {
+    dispatch(setSearchQuery(query));
+
+    // Generate search suggestions (mock implementation)
+    if (query.length > 0) {
+      const suggestions = [
+        `${query} dress`,
+        `${query} top`,
+        `${query} jacket`,
+        `${query} shoes`,
+      ].filter(s => s !== query);
+      setSearchSuggestions(suggestions.slice(0, 3));
+    } else {
+      setSearchSuggestions([]);
+    }
+  };
+
+  /**
+   * Handle search execution
+   */
+  const handleSearch = (query: string) => {
+    if (query.trim()) {
+      dispatch(searchProducts(query));
+      setActiveTab('all');
+    } else {
+      dispatch(fetchProducts({ page: 1, limit: 20 }));
+    }
+  };
+
+  /**
+   * Handle product press
+   */
+  const handleProductPress = (product: Product) => {
+    navigation.navigate('ProductDetail', { productId: product.id, product });
+  };
+
+  /**
+   * Handle add to cart
+   */
+  const handleAddToCart = (product: Product) => {
+    console.log('Add to cart:', product.id);
+    // TODO: Implement cart functionality
+  };
+
+  /**
+   * Handle toggle favorite
+   */
+  const handleToggleFavorite = (product: Product) => {
+    console.log('Toggle favorite:', product.id);
+    // TODO: Implement favorites functionality
+  };
+
+  /**
+   * Handle category filter
+   */
+  const handleCategoryFilter = (categoryId: string) => {
+    const newFilters: ProductFilters = {
+      ...filters,
+      categories: [categoryId]
+    };
+    dispatch(setFilters(newFilters));
+    dispatch(fetchProducts({ filters: newFilters, page: 1, limit: 20 }));
+    setActiveTab('all');
+  };
+
+  /**
+   * Handle brand filter
+   */
+  const handleBrandFilter = (brandId: string) => {
+    const newFilters: ProductFilters = {
+      ...filters,
+      brands: [brandId]
+    };
+    dispatch(setFilters(newFilters));
+    dispatch(fetchProducts({ filters: newFilters, page: 1, limit: 20 }));
+    setActiveTab('all');
+  };
+
+  /**
+   * Handle brand press - navigate to brand detail
+   */
+  const handleBrandPress = (brand: any) => {
+    navigation.navigate('BrandDetail', { brandId: brand.id, brand });
+  };
+
+  /**
+   * Handle sort change
+   */
+  const handleSortChange = (sortOption: ProductSortOption) => {
+    dispatch(setSortBy(sortOption));
+    dispatch(fetchProducts({
+      query: searchQuery,
+      filters,
+      sortBy: sortOption,
+      sortOrder,
+      page: 1,
+      limit: 20
+    }));
+  };
+
+  /**
+   * Handle clear filters
+   */
+  const handleClearFilters = () => {
+    dispatch(clearFilters());
+    dispatch(setSearchQuery(''));
+    dispatch(fetchProducts({ page: 1, limit: 20 }));
+    setSearchSuggestions([]);
+  };
+
+  /**
+   * Handle load more products
+   */
+  const handleLoadMore = () => {
+    if (hasMore && !loading) {
+      dispatch(fetchProducts({
+        query: searchQuery,
+        filters,
+        sortBy,
+        sortOrder,
+        page: currentPage + 1,
+        limit: 20
+      }));
+    }
+  };
+
+  /**
+   * Get current products to display based on active tab
+   */
+  const getCurrentProducts = () => {
+    switch (activeTab) {
+      case 'featured':
+        return featuredProducts;
+      case 'brands':
+        return products.filter(p => p.brand && featuredBrands.some(b => b.id === p.brand_id));
+      default:
+        return products;
+    }
+  };
+
+  /**
+   * Render category chips
+   */
+  const renderCategoryChips = () => (
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      contentContainerStyle={styles.categoriesContainer}
+    >
+      {categories.map((category) => (
+        <TouchableOpacity
+          key={category.id}
+          style={styles.categoryChip}
+          onPress={() => handleCategoryFilter(category.id)}
+          activeOpacity={0.7}
+        >
+          <GlassCard style={styles.categoryCard}>
+            <Text style={styles.categoryName}>{category.name}</Text>
+          </GlassCard>
+        </TouchableOpacity>
+      ))}
+    </ScrollView>
+  );
+
+  /**
+   * Render brand chips
+   */
+  const renderBrandChips = () => (
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      contentContainerStyle={styles.brandsContainer}
+    >
+      {featuredBrands.map((brand) => (
+        <TouchableOpacity
+          key={brand.id}
+          style={styles.brandChip}
+          onPress={() => handleBrandFilter(brand.id)}
+          onLongPress={() => handleBrandPress(brand)}
+          activeOpacity={0.7}
+        >
+          <GlassCard style={styles.brandCard}>
+            <Text style={styles.brandName}>{brand.name}</Text>
+          </GlassCard>
+        </TouchableOpacity>
+      ))}
+    </ScrollView>
   );
 
   return (
     <SafeAreaView style={styles.container}>
       <LinearGradient
-        colors={Colors.gradients.light}
+        colors={Colors.gradients.holographic}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={StyleSheet.absoluteFillObject}
       />
 
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={handleRefresh}
+            tintColor={Colors.primary[500]}
+            colors={[Colors.primary[500]]}
+          />
+        }
+      >
         {/* Header */}
         <View style={styles.header}>
           <Text style={styles.title}>Discover</Text>
@@ -105,91 +324,140 @@ export default function DiscoverScreen() {
         </View>
 
         {/* Search Bar */}
-        <GlassCard style={styles.searchCard}>
-          <View style={styles.searchContainer}>
-            <Ionicons name="search" size={20} color={Colors.text.muted} />
-            <TextInput
-              style={styles.searchInput}
-              placeholder="Search for fashion items..."
-              placeholderTextColor={Colors.text.muted}
-              value={searchQuery}
-              onChangeText={setSearchQuery}
-            />
-            <GlassButton
-              title="Filter"
-              variant="outline"
-              size="small"
-              onPress={() => {}}
-              icon={<Ionicons name="options" size={16} color={Colors.primary[500]} />}
-            />
-          </View>
-        </GlassCard>
-
+        <View style={styles.searchContainer}>
+          <SearchBar
+            query={searchQuery}
+            onQueryChange={handleSearchChange}
+            onSearch={handleSearch}
+            suggestions={searchSuggestions}
+            loading={searchLoading}
+            placeholder="Search products, brands, styles..."
+          />
         {/* Categories */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Categories</Text>
-          <FlatList
-            data={categories}
-            renderItem={renderCategoryItem}
-            keyExtractor={(item) => item.id.toString()}
-            numColumns={width > 600 ? 4 : 3}
-            scrollEnabled={false}
-            contentContainerStyle={styles.categoriesGrid}
-          />
-        </View>
-
-        {/* Trending Now */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Trending Now</Text>
-            <GlassButton
-              title="See All"
-              variant="ghost"
-              size="small"
-              onPress={() => {}}
-            />
+        {categories.length > 0 && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Categories</Text>
+            {renderCategoryChips()}
           </View>
-          <FlatList
-            data={trendingProducts}
-            renderItem={renderProductItem}
-            keyExtractor={(item) => item.id.toString()}
-            numColumns={width > 600 ? 3 : 2}
-            scrollEnabled={false}
-            contentContainerStyle={styles.productsGrid}
-          />
-        </View>
+        )}
 
-        {/* AI Recommendations */}
-        <GlassCard style={styles.aiCard}>
-          <View style={styles.aiHeader}>
-            <Text style={styles.aiTitle}>🤖 AI Curated for You</Text>
-            <Text style={styles.aiSubtitle}>
-              Personalized recommendations based on your style DNA
-            </Text>
+        {/* Featured Brands */}
+        {featuredBrands.length > 0 && (
+          <View style={styles.section}>
+            <View style={styles.sectionHeader}>
+              <Text style={styles.sectionTitle}>Featured Brands</Text>
+              <TouchableOpacity
+                onPress={() => navigation.navigate('BrandList')}
+                activeOpacity={0.7}
+              >
+                <Text style={styles.viewAllText}>View All</Text>
+              </TouchableOpacity>
+            </View>
+            {renderBrandChips()}
           </View>
-          <GlassButton
-            title="Explore AI Picks"
-            variant="primary"
-            size="large"
-            fullWidth
-            gradient
-            gradientColors={Colors.gradients.primary}
-            onPress={() => {}}
-          />
-        </GlassCard>
+        )}
 
-        {/* Brands */}
+        {/* Tab Selector */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Featured Brands</Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {['Zara', 'H&M', 'Nike', 'Adidas', 'Gucci', 'Prada'].map((brand) => (
-              <GlassCard key={brand} style={styles.brandCard}>
-                <Text style={styles.brandName}>{brand}</Text>
-              </GlassCard>
+          <View style={styles.tabContainer}>
+            {[
+              { key: 'all', label: 'All Products' },
+              { key: 'featured', label: 'Featured' },
+              { key: 'brands', label: 'Top Brands' },
+            ].map((tab) => (
+              <TouchableOpacity
+                key={tab.key}
+                style={[
+                  styles.tab,
+                  activeTab === tab.key && styles.activeTab
+                ]}
+                onPress={() => setActiveTab(tab.key as any)}
+                activeOpacity={0.7}
+              >
+                <Text style={[
+                  styles.tabText,
+                  activeTab === tab.key && styles.activeTabText
+                ]}>
+                  {tab.label}
+                </Text>
+              </TouchableOpacity>
             ))}
+          </View>
+        </View>
+
+        {/* Sort and Filter Controls */}
+        <View style={styles.controlsContainer}>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.controlsContent}
+          >
+            {/* Sort Options */}
+            <TouchableOpacity
+              style={styles.controlButton}
+              onPress={() => handleSortChange('price')}
+              activeOpacity={0.7}
+            >
+              <GlassCard style={[styles.controlCard, sortBy === 'price' && styles.activeControlCard]}>
+                <Ionicons name="pricetag-outline" size={16} color={Colors.text.primary} />
+                <Text style={styles.controlText}>Price</Text>
+              </GlassCard>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.controlButton}
+              onPress={() => handleSortChange('created_at')}
+              activeOpacity={0.7}
+            >
+              <GlassCard style={[styles.controlCard, sortBy === 'created_at' && styles.activeControlCard]}>
+                <Ionicons name="time-outline" size={16} color={Colors.text.primary} />
+                <Text style={styles.controlText}>Newest</Text>
+              </GlassCard>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.controlButton}
+              onPress={() => handleSortChange('name')}
+              activeOpacity={0.7}
+            >
+              <GlassCard style={[styles.controlCard, sortBy === 'name' && styles.activeControlCard]}>
+                <Ionicons name="text-outline" size={16} color={Colors.text.primary} />
+                <Text style={styles.controlText}>Name</Text>
+              </GlassCard>
+            </TouchableOpacity>
+
+            {/* Clear Filters */}
+            {(Object.keys(filters).length > 0 || searchQuery) && (
+              <TouchableOpacity
+                style={styles.controlButton}
+                onPress={handleClearFilters}
+                activeOpacity={0.7}
+              >
+                <GlassCard style={styles.clearCard}>
+                  <Ionicons name="close-circle-outline" size={16} color={Colors.semantic.error} />
+                  <Text style={styles.clearText}>Clear</Text>
+                </GlassCard>
+              </TouchableOpacity>
+            )}
           </ScrollView>
         </View>
       </ScrollView>
+
+      {/* Products Grid */}
+      <ProductGrid
+        products={getCurrentProducts()}
+        onProductPress={handleProductPress}
+        onAddToCart={handleAddToCart}
+        onToggleFavorite={handleToggleFavorite}
+        loading={loading}
+        refreshing={refreshing}
+        onRefresh={handleRefresh}
+        showLoadMore={hasMore}
+        onLoadMore={handleLoadMore}
+        loadingMore={loading && currentPage > 1}
+        emptyTitle={searchQuery ? "No products found" : "No products available"}
+        emptyMessage={searchQuery ? `No results for "${searchQuery}". Try different keywords.` : "Check back later for new products."}
+      />
     </SafeAreaView>
   );
 }
@@ -199,155 +467,151 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    paddingHorizontal: Math.max(Spacing.component.screen.horizontal, width * 0.05),
-    paddingVertical: Math.max(Spacing['2xl'], height * 0.03),
+    paddingHorizontal: Spacing.component.screen.horizontal,
+    paddingTop: Spacing.lg,
+    paddingBottom: Spacing.md,
+    alignItems: 'center',
   },
   title: {
     ...Typography.styles.h1,
-    fontSize: Math.min(Typography.sizes['2xl'], width * 0.08),
-    color: Colors.text.primary,
+    color: Colors.text.white,
+    textAlign: 'center',
+    marginBottom: Spacing.sm,
   },
   subtitle: {
     ...Typography.styles.body,
-    fontSize: Math.min(Typography.sizes.base, width * 0.04),
-    color: Colors.text.secondary,
-    marginTop: Spacing.sm,
-  },
-  searchCard: {
-    marginHorizontal: Math.max(Spacing.component.screen.horizontal, width * 0.05),
-    marginBottom: Math.max(Spacing['2xl'], height * 0.03),
+    color: Colors.text.white,
+    textAlign: 'center',
+    opacity: 0.9,
   },
   searchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.md,
-  },
-  searchInput: {
-    flex: 1,
-    ...Typography.styles.body,
-    fontSize: Math.min(Typography.sizes.base, width * 0.04),
-    color: Colors.text.primary,
-    paddingVertical: Spacing.sm,
+    paddingHorizontal: Spacing.component.screen.horizontal,
+    marginBottom: Spacing.lg,
   },
   section: {
-    marginBottom: Math.max(Spacing['2xl'], height * 0.03),
+    marginBottom: Spacing.lg,
   },
   sectionHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: Math.max(Spacing.component.screen.horizontal, width * 0.05),
-    marginBottom: Spacing.lg,
+    paddingHorizontal: Spacing.component.screen.horizontal,
+    marginBottom: Spacing.md,
   },
   sectionTitle: {
-    ...Typography.styles.h3,
-    fontSize: Math.min(Typography.sizes.lg, width * 0.05),
-    color: Colors.text.primary,
-    paddingHorizontal: Math.max(Spacing.component.screen.horizontal, width * 0.05),
-    marginBottom: Spacing.lg,
+    ...Typography.styles.h2,
+    color: Colors.text.white,
   },
-  categoriesGrid: {
-    paddingHorizontal: Math.max(Spacing.component.screen.horizontal, width * 0.05),
+  viewAllText: {
+    ...Typography.styles.button,
+    color: Colors.primary[400],
+    fontSize: 14,
+  },
+
+  // Categories
+  categoriesContainer: {
+    paddingHorizontal: Spacing.component.screen.horizontal,
     gap: Spacing.md,
+  },
+  categoryChip: {
+    marginRight: Spacing.md,
   },
   categoryCard: {
-    flex: 1,
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.sm,
+    minWidth: 80,
     alignItems: 'center',
-    paddingVertical: Math.max(Spacing.lg, height * 0.02),
-    marginHorizontal: Spacing.xs,
-    marginBottom: Spacing.md,
-    borderWidth: 1,
-    minHeight: height * 0.1,
-    justifyContent: 'center',
-  },
-  categoryIcon: {
-    fontSize: Math.min(24, width * 0.06),
-    marginBottom: Spacing.sm,
   },
   categoryName: {
-    ...Typography.styles.caption,
-    fontSize: Math.min(Typography.sizes.sm, width * 0.03),
+    ...Typography.styles.button,
     color: Colors.text.primary,
-    textAlign: 'center',
+    fontSize: 14,
   },
-  productsGrid: {
-    paddingHorizontal: Math.max(Spacing.component.screen.horizontal, width * 0.05),
+
+  // Brands
+  brandsContainer: {
+    paddingHorizontal: Spacing.component.screen.horizontal,
     gap: Spacing.md,
   },
-  productCard: {
-    flex: 1,
-    marginHorizontal: Spacing.xs,
-    marginBottom: Spacing.md,
-  },
-  productImage: {
-    width: '100%',
-    height: Math.min(150, height * 0.2),
-    borderRadius: Spacing.component.radius.md,
-    marginBottom: Spacing.md,
-  },
-  productInfo: {
-    gap: Spacing.xs,
-  },
-  productName: {
-    ...Typography.styles.h6,
-    fontSize: Math.min(Typography.sizes.base, width * 0.04),
-    color: Colors.text.primary,
-  },
-  productBrand: {
-    ...Typography.styles.caption,
-    fontSize: Math.min(Typography.sizes.sm, width * 0.03),
-    color: Colors.text.secondary,
-  },
-  productFooter: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: Spacing.sm,
-  },
-  productPrice: {
-    ...Typography.styles.button,
-    fontSize: Math.min(Typography.sizes.base, width * 0.04),
-    color: Colors.primary[500],
-  },
-  rating: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.xs,
-  },
-  ratingText: {
-    ...Typography.styles.caption,
-    fontSize: Math.min(Typography.sizes.sm, width * 0.03),
-    color: Colors.text.secondary,
-  },
-  aiCard: {
-    marginHorizontal: Math.max(Spacing.component.screen.horizontal, width * 0.05),
-    marginBottom: Math.max(Spacing['2xl'], height * 0.03),
-  },
-  aiHeader: {
-    marginBottom: Math.max(Spacing.lg, height * 0.02),
-  },
-  aiTitle: {
-    ...Typography.styles.h4,
-    fontSize: Math.min(Typography.sizes.lg, width * 0.045),
-    color: Colors.text.primary,
-    marginBottom: Spacing.sm,
-  },
-  aiSubtitle: {
-    ...Typography.styles.bodySmall,
-    fontSize: Math.min(Typography.sizes.sm, width * 0.035),
-    color: Colors.text.secondary,
+  brandChip: {
+    marginRight: Spacing.md,
   },
   brandCard: {
-    paddingHorizontal: Math.max(Spacing.lg, width * 0.04),
-    paddingVertical: Math.max(Spacing.md, height * 0.015),
-    marginLeft: Math.max(Spacing.component.screen.horizontal, width * 0.05),
-    marginRight: Spacing.md,
-    minWidth: Math.max(100, width * 0.25),
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.sm,
+    minWidth: 100,
     alignItems: 'center',
   },
   brandName: {
     ...Typography.styles.button,
-    fontSize: Math.min(Typography.sizes.base, width * 0.04),
     color: Colors.text.primary,
+    fontSize: 14,
+  },
+
+  // Tabs
+  tabContainer: {
+    flexDirection: 'row',
+    paddingHorizontal: Spacing.component.screen.horizontal,
+    marginBottom: Spacing.md,
+  },
+  tab: {
+    flex: 1,
+    paddingVertical: Spacing.md,
+    paddingHorizontal: Spacing.sm,
+    alignItems: 'center',
+    borderRadius: Spacing.component.radius.md,
+    marginHorizontal: Spacing.xs,
+  },
+  activeTab: {
+    backgroundColor: Colors.glass.turquoise,
+  },
+  tabText: {
+    ...Typography.styles.button,
+    color: Colors.text.secondary,
+    fontSize: 14,
+  },
+  activeTabText: {
+    color: Colors.text.primary,
+    fontWeight: Typography.weights.semiBold,
+  },
+
+  // Controls
+  controlsContainer: {
+    marginBottom: Spacing.lg,
+  },
+  controlsContent: {
+    paddingHorizontal: Spacing.component.screen.horizontal,
+    gap: Spacing.md,
+  },
+  controlButton: {
+    marginRight: Spacing.md,
+  },
+  controlCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.sm,
+    gap: Spacing.sm,
+  },
+  activeControlCard: {
+    backgroundColor: Colors.glass.turquoise,
+  },
+  controlText: {
+    ...Typography.styles.button,
+    color: Colors.text.primary,
+    fontSize: 14,
+  },
+  clearCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.sm,
+    gap: Spacing.sm,
+    backgroundColor: Colors.semantic.errorBackground,
+  },
+  clearText: {
+    ...Typography.styles.button,
+    color: Colors.semantic.error,
+    fontSize: 14,
   },
 });

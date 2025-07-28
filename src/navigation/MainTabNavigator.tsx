@@ -7,6 +7,7 @@ import DiscoverScreen from '../screens/main/DiscoverScreen';
 import TryOnScreen from '../screens/main/TryOnScreen';
 import WardrobeScreen from '../screens/main/WardrobeScreen';
 import ProfileScreen from '../screens/main/ProfileScreen';
+import CartScreen from '../screens/cart/CartScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -58,6 +59,16 @@ export default function MainTabNavigator() {
           title: 'Try On',
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="camera" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Cart"
+        component={CartScreen}
+        options={{
+          title: 'Cart',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="bag" size={size} color={color} />
           ),
         }}
       />

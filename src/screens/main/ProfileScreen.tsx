@@ -47,6 +47,30 @@ export default function ProfileScreen() {
     navigation.navigate('StripeTest' as never);
   };
 
+  const handleAdminAccess = () => {
+    navigation.navigate('AdminDashboard' as never);
+  };
+
+  const handleOrderHistory = () => {
+    navigation.navigate('OrderHistory' as never);
+  };
+
+  const handleEditProfile = () => {
+    navigation.navigate('ProfileEdit' as never);
+  };
+
+  const handleStylePreferences = () => {
+    navigation.navigate('StylePreferences' as never);
+  };
+
+  const handleBodyMeasurements = () => {
+    navigation.navigate('BodyMeasurements' as never);
+  };
+
+  const handleTryOnHistory = () => {
+    navigation.navigate('TryOnHistory' as never);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <LinearGradient
@@ -77,17 +101,88 @@ export default function ProfileScreen() {
           </View>
         </GlassCard>
 
+        {/* Profile Actions */}
+        <View style={styles.actionsSection}>
+          <GlassCard style={styles.actionsCard}>
+            <Text style={styles.actionsTitle}>Account</Text>
+
+            <TouchableOpacity
+              style={styles.actionItem}
+              activeOpacity={0.7}
+              onPress={handleOrderHistory}
+            >
+              <Ionicons name="bag-outline" size={24} color={Colors.primary[500]} />
+              <Text style={styles.actionText}>Order History</Text>
+              <Ionicons name="chevron-forward" size={20} color={Colors.text.secondary} />
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.actionItem}
+              activeOpacity={0.7}
+              onPress={handleTryOnHistory}
+            >
+              <Ionicons name="camera-outline" size={24} color={Colors.primary[500]} />
+              <Text style={styles.actionText}>Try-On History</Text>
+              <Ionicons name="chevron-forward" size={20} color={Colors.text.secondary} />
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.actionItem}
+              activeOpacity={0.7}
+              onPress={handleEditProfile}
+            >
+              <Ionicons name="person-outline" size={24} color={Colors.primary[500]} />
+              <Text style={styles.actionText}>Edit Profile</Text>
+              <Ionicons name="chevron-forward" size={20} color={Colors.text.secondary} />
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.actionItem}
+              activeOpacity={0.7}
+              onPress={handleStylePreferences}
+            >
+              <Ionicons name="color-palette-outline" size={24} color={Colors.primary[500]} />
+              <Text style={styles.actionText}>Style Preferences</Text>
+              <Ionicons name="chevron-forward" size={20} color={Colors.text.secondary} />
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.actionItem}
+              activeOpacity={0.7}
+              onPress={handleBodyMeasurements}
+            >
+              <Ionicons name="resize-outline" size={24} color={Colors.primary[500]} />
+              <Text style={styles.actionText}>Body Measurements</Text>
+              <Ionicons name="chevron-forward" size={20} color={Colors.text.secondary} />
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.actionItem} activeOpacity={0.7}>
+              <Ionicons name="settings-outline" size={24} color={Colors.primary[500]} />
+              <Text style={styles.actionText}>Settings</Text>
+              <Ionicons name="chevron-forward" size={20} color={Colors.text.secondary} />
+            </TouchableOpacity>
+          </GlassCard>
+        </View>
+
         {/* Developer Options */}
         <View style={styles.developerSection}>
           <GlassCard style={styles.developerCard}>
             <Text style={styles.developerTitle}>🧪 Developer Options</Text>
             <GlassButton
-              title="Test Stripe Payments"
+              title="Admin Dashboard"
               variant="primary"
               size="medium"
               fullWidth
               gradient
               gradientColors={Colors.gradients.primary}
+              onPress={handleAdminAccess}
+              style={styles.adminButton}
+            />
+            <GlassButton
+              title="Test Stripe Payments"
+              variant="outline"
+              size="medium"
+              fullWidth
               onPress={handleStripeTest}
               style={styles.stripeButton}
             />
@@ -153,6 +248,34 @@ const styles = StyleSheet.create({
     color: Colors.text.secondary,
     textAlign: 'center',
   },
+
+  // Actions section
+  actionsSection: {
+    marginBottom: Spacing.lg,
+  },
+  actionsCard: {
+    padding: Spacing.lg,
+  },
+  actionsTitle: {
+    ...Typography.styles.h6,
+    color: Colors.text.primary,
+    fontWeight: Typography.weights.semiBold,
+    marginBottom: Spacing.lg,
+  },
+  actionItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: Spacing.md,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.border.light,
+  },
+  actionText: {
+    ...Typography.styles.body,
+    color: Colors.text.primary,
+    flex: 1,
+    marginLeft: Spacing.md,
+  },
+
   developerSection: {
     marginBottom: Math.max(Spacing['2xl'], height * 0.03),
   },
@@ -167,8 +290,11 @@ const styles = StyleSheet.create({
     marginBottom: Math.max(Spacing.md, height * 0.015),
     textAlign: 'center',
   },
+  adminButton: {
+    marginBottom: Spacing.md,
+  },
   stripeButton: {
-    marginTop: Spacing.md,
+    marginTop: 0,
   },
   signOutSection: {
     marginBottom: Math.max(Spacing['4xl'], height * 0.05),

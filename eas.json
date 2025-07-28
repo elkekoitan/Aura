@@ -18,11 +18,29 @@
     },
     "production": {
       "ios": {
-        "autoIncrement": "buildNumber"
+        "autoIncrement": "buildNumber",
+        "bundleIdentifier": "com.aurafashion.app",
+        "buildConfiguration": "Release",
+        "resourceClass": "m-medium",
+        "image": "latest",
+        "env": {
+          "EXPO_PUBLIC_APP_ENV": "production",
+          "EXPO_PUBLIC_ENABLE_ANALYTICS": "true",
+          "EXPO_PUBLIC_ENABLE_VIRTUAL_TRYON": "true"
+        }
       },
       "android": {
-        "autoIncrement": "versionCode"
-      }
+        "autoIncrement": "versionCode",
+        "buildType": "app-bundle",
+        "resourceClass": "medium",
+        "env": {
+          "EXPO_PUBLIC_APP_ENV": "production",
+          "EXPO_PUBLIC_ENABLE_ANALYTICS": "true",
+          "EXPO_PUBLIC_ENABLE_VIRTUAL_TRYON": "true"
+        }
+      },
+      "channel": "production",
+      "distribution": "store"
     }
   },
   "submit": {
@@ -30,12 +48,28 @@
       "ios": {
         "appleId": "your-apple-id@example.com",
         "ascAppId": "your-app-store-connect-app-id",
-        "appleTeamId": "your-apple-team-id"
+        "appleTeamId": "your-apple-team-id",
+        "sku": "aura-fashion-app-ios",
+        "language": "en-US",
+        "companyName": "Aura Fashion",
+        "appName": "Aura Fashion",
+        "copyright": "2024 Aura Fashion. All rights reserved.",
+        "primaryCategory": "LIFESTYLE",
+        "secondaryCategory": "SHOPPING",
+        "contentRights": {
+          "containsThirdPartyContent": false,
+          "usesIdfa": false
+        }
       },
       "android": {
         "serviceAccountKeyPath": "./google-service-account.json",
-        "track": "production"
+        "track": "production",
+        "releaseStatus": "completed",
+        "changesNotSentForReview": false
       }
     }
+  },
+  "updates": {
+    "url": "https://u.expo.dev/your-project-id"
   }
 }

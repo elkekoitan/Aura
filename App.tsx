@@ -1,14 +1,30 @@
 import React, { useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, View, Text, ActivityIndicator } from 'react-native';
+import { StyleSheet, View, Text, ActivityIndicator, Platform } from 'react-native';
 import { Provider } from 'react-redux';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { StripeProvider } from '@stripe/stripe-react-native';
+// Conditional Stripe import for web compatibility
+let StripeProvider: any = ({ children }: { children: React.ReactNode }) => children;
+
+if (Platform.OS !== 'web') {
+  try {
+    const stripe = require('@stripe/stripe-react-native');
+    StripeProvider = stripe.StripeProvider;
+  } catch (error) {
+    console.warn('Stripe React Native not available');
+  }
+}
 import { LinearGradient } from 'expo-linear-gradient';
 import { store } from './src/store';
 import { supabase } from './src/config/supabase';
 import { setSession } from './src/store/slices/authSlice';
+import { loadCartFromStorage } from './src/store/slices/cartSlice';
+import {
+  fetchUserProfile,
+  fetchStylePreferences,
+  fetchBodyMeasurements
+} from './src/store/slices/profileSlice';
 import { Colors, Typography } from './src/constants';
 import AppNavigator from './src/navigation/AppNavigator';
 
@@ -45,6 +61,16 @@ function AppContent() {
         // Get initial session
         const { data: { session } } = await supabase.auth.getSession();
         store.dispatch(setSession({ user: session?.user ?? null, session }));
+
+        // Load cart from storage
+        store.dispatch(loadCartFromStorage());
+
+        // Load user profile data if authenticated
+        if (session?.user) {
+          store.dispatch(fetchUserProfile(session.user.id));
+          store.dispatch(fetchStylePreferences(session.user.id));
+          store.dispatch(fetchBodyMeasurements(session.user.id));
+        }
 
         // Small delay for smooth loading experience
         setTimeout(() => {

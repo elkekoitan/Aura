@@ -14,6 +14,18 @@ import MainTabNavigator from './MainTabNavigator';
 import StripeTestScreen from '../screens/test/StripeTestScreen';
 import TermsScreen from '../screens/legal/TermsScreen';
 import PrivacyScreen from '../screens/legal/PrivacyScreen';
+import { BrandListScreen, BrandDetailScreen } from '../screens/brand';
+import { AdminDashboard, ProductManagement } from '../screens/admin';
+import ProductDetailScreen from '../screens/product/ProductDetailScreen';
+import CheckoutScreen from '../screens/checkout/CheckoutScreen';
+import OrderConfirmationScreen from '../screens/checkout/OrderConfirmationScreen';
+import OrderHistoryScreen from '../screens/order/OrderHistoryScreen';
+import ProfileEditScreen from '../screens/profile/ProfileEditScreen';
+import StylePreferencesScreen from '../screens/profile/StylePreferencesScreen';
+import BodyMeasurementsScreen from '../screens/profile/BodyMeasurementsScreen';
+import TryOnCameraScreen from '../screens/tryOn/TryOnCameraScreen';
+import TryOnProcessingScreen from '../screens/tryOn/TryOnProcessingScreen';
+import TryOnHistoryScreen from '../screens/tryOn/TryOnHistoryScreen';
 
 const Stack = createStackNavigator();
 
@@ -100,11 +112,109 @@ export default function AppNavigator() {
                 gestureEnabled: true,
               }}
             />
-            <Stack.Screen 
-              name="Privacy" 
+            <Stack.Screen
+              name="Privacy"
               component={PrivacyScreen}
               options={{
                 presentation: 'modal',
+                gestureEnabled: true,
+              }}
+            />
+            <Stack.Screen
+              name="BrandList"
+              component={BrandListScreen}
+              options={{
+                gestureEnabled: true,
+              }}
+            />
+            <Stack.Screen
+              name="BrandDetail"
+              component={BrandDetailScreen}
+              options={{
+                gestureEnabled: true,
+              }}
+            />
+            <Stack.Screen
+              name="AdminDashboard"
+              component={AdminDashboard}
+              options={{
+                gestureEnabled: true,
+              }}
+            />
+            <Stack.Screen
+              name="ProductManagement"
+              component={ProductManagement}
+              options={{
+                gestureEnabled: true,
+              }}
+            />
+            <Stack.Screen
+              name="ProductDetail"
+              component={ProductDetailScreen}
+              options={{
+                gestureEnabled: true,
+              }}
+            />
+            <Stack.Screen
+              name="Checkout"
+              component={CheckoutScreen}
+              options={{
+                gestureEnabled: true,
+              }}
+            />
+            <Stack.Screen
+              name="OrderConfirmation"
+              component={OrderConfirmationScreen}
+              options={{
+                gestureEnabled: true,
+              }}
+            />
+            <Stack.Screen
+              name="OrderHistory"
+              component={OrderHistoryScreen}
+              options={{
+                gestureEnabled: true,
+              }}
+            />
+            <Stack.Screen
+              name="ProfileEdit"
+              component={ProfileEditScreen}
+              options={{
+                gestureEnabled: true,
+              }}
+            />
+            <Stack.Screen
+              name="StylePreferences"
+              component={StylePreferencesScreen}
+              options={{
+                gestureEnabled: true,
+              }}
+            />
+            <Stack.Screen
+              name="BodyMeasurements"
+              component={BodyMeasurementsScreen}
+              options={{
+                gestureEnabled: true,
+              }}
+            />
+            <Stack.Screen
+              name="TryOnCamera"
+              component={TryOnCameraScreen}
+              options={{
+                gestureEnabled: true,
+              }}
+            />
+            <Stack.Screen
+              name="TryOnProcessing"
+              component={TryOnProcessingScreen}
+              options={{
+                gestureEnabled: false,
+              }}
+            />
+            <Stack.Screen
+              name="TryOnHistory"
+              component={TryOnHistoryScreen}
+              options={{
                 gestureEnabled: true,
               }}
             />

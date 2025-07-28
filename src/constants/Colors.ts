@@ -48,6 +48,7 @@ export const Colors = {
     warning: '#F59E0B',
     error: '#EF4444',
     info: '#3B82F6',
+    errorBackground: 'rgba(239, 68, 68, 0.1)', // Light red background for error messages
   },
 
   // Text Colors

@@ -22,16 +22,20 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.aura.digitalfashion",
+      "bundleIdentifier": "com.aurafashion.app",
       "buildNumber": "1",
       "infoPlist": {
-        "NSCameraUsageDescription": "This app uses the camera to create your digital avatar for virtual try-on experiences.",
-        "NSPhotoLibraryUsageDescription": "This app accesses your photo library to save and share your fashion looks.",
-        "NSMicrophoneUsageDescription": "This app may use the microphone for video content creation."
+        "NSCameraUsageDescription": "Aura uses your camera for virtual try-on experiences to help you see how clothes look on you.",
+        "NSPhotoLibraryUsageDescription": "Aura accesses your photo library to save and share your virtual try-on results and fashion looks.",
+        "NSMicrophoneUsageDescription": "Aura may use the microphone for video content creation and social features.",
+        "NSLocationWhenInUseUsageDescription": "Aura uses your location to find nearby stores and provide personalized shopping recommendations.",
+        "NSUserTrackingUsageDescription": "This allows Aura to provide you with personalized fashion recommendations and improve your shopping experience."
       },
       "config": {
         "usesNonExemptEncryption": false
-      }
+      },
+      "associatedDomains": ["applinks:aurafashion.app"],
+      "appStoreUrl": "https://apps.apple.com/app/aura-fashion/id123456789"
     },
     "android": {
       "adaptiveIcon": {
@@ -39,14 +43,32 @@
         "backgroundColor": "#319795"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.aura.digitalfashion",
+      "package": "com.aurafashion.app",
       "versionCode": 1,
       "permissions": [
         "CAMERA",
         "READ_EXTERNAL_STORAGE",
         "WRITE_EXTERNAL_STORAGE",
         "INTERNET",
-        "ACCESS_NETWORK_STATE"
+        "ACCESS_NETWORK_STATE",
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION",
+        "VIBRATE",
+        "WAKE_LOCK"
+      ],
+      "playStoreUrl": "https://play.google.com/store/apps/details?id=com.aurafashion.app",
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            {
+              "scheme": "https",
+              "host": "aurafashion.app"
+            }
+          ],
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
       ]
     },
     "web": {

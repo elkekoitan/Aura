@@ -6,9 +6,20 @@ import {
   SafeAreaView,
   Alert,
   ScrollView,
+  Platform,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useStripe } from '@stripe/stripe-react-native';
+// Conditional Stripe import for web compatibility
+let useStripe: any = () => ({ initPaymentSheet: null, presentPaymentSheet: null });
+
+if (Platform.OS !== 'web') {
+  try {
+    const stripe = require('@stripe/stripe-react-native');
+    useStripe = stripe.useStripe;
+  } catch (error) {
+    console.warn('Stripe React Native not available');
+  }
+}
 import { GlassCard, GlassButton } from '../../components/ui';
 import { Colors, Typography, Spacing } from '../../constants';
 
@@ -62,6 +73,16 @@ export default function StripeTestScreen() {
 
   const processPayment = async (product: any) => {
     try {
+      // Check if Stripe is available (mobile platforms)
+      if (!initPaymentSheet || !presentPaymentSheet) {
+        Alert.alert(
+          'Payment Not Available',
+          'Payment processing is only available on mobile devices. This is a demo feature.',
+          [{ text: 'OK' }]
+        );
+        return;
+      }
+
       // Initialize payment sheet
       const { error: initError } = await initPaymentSheet({
         merchantDisplayName: 'Aura Digital Fashion',

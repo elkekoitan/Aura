@@ -1,0 +1,151 @@
+{
+  "appInfo": {
+    "name": "Aura Fashion",
+    "subtitle": "Virtual Try-On & AI Styling",
+    "bundleId": "com.aurafashion.app",
+    "sku": "aura-fashion-app",
+    "version": "1.0.0",
+    "copyright": "2024 Aura Fashion. All rights reserved.",
+    "primaryLanguage": "en-US"
+  },
+  "categories": {
+    "primary": "LIFESTYLE",
+    "secondary": "SHOPPING"
+  },
+  "descriptions": {
+    "short": "Discover, try on, and style designer fashion with revolutionary virtual try-on technology and AI-powered styling recommendations.",
+    "full": "Transform your fashion shopping experience with Aura Fashion - the revolutionary app that combines cutting-edge virtual try-on technology with AI-powered styling recommendations.\n\n🌟 KEY FEATURES:\n\n📸 VIRTUAL TRY-ON\n• Revolutionary camera-based virtual try-on technology\n• See how clothes look on you before buying\n• High-quality realistic rendering\n• Save and share your try-on results\n\n🤖 AI STYLING ASSISTANT\n• Personalized outfit recommendations\n• Style matching based on your preferences\n• Seasonal and occasion-based suggestions\n• Learn from your fashion choices\n\n🛍️ PREMIUM SHOPPING\n• Curated designer collections\n• Exclusive brand partnerships\n• Seamless checkout experience\n• Secure payment processing\n\n✨ GLASSMORPHISM DESIGN\n• Beautiful, modern interface\n• Smooth animations and transitions\n• Intuitive user experience\n• Premium visual effects\n\n👤 PERSONAL PROFILE\n• Custom style preferences\n• Body measurements for perfect fit\n• Fashion history and favorites\n• Social sharing capabilities\n\n🎯 PERFECT FIT GUARANTEE\n• Advanced size recommendations\n• Fit analysis and scoring\n• Reduced returns and exchanges\n• Confidence in every purchase\n\nJoin thousands of fashion enthusiasts who have revolutionized their shopping experience with Aura Fashion. Download now and discover your perfect style!\n\n*Virtual try-on requires camera access for optimal experience."
+  },
+  "keywords": [
+    "fashion",
+    "virtual try-on",
+    "AI styling",
+    "shopping",
+    "clothes",
+    "style",
+    "outfit",
+    "designer",
+    "fashion tech",
+    "augmented reality",
+    "personal stylist",
+    "fashion assistant",
+    "clothing",
+    "wardrobe",
+    "style guide",
+    "fashion app",
+    "try before buy",
+    "fashion AI",
+    "style recommendations",
+    "fashion shopping"
+  ],
+  "contentRating": {
+    "rating": "4+",
+    "reasons": [
+      "No objectionable content",
+      "Suitable for all ages",
+      "Shopping and lifestyle content only"
+    ]
+  },
+  "privacy": {
+    "privacyPolicyUrl": "https://aurafashion.app/privacy",
+    "dataCollection": {
+      "collectsData": true,
+      "dataTypes": [
+        "Contact Info",
+        "User Content",
+        "Usage Data",
+        "Diagnostics"
+      ],
+      "dataUsage": [
+        "App Functionality",
+        "Analytics",
+        "Product Personalization",
+        "App Functionality"
+      ],
+      "dataSharing": false,
+      "dataLinkedToUser": true
+    }
+  },
+  "support": {
+    "supportUrl": "https://aurafashion.app/support",
+    "marketingUrl": "https://aurafashion.app",
+    "email": "support@aurafashion.app",
+    "phone": "+1-555-AURA-FASHION"
+  },
+  "screenshots": {
+    "iphone": {
+      "required": [
+        "01-home-screen.png",
+        "02-product-catalog.png",
+        "03-virtual-tryon.png",
+        "04-ai-styling.png",
+        "05-shopping-cart.png"
+      ],
+      "optional": [
+        "06-profile-screen.png",
+        "07-order-history.png",
+        "08-style-preferences.png"
+      ]
+    },
+    "ipad": {
+      "required": [
+        "ipad-01-home.png",
+        "ipad-02-catalog.png",
+        "ipad-03-tryon.png"
+      ]
+    },
+    "android": {
+      "required": [
+        "android-01-home.png",
+        "android-02-catalog.png",
+        "android-03-tryon.png",
+        "android-04-styling.png",
+        "android-05-cart.png"
+      ]
+    }
+  },
+  "appPreview": {
+    "iphone": "aura-fashion-preview-iphone.mp4",
+    "ipad": "aura-fashion-preview-ipad.mp4",
+    "android": "aura-fashion-preview-android.mp4"
+  },
+  "releaseNotes": {
+    "version": "1.0.0",
+    "notes": "🎉 Welcome to Aura Fashion!\n\n✨ Revolutionary virtual try-on technology\n🤖 AI-powered styling recommendations\n🛍️ Curated designer collections\n📱 Beautiful glassmorphism interface\n🔒 Secure shopping experience\n\nDiscover your perfect style with Aura Fashion - where technology meets fashion!"
+  },
+  "ageRating": {
+    "cartoonViolence": "NONE",
+    "realisticViolence": "NONE",
+    "prolongedViolence": "NONE",
+    "sexualContent": "NONE",
+    "nudity": "NONE",
+    "profanity": "NONE",
+    "alcohol": "NONE",
+    "drugs": "NONE",
+    "gambling": "NONE",
+    "horror": "NONE",
+    "matureThemes": "NONE",
+    "unrestrictedWebAccess": false,
+    "socialNetworking": true,
+    "userGeneratedContent": true,
+    "frequentIntenseContent": false
+  },
+  "localization": {
+    "supportedLanguages": ["en-US"],
+    "plannedLanguages": ["es-ES", "fr-FR", "de-DE", "it-IT", "pt-BR", "ja-JP", "ko-KR", "zh-CN"]
+  },
+  "technicalRequirements": {
+    "ios": {
+      "minimumVersion": "13.0",
+      "recommendedVersion": "15.0",
+      "deviceSupport": ["iPhone", "iPad"],
+      "features": ["Camera", "Photo Library", "Internet"]
+    },
+    "android": {
+      "minimumSdk": 21,
+      "targetSdk": 34,
+      "recommendedSdk": 33,
+      "features": ["Camera", "Storage", "Internet", "Location"]
+    }
+  }
+}
