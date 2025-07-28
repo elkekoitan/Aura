@@ -61,3 +61,5 @@ out/
 # Temporary files
 tmp/
 temp/
+
+.vercel

@@ -8,14 +8,7 @@ import {
   SafeAreaView,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withTiming,
-  withSpring,
-  withSequence,
-  withDelay,
-} from 'react-native-reanimated';
+import { Animated } from 'react-native';
 import { GlassCard, GlassButton } from '../../components/ui';
 import { Colors, Typography, Spacing } from '../../constants';
 
@@ -27,49 +20,49 @@ interface WelcomeScreenProps {
 
 export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onGetStarted }) => {
   // Animation values
-  const logoScale = useSharedValue(0);
-  const logoOpacity = useSharedValue(0);
-  const titleTranslateY = useSharedValue(50);
-  const titleOpacity = useSharedValue(0);
-  const subtitleTranslateY = useSharedValue(50);
-  const subtitleOpacity = useSharedValue(0);
-  const buttonTranslateY = useSharedValue(50);
-  const buttonOpacity = useSharedValue(0);
+  const logoScale = React.useRef(new Animated.Value(0)).current;
+  const logoOpacity = React.useRef(new Animated.Value(0)).current;
+  const titleTranslateY = React.useRef(new Animated.Value(50)).current;
+  const titleOpacity = React.useRef(new Animated.Value(0)).current;
+  const subtitleTranslateY = React.useRef(new Animated.Value(50)).current;
+  const subtitleOpacity = React.useRef(new Animated.Value(0)).current;
+  const buttonTranslateY = React.useRef(new Animated.Value(50)).current;
+  const buttonOpacity = React.useRef(new Animated.Value(0)).current;
 
   React.useEffect(() => {
     // Sequence animations
-    logoScale.value = withDelay(300, withSpring(1, { damping: 15 }));
-    logoOpacity.value = withDelay(300, withTiming(1, { duration: 800 }));
-    
-    titleTranslateY.value = withDelay(800, withSpring(0, { damping: 15 }));
-    titleOpacity.value = withDelay(800, withTiming(1, { duration: 600 }));
-    
-    subtitleTranslateY.value = withDelay(1200, withSpring(0, { damping: 15 }));
-    subtitleOpacity.value = withDelay(1200, withTiming(1, { duration: 600 }));
-    
-    buttonTranslateY.value = withDelay(1600, withSpring(0, { damping: 15 }));
-    buttonOpacity.value = withDelay(1600, withTiming(1, { duration: 600 }));
+    Animated.sequence([
+      Animated.delay(300),
+      Animated.parallel([
+        Animated.spring(logoScale, { toValue: 1, useNativeDriver: true }),
+        Animated.timing(logoOpacity, { toValue: 1, duration: 800, useNativeDriver: true }),
+      ]),
+    ]).start();
+
+    Animated.sequence([
+      Animated.delay(800),
+      Animated.parallel([
+        Animated.spring(titleTranslateY, { toValue: 0, useNativeDriver: true }),
+        Animated.timing(titleOpacity, { toValue: 1, duration: 600, useNativeDriver: true }),
+      ]),
+    ]).start();
+
+    Animated.sequence([
+      Animated.delay(1200),
+      Animated.parallel([
+        Animated.spring(subtitleTranslateY, { toValue: 0, useNativeDriver: true }),
+        Animated.timing(subtitleOpacity, { toValue: 1, duration: 600, useNativeDriver: true }),
+      ]),
+    ]).start();
+
+    Animated.sequence([
+      Animated.delay(1600),
+      Animated.parallel([
+        Animated.spring(buttonTranslateY, { toValue: 0, useNativeDriver: true }),
+        Animated.timing(buttonOpacity, { toValue: 1, duration: 600, useNativeDriver: true }),
+      ]),
+    ]).start();
   }, []);
-
-  const logoAnimatedStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: logoScale.value }],
-    opacity: logoOpacity.value,
-  }));
-
-  const titleAnimatedStyle = useAnimatedStyle(() => ({
-    transform: [{ translateY: titleTranslateY.value }],
-    opacity: titleOpacity.value,
-  }));
-
-  const subtitleAnimatedStyle = useAnimatedStyle(() => ({
-    transform: [{ translateY: subtitleTranslateY.value }],
-    opacity: subtitleOpacity.value,
-  }));
-
-  const buttonAnimatedStyle = useAnimatedStyle(() => ({
-    transform: [{ translateY: buttonTranslateY.value }],
-    opacity: buttonOpacity.value,
-  }));
 
   return (
     <SafeAreaView style={styles.container}>
@@ -86,7 +79,13 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onGetStarted }) =>
       {/* Content */}
       <View style={styles.content}>
         {/* Logo Section */}
-        <Animated.View style={[styles.logoSection, logoAnimatedStyle]}>
+        <Animated.View style={[
+          styles.logoSection,
+          {
+            transform: [{ scale: logoScale }],
+            opacity: logoOpacity,
+          }
+        ]}>
           <GlassCard
             style={styles.logoCard}
             gradient={true}
@@ -99,12 +98,24 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onGetStarted }) =>
         </Animated.View>
 
         {/* Title Section */}
-        <Animated.View style={[styles.titleSection, titleAnimatedStyle]}>
+        <Animated.View style={[
+          styles.titleSection,
+          {
+            transform: [{ translateY: titleTranslateY }],
+            opacity: titleOpacity,
+          }
+        ]}>
           <Text style={styles.title}>Welcome to Your{'\n'}Digital Fashion Aura</Text>
         </Animated.View>
 
         {/* Subtitle Section */}
-        <Animated.View style={[styles.subtitleSection, subtitleAnimatedStyle]}>
+        <Animated.View style={[
+          styles.subtitleSection,
+          {
+            transform: [{ translateY: subtitleTranslateY }],
+            opacity: subtitleOpacity,
+          }
+        ]}>
           <Text style={styles.subtitle}>
             Discover, try on, and style designer fashion with AI-powered virtual try-on technology
           </Text>
@@ -124,7 +135,13 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onGetStarted }) =>
         </View>
 
         {/* Button Section */}
-        <Animated.View style={[styles.buttonSection, buttonAnimatedStyle]}>
+        <Animated.View style={[
+          styles.buttonSection,
+          {
+            transform: [{ translateY: buttonTranslateY }],
+            opacity: buttonOpacity,
+          }
+        ]}>
           <GlassButton
             title="Get Started"
             onPress={onGetStarted}

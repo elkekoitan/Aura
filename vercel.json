@@ -1,4 +1,5 @@
 {
+  "name": "aura-fashion-app",
   "buildCommand": "npm run build:web",
   "outputDirectory": "dist",
   "devCommand": "npm run web",
@@ -41,12 +42,5 @@
         }
       ]
     }
-  ],
-  "env": {
-    "EXPO_PUBLIC_SUPABASE_URL": "@expo_public_supabase_url",
-    "EXPO_PUBLIC_SUPABASE_ANON_KEY": "@expo_public_supabase_anon_key",
-    "EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY": "@expo_public_stripe_publishable_key",
-    "EXPO_PUBLIC_APP_NAME": "Aura",
-    "EXPO_PUBLIC_APP_VERSION": "1.0.0"
-  }
+  ]
 }

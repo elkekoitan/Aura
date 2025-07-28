@@ -9,12 +9,7 @@ import {
 } from 'react-native';
 import { BlurView } from 'expo-blur';
 import { LinearGradient } from 'expo-linear-gradient';
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withSpring,
-  withTiming,
-} from 'react-native-reanimated';
+import { Animated } from 'react-native';
 import { Colors, Typography, Spacing } from '../../constants';
 
 interface GlassButtonProps {
@@ -33,8 +28,6 @@ interface GlassButtonProps {
   fullWidth?: boolean;
 }
 
-const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpacity);
-
 export const GlassButton: React.FC<GlassButtonProps> = ({
   title,
   onPress,
@@ -50,22 +43,20 @@ export const GlassButton: React.FC<GlassButtonProps> = ({
   gradientColors = Colors.gradients.primary,
   fullWidth = false,
 }) => {
-  const scale = useSharedValue(1);
-  const opacity = useSharedValue(1);
-
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: scale.value }],
-    opacity: opacity.value,
-  }));
+  const scaleValue = React.useRef(new Animated.Value(1)).current;
 
   const handlePressIn = () => {
-    scale.value = withSpring(0.95);
-    opacity.value = withTiming(0.8);
+    Animated.spring(scaleValue, {
+      toValue: 0.95,
+      useNativeDriver: true,
+    }).start();
   };
 
   const handlePressOut = () => {
-    scale.value = withSpring(1);
-    opacity.value = withTiming(1);
+    Animated.spring(scaleValue, {
+      toValue: 1,
+      useNativeDriver: true,
+    }).start();
   };
 
   const getButtonStyle = (): ViewStyle => {
@@ -174,46 +165,50 @@ export const GlassButton: React.FC<GlassButtonProps> = ({
 
   if (gradient && variant === 'primary') {
     return (
-      <AnimatedTouchableOpacity
-        style={[getButtonStyle(), animatedStyle]}
+      <Animated.View style={{ transform: [{ scale: scaleValue }] }}>
+        <TouchableOpacity
+          style={getButtonStyle()}
+          onPress={onPress}
+          onPressIn={handlePressIn}
+          onPressOut={handlePressOut}
+          disabled={disabled || loading}
+          activeOpacity={0.8}
+        >
+          <LinearGradient
+            colors={gradientColors}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+            }}
+          />
+          <BlurView intensity={20} tint="light" style={{ padding: 0 }}>
+            {renderContent()}
+          </BlurView>
+        </TouchableOpacity>
+      </Animated.View>
+    );
+  }
+
+  return (
+    <Animated.View style={{ transform: [{ scale: scaleValue }] }}>
+      <TouchableOpacity
+        style={getButtonStyle()}
         onPress={onPress}
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
         disabled={disabled || loading}
         activeOpacity={0.8}
       >
-        <LinearGradient
-          colors={gradientColors}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-          }}
-        />
         <BlurView intensity={20} tint="light" style={{ padding: 0 }}>
           {renderContent()}
         </BlurView>
-      </AnimatedTouchableOpacity>
-    );
-  }
-
-  return (
-    <AnimatedTouchableOpacity
-      style={[getButtonStyle(), animatedStyle]}
-      onPress={onPress}
-      onPressIn={handlePressIn}
-      onPressOut={handlePressOut}
-      disabled={disabled || loading}
-      activeOpacity={0.8}
-    >
-      <BlurView intensity={20} tint="light" style={{ padding: 0 }}>
-        {renderContent()}
-      </BlurView>
-    </AnimatedTouchableOpacity>
+      </TouchableOpacity>
+    </Animated.View>
   );
 };
 
