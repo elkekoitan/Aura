@@ -9,9 +9,20 @@
     "newArchEnabled": true,
     "scheme": "aura",
     "description": "Discover, try on, and style designer fashion with AI-powered virtual try-on technology. Your digital fashion aura awaits.",
-    "keywords": ["fashion", "virtual try-on", "AI styling", "digital fashion", "shopping", "style"],
+    "keywords": [
+      "fashion",
+      "virtual try-on",
+      "AI styling",
+      "digital fashion",
+      "shopping",
+      "style"
+    ],
     "privacy": "public",
-    "platforms": ["ios", "android", "web"],
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
@@ -34,7 +45,9 @@
       "config": {
         "usesNonExemptEncryption": false
       },
-      "associatedDomains": ["applinks:aurafashion.app"],
+      "associatedDomains": [
+        "applinks:aurafashion.app"
+      ],
       "appStoreUrl": "https://apps.apple.com/app/aura-fashion/id123456789"
     },
     "android": {
@@ -54,7 +67,12 @@
         "ACCESS_FINE_LOCATION",
         "ACCESS_COARSE_LOCATION",
         "VIBRATE",
-        "WAKE_LOCK"
+        "WAKE_LOCK",
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.ACCESS_MEDIA_LOCATION"
       ],
       "playStoreUrl": "https://play.google.com/store/apps/details?id=com.aurafashion.app",
       "intentFilters": [
@@ -67,7 +85,10 @@
               "host": "aurafashion.app"
             }
           ],
-          "category": ["BROWSABLE", "DEFAULT"]
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
         }
       ]
     },
@@ -93,7 +114,7 @@
     ],
     "extra": {
       "eas": {
-        "projectId": ""
+        "projectId": "61db8e66-0c1e-4c4e-ab22-97868ddd11a0"
       }
     }
   }

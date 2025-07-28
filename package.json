@@ -7,7 +7,7 @@
     "android": "expo run:android",
     "ios": "expo run:ios",
     "web": "expo start --web",
-    "build:web": "expo export --platform web --output-dir dist",
+    "build:web": "echo 'Using static HTML from public directory'",
     "build:production": "cross-env NODE_ENV=production expo export --platform web --output-dir dist --minify",
     "preview:web": "npx serve dist",
     "deploy": "npm run build:production && vercel --prod",

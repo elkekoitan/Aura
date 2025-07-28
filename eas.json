@@ -19,10 +19,8 @@
     "production": {
       "ios": {
         "autoIncrement": "buildNumber",
-        "bundleIdentifier": "com.aurafashion.app",
         "buildConfiguration": "Release",
         "resourceClass": "m-medium",
-        "image": "latest",
         "env": {
           "EXPO_PUBLIC_APP_ENV": "production",
           "EXPO_PUBLIC_ENABLE_ANALYTICS": "true",
@@ -49,17 +47,7 @@
         "appleId": "your-apple-id@example.com",
         "ascAppId": "your-app-store-connect-app-id",
         "appleTeamId": "your-apple-team-id",
-        "sku": "aura-fashion-app-ios",
-        "language": "en-US",
-        "companyName": "Aura Fashion",
-        "appName": "Aura Fashion",
-        "copyright": "2024 Aura Fashion. All rights reserved.",
-        "primaryCategory": "LIFESTYLE",
-        "secondaryCategory": "SHOPPING",
-        "contentRights": {
-          "containsThirdPartyContent": false,
-          "usesIdfa": false
-        }
+        "sku": "aura-fashion-app-ios"
       },
       "android": {
         "serviceAccountKeyPath": "./google-service-account.json",
@@ -68,8 +56,5 @@
         "changesNotSentForReview": false
       }
     }
-  },
-  "updates": {
-    "url": "https://u.expo.dev/your-project-id"
   }
 }

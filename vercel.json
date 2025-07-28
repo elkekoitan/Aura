@@ -1,7 +1,7 @@
 {
   "name": "aura-fashion-app",
-  "buildCommand": "npm run build:web",
-  "outputDirectory": "dist",
+  "buildCommand": null,
+  "outputDirectory": "public",
   "devCommand": "npm run web",
   "installCommand": "npm install --legacy-peer-deps",
   "cleanUrls": true,

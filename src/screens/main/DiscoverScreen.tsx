@@ -333,6 +333,8 @@ export default function DiscoverScreen() {
             loading={searchLoading}
             placeholder="Search products, brands, styles..."
           />
+        </View>
+
         {/* Categories */}
         {categories.length > 0 && (
           <View style={styles.section}>
