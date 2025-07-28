@@ -6,14 +6,19 @@ import {
   SafeAreaView,
   Alert,
   Image,
+  Dimensions,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { GlassCard, GlassButton } from '../../components/ui';
 import { Colors, Typography, Spacing } from '../../constants';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { signOut } from '../../store/slices/authSlice';
 
+const { width, height } = Dimensions.get('window');
+
 export default function ProfileScreen() {
+  const navigation = useNavigation();
   const dispatch = useAppDispatch();
   const { user, profile } = useAppSelector((state) => state.auth);
 
@@ -36,6 +41,10 @@ export default function ProfileScreen() {
         },
       ]
     );
+  };
+
+  const handleStripeTest = () => {
+    navigation.navigate('StripeTest' as never);
   };
 
   return (
@@ -68,6 +77,23 @@ export default function ProfileScreen() {
           </View>
         </GlassCard>
 
+        {/* Developer Options */}
+        <View style={styles.developerSection}>
+          <GlassCard style={styles.developerCard}>
+            <Text style={styles.developerTitle}>🧪 Developer Options</Text>
+            <GlassButton
+              title="Test Stripe Payments"
+              variant="primary"
+              size="medium"
+              fullWidth
+              gradient
+              gradientColors={Colors.gradients.primary}
+              onPress={handleStripeTest}
+              style={styles.stripeButton}
+            />
+          </GlassCard>
+        </View>
+
         {/* Sign Out */}
         <View style={styles.signOutSection}>
           <GlassButton
@@ -90,23 +116,24 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    paddingHorizontal: Spacing.component.screen.horizontal,
-    paddingVertical: Spacing['2xl'],
+    paddingHorizontal: Math.max(Spacing.component.screen.horizontal, width * 0.05),
+    paddingVertical: Math.max(Spacing['2xl'], height * 0.03),
     justifyContent: 'space-between',
   },
   profileCard: {
-    marginBottom: Spacing['2xl'],
+    marginBottom: Math.max(Spacing['2xl'], height * 0.03),
   },
   profileHeader: {
     alignItems: 'center',
+    paddingVertical: Math.max(Spacing.lg, height * 0.02),
   },
   avatarContainer: {
-    marginBottom: Spacing.lg,
+    marginBottom: Math.max(Spacing.lg, height * 0.02),
   },
   avatar: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
+    width: Math.min(100, width * 0.25),
+    height: Math.min(100, width * 0.25),
+    borderRadius: Math.min(50, width * 0.125),
     borderWidth: 3,
     borderColor: Colors.primary[500],
   },
@@ -115,15 +142,36 @@ const styles = StyleSheet.create({
   },
   profileName: {
     ...Typography.styles.h2,
+    fontSize: Math.min(Typography.sizes['2xl'], width * 0.06),
     color: Colors.text.primary,
     marginBottom: Spacing.xs,
+    textAlign: 'center',
   },
   profileEmail: {
     ...Typography.styles.body,
+    fontSize: Math.min(Typography.sizes.base, width * 0.04),
     color: Colors.text.secondary,
+    textAlign: 'center',
+  },
+  developerSection: {
+    marginBottom: Math.max(Spacing['2xl'], height * 0.03),
+  },
+  developerCard: {
+    paddingVertical: Math.max(Spacing.lg, height * 0.02),
+    alignItems: 'center',
+  },
+  developerTitle: {
+    ...Typography.styles.h5,
+    fontSize: Math.min(Typography.sizes.lg, width * 0.045),
+    color: Colors.text.primary,
+    marginBottom: Math.max(Spacing.md, height * 0.015),
+    textAlign: 'center',
+  },
+  stripeButton: {
+    marginTop: Spacing.md,
   },
   signOutSection: {
-    marginBottom: Spacing['4xl'],
+    marginBottom: Math.max(Spacing['4xl'], height * 0.05),
   },
   signOutButton: {
     borderColor: Colors.semantic.error,

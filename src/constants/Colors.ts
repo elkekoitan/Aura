@@ -36,10 +36,10 @@ export const Colors = {
 
   // Background Gradients
   gradients: {
-    primary: ['#319795', '#38B2AC', '#4FD1C7'],
-    holographic: ['#FF6B9D', '#A855F7', '#3B82F6', '#06B6D4'],
-    dark: ['#1D4044', '#234E52', '#285E61'],
-    light: ['#E6FFFA', '#B2F5EA', '#81E6D9'],
+    primary: ['#319795', '#38B2AC', '#4FD1C7'] as const,
+    holographic: ['#FF6B9D', '#A855F7', '#3B82F6', '#06B6D4'] as const,
+    dark: ['#1D4044', '#234E52', '#285E61'] as const,
+    light: ['#E6FFFA', '#B2F5EA', '#81E6D9'] as const,
   },
 
   // Semantic Colors

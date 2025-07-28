@@ -4,17 +4,61 @@ import { StyleSheet, View } from 'react-native';
 import { Provider } from 'react-redux';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 import { StripeProvider } from '@stripe/stripe-react-native';
 import { store } from './src/store';
 import { supabase } from './src/config/supabase';
 import { setSession } from './src/store/slices/authSlice';
+import { useAppSelector } from './src/store';
 import WelcomeScreen from './src/screens/onboarding/WelcomeScreen';
+import LoginScreen from './src/screens/auth/LoginScreen';
+import RegisterScreen from './src/screens/auth/RegisterScreen';
+import ForgotPasswordScreen from './src/screens/auth/ForgotPasswordScreen';
+import MainTabNavigator from './src/navigation/MainTabNavigator';
 import StripeTestScreen from './src/screens/test/StripeTestScreen';
+
+const Stack = createStackNavigator();
+
+function AppNavigator() {
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
+  const [showOnboarding, setShowOnboarding] = useState(true);
+
+  const handleGetStarted = () => {
+    setShowOnboarding(false);
+  };
+
+  if (showOnboarding) {
+    return <WelcomeScreen onGetStarted={handleGetStarted} />;
+  }
+
+  return (
+    <NavigationContainer>
+      <Stack.Navigator
+        screenOptions={{
+          headerShown: false,
+          cardStyle: { backgroundColor: 'transparent' },
+        }}
+      >
+        {isAuthenticated ? (
+          <>
+            <Stack.Screen name="MainTabs" component={MainTabNavigator} />
+            <Stack.Screen name="StripeTest" component={StripeTestScreen} />
+          </>
+        ) : (
+          <>
+            <Stack.Screen name="Login" component={LoginScreen} />
+            <Stack.Screen name="Register" component={RegisterScreen} />
+            <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
+          </>
+        )}
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}
 
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);
-  const [showOnboarding, setShowOnboarding] = useState(true);
-  const [showStripeTest, setShowStripeTest] = useState(false);
 
   useEffect(() => {
     // Get initial session
@@ -33,11 +77,6 @@ export default function App() {
     return () => subscription.unsubscribe();
   }, []);
 
-  const handleGetStarted = () => {
-    setShowOnboarding(false);
-    setShowStripeTest(true); // Show Stripe test instead of main app
-  };
-
   if (isLoading) {
     return (
       <View style={styles.container}>
@@ -52,15 +91,7 @@ export default function App() {
         <GestureHandlerRootView style={{ flex: 1 }}>
           <SafeAreaProvider>
             <StatusBar style="light" />
-            {showOnboarding ? (
-              <WelcomeScreen onGetStarted={handleGetStarted} />
-            ) : showStripeTest ? (
-              <StripeTestScreen />
-            ) : (
-              <View style={styles.container}>
-                {/* Main app will be implemented here */}
-              </View>
-            )}
+            <AppNavigator />
           </SafeAreaProvider>
         </GestureHandlerRootView>
       </StripeProvider>

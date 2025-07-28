@@ -6,11 +6,14 @@ import {
   SafeAreaView,
   ScrollView,
   Image,
+  Dimensions,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { GlassCard, GlassButton } from '../../components/ui';
 import { Colors, Typography, Spacing } from '../../constants';
 import { useAppSelector } from '../../store';
+
+const { width, height } = Dimensions.get('window');
 
 export default function HomeScreen() {
   const { user, profile } = useAppSelector((state) => state.auth);
@@ -116,21 +119,23 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: Spacing.component.screen.horizontal,
-    paddingVertical: Spacing['2xl'],
+    paddingHorizontal: Math.max(Spacing.component.screen.horizontal, width * 0.05),
+    paddingVertical: Math.max(Spacing['2xl'], height * 0.03),
   },
   greeting: {
     ...Typography.styles.body,
+    fontSize: Math.min(Typography.sizes.base, width * 0.04),
     color: Colors.text.secondary,
   },
   userName: {
     ...Typography.styles.h2,
+    fontSize: Math.min(Typography.sizes.xl, width * 0.055),
     color: Colors.text.primary,
   },
   avatarContainer: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
+    width: Math.min(50, width * 0.12),
+    height: Math.min(50, width * 0.12),
+    borderRadius: Math.min(25, width * 0.06),
     overflow: 'hidden',
     borderWidth: 2,
     borderColor: Colors.primary[500],
@@ -140,46 +145,53 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   quickActionsCard: {
-    marginHorizontal: Spacing.component.screen.horizontal,
-    marginBottom: Spacing['2xl'],
+    marginHorizontal: Math.max(Spacing.component.screen.horizontal, width * 0.05),
+    marginBottom: Math.max(Spacing['2xl'], height * 0.03),
   },
   quickActions: {
-    flexDirection: 'row',
+    flexDirection: width > 600 ? 'row' : 'column',
     gap: Spacing.md,
     marginTop: Spacing.lg,
   },
   quickActionButton: {
-    flex: 1,
+    flex: width > 600 ? 1 : undefined,
+    minHeight: height * 0.06,
   },
   sectionTitle: {
     ...Typography.styles.h3,
+    fontSize: Math.min(Typography.sizes.lg, width * 0.05),
     color: Colors.text.primary,
   },
   aiCard: {
-    marginHorizontal: Spacing.component.screen.horizontal,
-    marginBottom: Spacing['2xl'],
+    marginHorizontal: Math.max(Spacing.component.screen.horizontal, width * 0.05),
+    marginBottom: Math.max(Spacing['2xl'], height * 0.03),
   },
   aiHeader: {
-    marginBottom: Spacing.lg,
+    marginBottom: Math.max(Spacing.lg, height * 0.02),
   },
   aiTitle: {
     ...Typography.styles.h4,
+    fontSize: Math.min(Typography.sizes.lg, width * 0.045),
     color: Colors.text.primary,
     marginBottom: Spacing.sm,
   },
   aiSubtitle: {
     ...Typography.styles.bodySmall,
+    fontSize: Math.min(Typography.sizes.sm, width * 0.035),
     color: Colors.text.secondary,
+    lineHeight: Math.min(Typography.lineHeights.relaxed * Typography.sizes.sm, width * 0.045),
   },
   aiRecommendations: {
-    gap: Spacing.md,
-    marginBottom: Spacing.lg,
+    gap: Math.max(Spacing.md, height * 0.015),
+    marginBottom: Math.max(Spacing.lg, height * 0.02),
   },
   aiRecommendation: {
     ...Typography.styles.body,
+    fontSize: Math.min(Typography.sizes.base, width * 0.04),
     color: Colors.text.primary,
+    lineHeight: Math.min(Typography.lineHeights.relaxed * Typography.sizes.base, width * 0.05),
   },
   aiButton: {
-    marginTop: Spacing.md,
+    marginTop: Math.max(Spacing.md, height * 0.015),
   },
 });

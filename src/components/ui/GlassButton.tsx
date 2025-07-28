@@ -24,7 +24,7 @@ interface GlassButtonProps {
   icon?: React.ReactNode;
   iconPosition?: 'left' | 'right';
   gradient?: boolean;
-  gradientColors?: string[];
+  gradientColors?: readonly string[];
   fullWidth?: boolean;
 }
 
@@ -175,7 +175,7 @@ export const GlassButton: React.FC<GlassButtonProps> = ({
           activeOpacity={0.8}
         >
           <LinearGradient
-            colors={gradientColors}
+            colors={gradientColors as any}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             style={{

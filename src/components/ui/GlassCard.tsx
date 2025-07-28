@@ -10,7 +10,7 @@ interface GlassCardProps {
   intensity?: number;
   tint?: 'light' | 'dark' | 'default';
   gradient?: boolean;
-  gradientColors?: string[];
+  gradientColors?: readonly string[];
   borderRadius?: number;
   padding?: number;
   margin?: number;
@@ -56,7 +56,7 @@ export const GlassCard: React.FC<GlassCardProps> = ({
     return (
       <View style={cardStyle}>
         <LinearGradient
-          colors={gradientColors}
+          colors={gradientColors as any}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={StyleSheet.absoluteFillObject}
