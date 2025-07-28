@@ -1,10 +1,4 @@
-/**
- * Enhanced DiscoverScreen
- * Complete product discovery interface with search, filtering, and real-time data
- * Integrates with Redux state management and Supabase backend
- */
-
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -12,289 +6,87 @@ import {
   SafeAreaView,
   ScrollView,
   TouchableOpacity,
+  Image,
   Dimensions,
-  RefreshControl,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import { GlassCard, GlassButton } from '../../components/ui';
-import { SearchBar } from '../../components/ui/SearchBar';
-import { ProductGrid } from '../../components/product/ProductGrid';
 import { Colors, Typography, Spacing } from '../../constants';
-import { useAppDispatch, useAppSelector } from '../../store';
-import {
-  fetchProducts,
-  fetchFeaturedProducts,
-  searchProducts,
-  setSearchQuery,
-  setFilters,
-  clearFilters,
-  setSortBy,
-  setSortOrder,
-} from '../../store/slices/productSlice';
-import { fetchFeaturedBrands } from '../../store/slices/brandSlice';
-import { fetchCategories } from '../../store/slices/categorySlice';
-import { Product, ProductFilters, ProductSortOption } from '../../store/types/product';
+import { useAppDispatch } from '../../store';
+import { addToCart } from '../../store/slices/cartSlice';
+import { mockProducts, mockCategories } from '../../data/mockProducts';
+import { Product } from '../../types/product';
 
-const { width, height } = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
 export default function DiscoverScreen() {
-  // Navigation
   const navigation = useNavigation();
-
-  // Redux state
   const dispatch = useAppDispatch();
-  const {
-    products,
-    featuredProducts,
-    searchQuery,
-    filters,
-    sortBy,
-    sortOrder,
-    loading,
-    searchLoading,
-    error,
-    hasMore,
-    currentPage
-  } = useAppSelector((state) => state.products);
+  const [activeTab, setActiveTab] = useState<'all' | 'featured'>('all');
 
-  const { featuredBrands, brands } = useAppSelector((state) => state.brands);
-  const { categories } = useAppSelector((state) => state.categories);
-
-  // Local state
-  const [activeTab, setActiveTab] = useState<'all' | 'featured' | 'brands'>('all');
-  const [showFilters, setShowFilters] = useState(false);
-  const [refreshing, setRefreshing] = useState(false);
-  const [searchSuggestions, setSearchSuggestions] = useState<string[]>([]);
-
-  /**
-   * Initialize data on screen focus
-   */
-  useFocusEffect(
-    useCallback(() => {
-      loadInitialData();
-    }, [])
-  );
-
-  /**
-   * Load initial data for the screen
-   */
-  const loadInitialData = async () => {
-    try {
-      await Promise.all([
-        dispatch(fetchProducts({ page: 1, limit: 20 })),
-        dispatch(fetchFeaturedProducts(10)),
-        dispatch(fetchFeaturedBrands(6)),
-        dispatch(fetchCategories()),
-      ]);
-    } catch (error) {
-      console.error('Failed to load initial data:', error);
-    }
+  const getCurrentProducts = () => {
+    return activeTab === 'featured' 
+      ? mockProducts.filter(p => p.is_featured)
+      : mockProducts;
   };
 
-  /**
-   * Handle refresh
-   */
-  const handleRefresh = async () => {
-    setRefreshing(true);
-    try {
-      await loadInitialData();
-    } finally {
-      setRefreshing(false);
-    }
-  };
-
-  /**
-   * Handle search query change
-   */
-  const handleSearchChange = (query: string) => {
-    dispatch(setSearchQuery(query));
-
-    // Generate search suggestions (mock implementation)
-    if (query.length > 0) {
-      const suggestions = [
-        `${query} dress`,
-        `${query} top`,
-        `${query} jacket`,
-        `${query} shoes`,
-      ].filter(s => s !== query);
-      setSearchSuggestions(suggestions.slice(0, 3));
-    } else {
-      setSearchSuggestions([]);
-    }
-  };
-
-  /**
-   * Handle search execution
-   */
-  const handleSearch = (query: string) => {
-    if (query.trim()) {
-      dispatch(searchProducts(query));
-      setActiveTab('all');
-    } else {
-      dispatch(fetchProducts({ page: 1, limit: 20 }));
-    }
-  };
-
-  /**
-   * Handle product press
-   */
   const handleProductPress = (product: Product) => {
-    navigation.navigate('ProductDetail', { productId: product.id, product });
+    navigation.navigate('ProductDetail' as never, { product } as never);
   };
 
-  /**
-   * Handle add to cart
-   */
   const handleAddToCart = (product: Product) => {
-    console.log('Add to cart:', product.id);
-    // TODO: Implement cart functionality
-  };
-
-  /**
-   * Handle toggle favorite
-   */
-  const handleToggleFavorite = (product: Product) => {
-    console.log('Toggle favorite:', product.id);
-    // TODO: Implement favorites functionality
-  };
-
-  /**
-   * Handle category filter
-   */
-  const handleCategoryFilter = (categoryId: string) => {
-    const newFilters: ProductFilters = {
-      ...filters,
-      categories: [categoryId]
-    };
-    dispatch(setFilters(newFilters));
-    dispatch(fetchProducts({ filters: newFilters, page: 1, limit: 20 }));
-    setActiveTab('all');
-  };
-
-  /**
-   * Handle brand filter
-   */
-  const handleBrandFilter = (brandId: string) => {
-    const newFilters: ProductFilters = {
-      ...filters,
-      brands: [brandId]
-    };
-    dispatch(setFilters(newFilters));
-    dispatch(fetchProducts({ filters: newFilters, page: 1, limit: 20 }));
-    setActiveTab('all');
-  };
-
-  /**
-   * Handle brand press - navigate to brand detail
-   */
-  const handleBrandPress = (brand: any) => {
-    navigation.navigate('BrandDetail', { brandId: brand.id, brand });
-  };
-
-  /**
-   * Handle sort change
-   */
-  const handleSortChange = (sortOption: ProductSortOption) => {
-    dispatch(setSortBy(sortOption));
-    dispatch(fetchProducts({
-      query: searchQuery,
-      filters,
-      sortBy: sortOption,
-      sortOrder,
-      page: 1,
-      limit: 20
+    dispatch(addToCart({
+      id: product.id,
+      name: product.name,
+      brand: product.brand,
+      price: product.price,
+      image: product.image,
+      category: product.category,
+      selectedSize: product.sizes?.[0],
+      selectedColor: product.colors?.[0],
     }));
   };
 
-  /**
-   * Handle clear filters
-   */
-  const handleClearFilters = () => {
-    dispatch(clearFilters());
-    dispatch(setSearchQuery(''));
-    dispatch(fetchProducts({ page: 1, limit: 20 }));
-    setSearchSuggestions([]);
-  };
-
-  /**
-   * Handle load more products
-   */
-  const handleLoadMore = () => {
-    if (hasMore && !loading) {
-      dispatch(fetchProducts({
-        query: searchQuery,
-        filters,
-        sortBy,
-        sortOrder,
-        page: currentPage + 1,
-        limit: 20
-      }));
-    }
-  };
-
-  /**
-   * Get current products to display based on active tab
-   */
-  const getCurrentProducts = () => {
-    switch (activeTab) {
-      case 'featured':
-        return featuredProducts;
-      case 'brands':
-        return products.filter(p => p.brand && featuredBrands.some(b => b.id === p.brand_id));
-      default:
-        return products;
-    }
-  };
-
-  /**
-   * Render category chips
-   */
-  const renderCategoryChips = () => (
-    <ScrollView
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      contentContainerStyle={styles.categoriesContainer}
+  const renderProduct = (product: Product) => (
+    <TouchableOpacity
+      key={product.id}
+      style={styles.productCard}
+      onPress={() => handleProductPress(product)}
+      activeOpacity={0.8}
     >
-      {categories.map((category) => (
-        <TouchableOpacity
-          key={category.id}
-          style={styles.categoryChip}
-          onPress={() => handleCategoryFilter(category.id)}
-          activeOpacity={0.7}
-        >
-          <GlassCard style={styles.categoryCard}>
-            <Text style={styles.categoryName}>{category.name}</Text>
-          </GlassCard>
-        </TouchableOpacity>
-      ))}
-    </ScrollView>
+      <GlassCard style={styles.productContainer}>
+        <Image source={{ uri: product.image }} style={styles.productImage} />
+        <View style={styles.productInfo}>
+          <Text style={styles.productName} numberOfLines={2}>
+            {product.name}
+          </Text>
+          <Text style={styles.productBrand}>{product.brand}</Text>
+          <View style={styles.productFooter}>
+            <Text style={styles.productPrice}>${product.price}</Text>
+            <TouchableOpacity
+              style={styles.addButton}
+              onPress={() => handleAddToCart(product)}
+            >
+              <Ionicons name="add" size={20} color={Colors.text.white} />
+            </TouchableOpacity>
+          </View>
+        </View>
+      </GlassCard>
+    </TouchableOpacity>
   );
 
-  /**
-   * Render brand chips
-   */
-  const renderBrandChips = () => (
-    <ScrollView
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      contentContainerStyle={styles.brandsContainer}
+  const renderCategory = (category: any) => (
+    <TouchableOpacity
+      key={category.id}
+      style={styles.categoryChip}
+      activeOpacity={0.7}
     >
-      {featuredBrands.map((brand) => (
-        <TouchableOpacity
-          key={brand.id}
-          style={styles.brandChip}
-          onPress={() => handleBrandFilter(brand.id)}
-          onLongPress={() => handleBrandPress(brand)}
-          activeOpacity={0.7}
-        >
-          <GlassCard style={styles.brandCard}>
-            <Text style={styles.brandName}>{brand.name}</Text>
-          </GlassCard>
-        </TouchableOpacity>
-      ))}
-    </ScrollView>
+      <GlassCard style={styles.categoryCard}>
+        <Text style={styles.categoryName}>{category.name}</Text>
+      </GlassCard>
+    </TouchableOpacity>
   );
 
   return (
@@ -306,58 +98,24 @@ export default function DiscoverScreen() {
         style={StyleSheet.absoluteFillObject}
       />
 
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={handleRefresh}
-            tintColor={Colors.primary[500]}
-            colors={[Colors.primary[500]]}
-          />
-        }
-      >
+      <ScrollView showsVerticalScrollIndicator={false}>
         {/* Header */}
         <View style={styles.header}>
           <Text style={styles.title}>Discover</Text>
           <Text style={styles.subtitle}>Find your next favorite piece</Text>
         </View>
 
-        {/* Search Bar */}
-        <View style={styles.searchContainer}>
-          <SearchBar
-            query={searchQuery}
-            onQueryChange={handleSearchChange}
-            onSearch={handleSearch}
-            suggestions={searchSuggestions}
-            loading={searchLoading}
-            placeholder="Search products, brands, styles..."
-          />
-        </View>
-
         {/* Categories */}
-        {categories.length > 0 && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Categories</Text>
-            {renderCategoryChips()}
-          </View>
-        )}
-
-        {/* Featured Brands */}
-        {featuredBrands.length > 0 && (
-          <View style={styles.section}>
-            <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>Featured Brands</Text>
-              <TouchableOpacity
-                onPress={() => navigation.navigate('BrandList')}
-                activeOpacity={0.7}
-              >
-                <Text style={styles.viewAllText}>View All</Text>
-              </TouchableOpacity>
-            </View>
-            {renderBrandChips()}
-          </View>
-        )}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Categories</Text>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.categoriesContainer}
+          >
+            {mockCategories.map(renderCategory)}
+          </ScrollView>
+        </View>
 
         {/* Tab Selector */}
         <View style={styles.section}>
@@ -365,7 +123,6 @@ export default function DiscoverScreen() {
             {[
               { key: 'all', label: 'All Products' },
               { key: 'featured', label: 'Featured' },
-              { key: 'brands', label: 'Top Brands' },
             ].map((tab) => (
               <TouchableOpacity
                 key={tab.key}
@@ -374,7 +131,6 @@ export default function DiscoverScreen() {
                   activeTab === tab.key && styles.activeTab
                 ]}
                 onPress={() => setActiveTab(tab.key as any)}
-                activeOpacity={0.7}
               >
                 <Text style={[
                   styles.tabText,
@@ -387,79 +143,11 @@ export default function DiscoverScreen() {
           </View>
         </View>
 
-        {/* Sort and Filter Controls */}
-        <View style={styles.controlsContainer}>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.controlsContent}
-          >
-            {/* Sort Options */}
-            <TouchableOpacity
-              style={styles.controlButton}
-              onPress={() => handleSortChange('price')}
-              activeOpacity={0.7}
-            >
-              <GlassCard style={[styles.controlCard, sortBy === 'price' && styles.activeControlCard]}>
-                <Ionicons name="pricetag-outline" size={16} color={Colors.text.primary} />
-                <Text style={styles.controlText}>Price</Text>
-              </GlassCard>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.controlButton}
-              onPress={() => handleSortChange('created_at')}
-              activeOpacity={0.7}
-            >
-              <GlassCard style={[styles.controlCard, sortBy === 'created_at' && styles.activeControlCard]}>
-                <Ionicons name="time-outline" size={16} color={Colors.text.primary} />
-                <Text style={styles.controlText}>Newest</Text>
-              </GlassCard>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.controlButton}
-              onPress={() => handleSortChange('name')}
-              activeOpacity={0.7}
-            >
-              <GlassCard style={[styles.controlCard, sortBy === 'name' && styles.activeControlCard]}>
-                <Ionicons name="text-outline" size={16} color={Colors.text.primary} />
-                <Text style={styles.controlText}>Name</Text>
-              </GlassCard>
-            </TouchableOpacity>
-
-            {/* Clear Filters */}
-            {(Object.keys(filters).length > 0 || searchQuery) && (
-              <TouchableOpacity
-                style={styles.controlButton}
-                onPress={handleClearFilters}
-                activeOpacity={0.7}
-              >
-                <GlassCard style={styles.clearCard}>
-                  <Ionicons name="close-circle-outline" size={16} color={Colors.semantic.error} />
-                  <Text style={styles.clearText}>Clear</Text>
-                </GlassCard>
-              </TouchableOpacity>
-            )}
-          </ScrollView>
+        {/* Products Grid */}
+        <View style={styles.productsGrid}>
+          {getCurrentProducts().map(renderProduct)}
         </View>
       </ScrollView>
-
-      {/* Products Grid */}
-      <ProductGrid
-        products={getCurrentProducts()}
-        onProductPress={handleProductPress}
-        onAddToCart={handleAddToCart}
-        onToggleFavorite={handleToggleFavorite}
-        loading={loading}
-        refreshing={refreshing}
-        onRefresh={handleRefresh}
-        showLoadMore={hasMore}
-        onLoadMore={handleLoadMore}
-        loadingMore={loading && currentPage > 1}
-        emptyTitle={searchQuery ? "No products found" : "No products available"}
-        emptyMessage={searchQuery ? `No results for "${searchQuery}". Try different keywords.` : "Check back later for new products."}
-      />
     </SafeAreaView>
   );
 }
@@ -469,7 +157,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    paddingHorizontal: Spacing.component.screen.horizontal,
+    paddingHorizontal: Spacing.lg,
     paddingTop: Spacing.lg,
     paddingBottom: Spacing.md,
     alignItems: 'center',
@@ -483,137 +171,111 @@ const styles = StyleSheet.create({
   subtitle: {
     ...Typography.styles.body,
     color: Colors.text.white,
+    opacity: 0.8,
     textAlign: 'center',
-    opacity: 0.9,
-  },
-  searchContainer: {
-    paddingHorizontal: Spacing.component.screen.horizontal,
-    marginBottom: Spacing.lg,
   },
   section: {
     marginBottom: Spacing.lg,
   },
-  sectionHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: Spacing.component.screen.horizontal,
-    marginBottom: Spacing.md,
-  },
   sectionTitle: {
-    ...Typography.styles.h2,
+    ...Typography.styles.h3,
     color: Colors.text.white,
+    marginBottom: Spacing.md,
+    paddingHorizontal: Spacing.lg,
   },
-  viewAllText: {
-    ...Typography.styles.button,
-    color: Colors.primary[400],
-    fontSize: 14,
-  },
-
-  // Categories
   categoriesContainer: {
-    paddingHorizontal: Spacing.component.screen.horizontal,
-    gap: Spacing.md,
+    paddingHorizontal: Spacing.lg,
+    gap: Spacing.sm,
   },
   categoryChip: {
-    marginRight: Spacing.md,
+    marginRight: Spacing.sm,
   },
   categoryCard: {
     paddingHorizontal: Spacing.md,
     paddingVertical: Spacing.sm,
-    minWidth: 80,
-    alignItems: 'center',
   },
   categoryName: {
-    ...Typography.styles.button,
-    color: Colors.text.primary,
-    fontSize: 14,
+    ...Typography.styles.caption,
+    color: Colors.text.white,
+    fontWeight: '600',
   },
-
-  // Brands
-  brandsContainer: {
-    paddingHorizontal: Spacing.component.screen.horizontal,
-    gap: Spacing.md,
-  },
-  brandChip: {
-    marginRight: Spacing.md,
-  },
-  brandCard: {
-    paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.sm,
-    minWidth: 100,
-    alignItems: 'center',
-  },
-  brandName: {
-    ...Typography.styles.button,
-    color: Colors.text.primary,
-    fontSize: 14,
-  },
-
-  // Tabs
   tabContainer: {
     flexDirection: 'row',
-    paddingHorizontal: Spacing.component.screen.horizontal,
-    marginBottom: Spacing.md,
+    marginHorizontal: Spacing.lg,
+    backgroundColor: 'rgba(255,255,255,0.1)',
+    borderRadius: 25,
+    padding: Spacing.xs,
   },
   tab: {
     flex: 1,
-    paddingVertical: Spacing.md,
-    paddingHorizontal: Spacing.sm,
+    paddingVertical: Spacing.sm,
     alignItems: 'center',
-    borderRadius: Spacing.component.radius.md,
-    marginHorizontal: Spacing.xs,
+    borderRadius: 20,
   },
   activeTab: {
-    backgroundColor: Colors.glass.turquoise,
+    backgroundColor: Colors.primary[500],
   },
   tabText: {
     ...Typography.styles.button,
-    color: Colors.text.secondary,
-    fontSize: 14,
+    color: Colors.text.white,
+    opacity: 0.7,
   },
   activeTabText: {
-    color: Colors.text.primary,
-    fontWeight: Typography.weights.semiBold,
+    opacity: 1,
+    fontWeight: '600',
   },
-
-  // Controls
-  controlsContainer: {
-    marginBottom: Spacing.lg,
-  },
-  controlsContent: {
-    paddingHorizontal: Spacing.component.screen.horizontal,
-    gap: Spacing.md,
-  },
-  controlButton: {
-    marginRight: Spacing.md,
-  },
-  controlCard: {
+  productsGrid: {
     flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.sm,
-    gap: Spacing.sm,
+    flexWrap: 'wrap',
+    paddingHorizontal: Spacing.lg,
+    justifyContent: 'space-between',
   },
-  activeControlCard: {
-    backgroundColor: Colors.glass.turquoise,
+  productCard: {
+    width: (width - Spacing.lg * 2 - Spacing.md) / 2,
+    marginBottom: Spacing.md,
   },
-  controlText: {
-    ...Typography.styles.button,
-    color: Colors.text.primary,
+  productContainer: {
+    padding: Spacing.sm,
+  },
+  productImage: {
+    width: '100%',
+    height: 150,
+    borderRadius: 8,
+    backgroundColor: Colors.neutral[200],
+    marginBottom: Spacing.sm,
+  },
+  productInfo: {
+    flex: 1,
+  },
+  productName: {
+    ...Typography.styles.h4,
+    color: Colors.text.white,
+    marginBottom: Spacing.xs,
     fontSize: 14,
   },
-  clearCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.sm,
-    gap: Spacing.sm,
-    backgroundColor: Colors.semantic.errorBackground,
+  productBrand: {
+    ...Typography.styles.caption,
+    color: Colors.text.white,
+    opacity: 0.7,
+    marginBottom: Spacing.sm,
   },
-  clearText: {
-    ...Typography.styles.button,
-    color: Colors.semantic.error,
-    fontSize: 14,
+  productFooter: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  productPrice: {
+    ...Typography.styles.h4,
+    color: Colors.accent[400],
+    fontWeight: '700',
+    fontSize: 16,
+  },
+  addButton: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: Colors.primary[500],
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

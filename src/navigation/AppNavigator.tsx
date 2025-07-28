@@ -17,7 +17,8 @@ import PrivacyScreen from '../screens/legal/PrivacyScreen';
 import { BrandListScreen, BrandDetailScreen } from '../screens/brand';
 import { AdminDashboard, ProductManagement } from '../screens/admin';
 import ProductDetailScreen from '../screens/product/ProductDetailScreen';
-import CheckoutScreen from '../screens/checkout/CheckoutScreen';
+import CartScreen from '../screens/main/CartScreen';
+import CheckoutScreen from '../screens/main/CheckoutScreen';
 import OrderConfirmationScreen from '../screens/checkout/OrderConfirmationScreen';
 import OrderHistoryScreen from '../screens/order/OrderHistoryScreen';
 import ProfileEditScreen from '../screens/profile/ProfileEditScreen';
@@ -151,6 +152,13 @@ export default function AppNavigator() {
             <Stack.Screen
               name="ProductDetail"
               component={ProductDetailScreen}
+              options={{
+                gestureEnabled: true,
+              }}
+            />
+            <Stack.Screen
+              name="Cart"
+              component={CartScreen}
               options={{
                 gestureEnabled: true,
               }}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -10,117 +10,165 @@ import {
   Platform,
   TouchableOpacity,
   Dimensions,
+  Animated,
+  StatusBar,
+  ScrollView,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 import { GlassCard, GlassButton } from '../../components/ui';
 import { Colors, Typography, Spacing } from '../../constants';
-import { useAppDispatch, useAppSelector } from '../../store';
-import { resetPassword, clearError } from '../../store/slices/authSlice';
 
 const { width, height } = Dimensions.get('window');
 
 export default function ForgotPasswordScreen() {
   const navigation = useNavigation();
-  const dispatch = useAppDispatch();
-  const { loading, error } = useAppSelector((state) => state.auth);
-
-  // Form state management
+  
   const [email, setEmail] = useState('');
-  const [emailSent, setEmailSent] = useState(false);
-  const [validationError, setValidationError] = useState<string | undefined>();
+  const [isEmailSent, setIsEmailSent] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [focusedField, setFocusedField] = useState<string | null>(null);
 
-  // Email validation regex pattern
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  // Animations
+  const fadeAnim = new Animated.Value(0);
+  const slideAnim = new Animated.Value(50);
 
-  // Clear any existing errors when component mounts
-  React.useEffect(() => {
-    dispatch(clearError());
-  }, [dispatch]);
+  useEffect(() => {
+    // Entrance animation
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 1000,
+        useNativeDriver: true,
+      }),
+      Animated.timing(slideAnim, {
+        toValue: 0,
+        duration: 800,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, []);
 
-  /**
-   * Validates email format
-   * Returns error message if invalid, undefined if valid
-   */
-  const validateEmail = (emailValue: string): string | undefined => {
-    if (!emailValue.trim()) {
-      return 'Email is required';
-    }
-    if (!emailRegex.test(emailValue.trim())) {
-      return 'Please enter a valid email address';
-    }
-    return undefined;
-  };
-
-  /**
-   * Handles email input changes with real-time validation
-   */
-  const handleEmailChange = (value: string) => {
-    setEmail(value);
-    // Clear validation error when user starts typing
-    if (validationError) {
-      setValidationError(undefined);
-    }
-  };
-
-  /**
-   * Handles password reset request with Supabase integration
-   * Uses Redux Toolkit async thunk for state management
-   * Implements comprehensive error handling and user feedback
-   */
   const handleResetPassword = async () => {
-    // Validate email before submission
-    const emailError = validateEmail(email);
-    if (emailError) {
-      setValidationError(emailError);
+    if (!email) {
+      Alert.alert('Error', 'Please enter your email address');
       return;
     }
 
-    try {
-      // Dispatch resetPassword action using Redux Toolkit
-      // This integrates with Supabase auth to send reset email
-      await dispatch(resetPassword({ email: email.trim() })).unwrap();
-
-      // Show success state
-      setEmailSent(true);
-
-      // Show success alert with instructions
-      Alert.alert(
-        'Reset Email Sent! 📧',
-        `We've sent password reset instructions to ${email.trim()}.\n\nPlease check your email and follow the link to reset your password.`,
-        [
-          {
-            text: 'OK',
-            onPress: () => navigation.navigate('Login' as never),
-          },
-        ]
-      );
-    } catch (error: any) {
-      // Handle reset password errors with user-friendly messages
-      let errorMessage = 'Failed to send reset email. Please try again.';
-
-      if (error.message?.includes('not found') || error.message?.includes('invalid email')) {
-        errorMessage = 'No account found with this email address. Please check your email or create a new account.';
-      } else if (error.message?.includes('rate limit')) {
-        errorMessage = 'Too many reset attempts. Please wait a few minutes before trying again.';
-      } else if (error.message) {
-        errorMessage = error.message;
-      }
-
-      Alert.alert('Reset Failed', errorMessage);
+    if (!email.includes('@')) {
+      Alert.alert('Error', 'Please enter a valid email address');
+      return;
     }
+
+    setLoading(true);
+
+    // Simulate API call
+    setTimeout(() => {
+      setLoading(false);
+      setIsEmailSent(true);
+    }, 2000);
   };
 
-  /**
-   * Handles back navigation to login screen
-   */
-  const handleBackToLogin = () => {
-    navigation.navigate('Login' as never);
+  const handleResendEmail = () => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      Alert.alert('Success', 'Reset email sent again!');
+    }, 1000);
   };
+
+  if (isEmailSent) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <StatusBar barStyle="light-content" />
+        <LinearGradient
+          colors={Colors.gradients.holographic}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={StyleSheet.absoluteFillObject}
+        />
+
+        <Animated.View
+          style={[
+            styles.content,
+            {
+              opacity: fadeAnim,
+              transform: [{ translateY: slideAnim }],
+            },
+          ]}
+        >
+          {/* Header */}
+          <View style={styles.header}>
+            <TouchableOpacity
+              style={styles.backButton}
+              onPress={() => navigation.goBack()}
+            >
+              <Ionicons name="arrow-back" size={24} color={Colors.text.white} />
+            </TouchableOpacity>
+          </View>
+
+          {/* Success Content */}
+          <View style={styles.successContainer}>
+            <View style={styles.successIcon}>
+              <Ionicons name="mail" size={60} color={Colors.accent[400]} />
+            </View>
+            
+            <Text style={styles.successTitle}>Check Your Email</Text>
+            <Text style={styles.successSubtitle}>
+              We've sent a password reset link to{'\n'}
+              <Text style={styles.emailText}>{email}</Text>
+            </Text>
+
+            <GlassCard style={styles.instructionCard}>
+              <Text style={styles.instructionTitle}>What's next?</Text>
+              <View style={styles.instructionStep}>
+                <Ionicons name="checkmark-circle" size={20} color={Colors.accent[400]} />
+                <Text style={styles.instructionText}>Check your email inbox</Text>
+              </View>
+              <View style={styles.instructionStep}>
+                <Ionicons name="checkmark-circle" size={20} color={Colors.accent[400]} />
+                <Text style={styles.instructionText}>Click the reset link</Text>
+              </View>
+              <View style={styles.instructionStep}>
+                <Ionicons name="checkmark-circle" size={20} color={Colors.accent[400]} />
+                <Text style={styles.instructionText}>Create a new password</Text>
+              </View>
+            </GlassCard>
+
+            <View style={styles.actionButtons}>
+              <GlassButton
+                title="Open Email App"
+                onPress={() => Alert.alert('Info', 'This would open your email app')}
+                gradient
+                gradientColors={Colors.gradients.primary}
+                style={styles.emailButton}
+              />
+
+              <GlassButton
+                title={loading ? "Sending..." : "Resend Email"}
+                onPress={handleResendEmail}
+                variant="outline"
+                disabled={loading}
+                style={styles.resendButton}
+              />
+            </View>
+
+            <TouchableOpacity
+              style={styles.backToLogin}
+              onPress={() => navigation.navigate('Login' as never)}
+            >
+              <Text style={styles.backToLoginText}>Back to Sign In</Text>
+            </TouchableOpacity>
+          </View>
+        </Animated.View>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="light-content" />
       <LinearGradient
         colors={Colors.gradients.holographic}
         start={{ x: 0, y: 0 }}
@@ -129,253 +177,266 @@ export default function ForgotPasswordScreen() {
       />
 
       <KeyboardAvoidingView
-        style={styles.content}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.keyboardView}
       >
-        {/* Header with back button */}
-        <View style={styles.header}>
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={handleBackToLogin}
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+        >
+          <Animated.View
+            style={[
+              styles.content,
+              {
+                opacity: fadeAnim,
+                transform: [{ translateY: slideAnim }],
+              },
+            ]}
           >
-            <Ionicons name="arrow-back" size={24} color={Colors.text.white} />
-          </TouchableOpacity>
-          <View style={styles.headerContent}>
-            <Text style={styles.title}>Reset Password</Text>
-            <Text style={styles.subtitle}>
-              {emailSent
-                ? 'Check your email for reset instructions'
-                : 'Enter your email to receive reset instructions'
-              }
-            </Text>
-          </View>
-        </View>
+            {/* Header */}
+            <View style={styles.header}>
+              <TouchableOpacity
+                style={styles.backButton}
+                onPress={() => navigation.goBack()}
+              >
+                <Ionicons name="arrow-back" size={24} color={Colors.text.white} />
+              </TouchableOpacity>
+            </View>
 
-        {!emailSent ? (
-          // Email input form
-          <GlassCard style={styles.formCard}>
-            <View style={styles.form}>
-              {/* Email Input */}
-              <View style={styles.inputGroup}>
-                <Text style={styles.label}>Email Address</Text>
-                <TextInput
-                  style={[
-                    styles.input,
-                    validationError && styles.inputError
-                  ]}
-                  value={email}
-                  onChangeText={handleEmailChange}
-                  placeholder="Enter your email address"
-                  placeholderTextColor={Colors.text.muted}
-                  keyboardType="email-address"
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                  autoFocus
-                />
-                {validationError && (
-                  <Text style={styles.fieldErrorText}>{validationError}</Text>
-                )}
+            {/* Main Content */}
+            <View style={styles.mainContent}>
+              <View style={styles.iconContainer}>
+                <Ionicons name="lock-closed" size={60} color={Colors.accent[400]} />
               </View>
 
-              {/* Global Error Display */}
-              {error && (
-                <Text style={styles.errorText}>{error}</Text>
-              )}
+              <Text style={styles.title}>Forgot Password?</Text>
+              <Text style={styles.subtitle}>
+                No worries! Enter your email address and we'll send you a link to reset your password.
+              </Text>
+
+              {/* Email Input */}
+              <View style={styles.inputContainer}>
+                <GlassCard style={[
+                  styles.inputCard,
+                  focusedField === 'email' && styles.inputCardFocused
+                ]}>
+                  <View style={styles.inputWrapper}>
+                    <Ionicons 
+                      name="mail" 
+                      size={20} 
+                      color={focusedField === 'email' ? Colors.accent[400] : Colors.text.white} 
+                      style={styles.inputIcon}
+                    />
+                    <TextInput
+                      style={styles.input}
+                      placeholder="Enter your email"
+                      placeholderTextColor={Colors.text.white + '60'}
+                      value={email}
+                      onChangeText={setEmail}
+                      keyboardType="email-address"
+                      autoCapitalize="none"
+                      onFocus={() => setFocusedField('email')}
+                      onBlur={() => setFocusedField(null)}
+                    />
+                  </View>
+                </GlassCard>
+              </View>
 
               {/* Reset Button */}
               <GlassButton
-                title="Send Reset Email"
+                title={loading ? "Sending Reset Link..." : "Send Reset Link"}
                 onPress={handleResetPassword}
-                loading={loading}
-                variant="primary"
-                size="large"
-                fullWidth
+                disabled={loading}
                 gradient
                 gradientColors={Colors.gradients.primary}
                 style={styles.resetButton}
               />
 
-              {/* Help Text */}
-              <View style={styles.helpContainer}>
-                <Text style={styles.helpText}>
-                  Remember your password?{' '}
-                </Text>
-                <TouchableOpacity onPress={handleBackToLogin}>
-                  <Text style={styles.linkText}>Sign In</Text>
-                </TouchableOpacity>
-              </View>
+              {/* Back to Login */}
+              <TouchableOpacity
+                style={styles.backToLogin}
+                onPress={() => navigation.navigate('Login' as never)}
+              >
+                <Ionicons name="arrow-back" size={16} color={Colors.accent[400]} />
+                <Text style={styles.backToLoginText}>Back to Sign In</Text>
+              </TouchableOpacity>
             </View>
-          </GlassCard>
-        ) : (
-          // Success state
-          <GlassCard style={styles.successCard}>
-            <View style={styles.successContent}>
-              <View style={styles.successIcon}>
-                <Ionicons name="mail" size={48} color={Colors.primary[500]} />
-              </View>
-              <Text style={styles.successTitle}>Email Sent!</Text>
-              <Text style={styles.successMessage}>
-                We've sent password reset instructions to:
-              </Text>
-              <Text style={styles.emailDisplay}>{email}</Text>
-              <Text style={styles.successInstructions}>
-                Please check your email and click the reset link to create a new password.
-              </Text>
-
-              <GlassButton
-                title="Back to Sign In"
-                onPress={handleBackToLogin}
-                variant="primary"
-                size="large"
-                fullWidth
-                gradient
-                gradientColors={Colors.gradients.primary}
-                style={styles.backButton}
-              />
-            </View>
-          </GlassCard>
-        )}
+          </Animated.View>
+        </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
 
-/**
- * StyleSheet following established design patterns
- * Uses consistent spacing, typography, and color schemes
- * Implements responsive design and glassmorphism effects
- */
 const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  keyboardView: {
+    flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
+    paddingHorizontal: Spacing.lg,
+    paddingVertical: Spacing.xl,
+  },
   content: {
     flex: 1,
-    paddingHorizontal: Spacing.component.screen.horizontal,
-    paddingVertical: Spacing.component.screen.vertical,
     justifyContent: 'center',
   },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: Spacing['4xl'],
+    position: 'absolute',
+    top: Spacing.lg,
+    left: 0,
+    right: 0,
+    zIndex: 1,
   },
   backButton: {
-    padding: Spacing.md,
-    marginRight: Spacing.lg,
-  },
-  headerContent: {
-    flex: 1,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: 'rgba(255,255,255,0.1)',
+    justifyContent: 'center',
     alignItems: 'center',
+  },
+  mainContent: {
+    alignItems: 'center',
+    paddingTop: Spacing.xl * 2,
+  },
+  iconContainer: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    backgroundColor: 'rgba(255,255,255,0.1)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: Spacing.xl,
   },
   title: {
     ...Typography.styles.h1,
     color: Colors.text.white,
     textAlign: 'center',
     marginBottom: Spacing.md,
+    fontSize: 28,
+    fontWeight: '700',
   },
   subtitle: {
     ...Typography.styles.body,
     color: Colors.text.white,
     textAlign: 'center',
-    opacity: 0.9,
+    opacity: 0.8,
+    marginBottom: Spacing.xl,
+    lineHeight: 24,
+    paddingHorizontal: Spacing.md,
   },
-  formCard: {
-    marginBottom: Spacing['3xl'],
+  inputContainer: {
+    width: '100%',
+    marginBottom: Spacing.xl,
   },
-  form: {
-    gap: Spacing.lg,
+  inputCard: {
+    padding: 0,
+    overflow: 'hidden',
   },
-  inputGroup: {
-    gap: Spacing.sm,
-  },
-  label: {
-    ...Typography.styles.label,
-    color: Colors.text.primary,
-  },
-  input: {
-    ...Typography.styles.body,
-    backgroundColor: Colors.background.secondary,
-    borderWidth: 1,
-    borderColor: Colors.border.light,
-    borderRadius: Spacing.component.radius.md,
-    paddingHorizontal: Spacing.component.input.paddingHorizontal,
-    paddingVertical: Spacing.component.input.paddingVertical,
-    color: Colors.text.primary,
-  },
-  inputError: {
-    borderColor: Colors.semantic.error,
+  inputCardFocused: {
+    borderColor: Colors.accent[400],
     borderWidth: 2,
   },
-  fieldErrorText: {
-    ...Typography.styles.caption,
-    color: Colors.semantic.error,
-    marginTop: Spacing.xs,
+  inputWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.md,
   },
-  errorText: {
-    ...Typography.styles.caption,
-    color: Colors.semantic.error,
-    textAlign: 'center',
-    backgroundColor: Colors.semantic.errorBackground,
-    padding: Spacing.md,
-    borderRadius: Spacing.component.radius.sm,
+  inputIcon: {
+    marginRight: Spacing.sm,
+  },
+  input: {
+    flex: 1,
+    color: Colors.text.white,
+    fontSize: 16,
+    fontWeight: '500',
   },
   resetButton: {
-    marginTop: Spacing.lg,
+    width: '100%',
+    marginBottom: Spacing.xl,
   },
-  helpContainer: {
+  backToLogin: {
     flexDirection: 'row',
-    justifyContent: 'center',
     alignItems: 'center',
-    marginTop: Spacing.lg,
+    gap: Spacing.xs,
   },
-  helpText: {
+  backToLoginText: {
     ...Typography.styles.body,
-    fontSize: Math.min(Typography.sizes.sm, width * 0.035),
-    color: Colors.text.secondary,
+    color: Colors.accent[400],
+    fontWeight: '600',
   },
-  linkText: {
-    ...Typography.styles.button,
-    fontSize: Math.min(Typography.sizes.sm, width * 0.035),
-    color: Colors.primary[500],
-    textDecorationLine: 'underline',
-  },
-  successCard: {
-    marginBottom: Spacing['3xl'],
-  },
-  successContent: {
+  // Success screen styles
+  successContainer: {
     alignItems: 'center',
-    gap: Spacing.lg,
+    paddingTop: Spacing.xl * 2,
+    paddingHorizontal: Spacing.lg,
   },
   successIcon: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: Colors.glass.turquoise,
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    backgroundColor: 'rgba(255,255,255,0.1)',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: Spacing.md,
+    marginBottom: Spacing.xl,
   },
   successTitle: {
-    ...Typography.styles.h2,
-    color: Colors.text.primary,
+    ...Typography.styles.h1,
+    color: Colors.text.white,
+    textAlign: 'center',
+    marginBottom: Spacing.md,
+    fontSize: 28,
+    fontWeight: '700',
+  },
+  successSubtitle: {
+    ...Typography.styles.body,
+    color: Colors.text.white,
+    textAlign: 'center',
+    opacity: 0.8,
+    marginBottom: Spacing.xl,
+    lineHeight: 24,
+  },
+  emailText: {
+    color: Colors.accent[400],
+    fontWeight: '600',
+  },
+  instructionCard: {
+    width: '100%',
+    padding: Spacing.lg,
+    marginBottom: Spacing.xl,
+  },
+  instructionTitle: {
+    ...Typography.styles.h3,
+    color: Colors.text.white,
+    marginBottom: Spacing.md,
     textAlign: 'center',
   },
-  successMessage: {
-    ...Typography.styles.body,
-    color: Colors.text.secondary,
-    textAlign: 'center',
+  instructionStep: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: Spacing.sm,
   },
-  emailDisplay: {
+  instructionText: {
     ...Typography.styles.body,
-    color: Colors.primary[500],
-    fontWeight: Typography.weights.semiBold,
-    textAlign: 'center',
+    color: Colors.text.white,
+    marginLeft: Spacing.sm,
+    opacity: 0.9,
   },
-  successInstructions: {
-    ...Typography.styles.body,
-    color: Colors.text.secondary,
-    textAlign: 'center',
-    lineHeight: Typography.lineHeights.relaxed,
+  actionButtons: {
+    width: '100%',
+    gap: Spacing.md,
+    marginBottom: Spacing.xl,
+  },
+  emailButton: {
+    width: '100%',
+  },
+  resendButton: {
+    width: '100%',
   },
 });

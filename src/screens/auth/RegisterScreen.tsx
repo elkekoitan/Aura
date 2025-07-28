@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -10,9 +10,12 @@ import {
   Platform,
   TouchableOpacity,
   Dimensions,
+  Animated,
+  StatusBar,
   ScrollView,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { GlassCard, GlassButton } from '../../components/ui';
 import { Colors, Typography, Spacing } from '../../constants';
@@ -26,149 +29,153 @@ export default function RegisterScreen() {
   const dispatch = useAppDispatch();
   const { loading, error } = useAppSelector((state) => state.auth);
 
-  // Form state management with TypeScript types
   const [formData, setFormData] = useState({
-    fullName: '',
+    firstName: '',
+    lastName: '',
     email: '',
     password: '',
     confirmPassword: '',
   });
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [focusedField, setFocusedField] = useState<string | null>(null);
+  const [acceptTerms, setAcceptTerms] = useState(false);
 
-  // Form validation state
-  const [validationErrors, setValidationErrors] = useState<{
-    fullName?: string;
-    email?: string;
-    password?: string;
-    confirmPassword?: string;
-  }>({});
+  // Animations
+  const fadeAnim = new Animated.Value(0);
+  const slideAnim = new Animated.Value(50);
 
-  // Email validation regex pattern
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  useEffect(() => {
+    // Entrance animation
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 1000,
+        useNativeDriver: true,
+      }),
+      Animated.timing(slideAnim, {
+        toValue: 0,
+        duration: 800,
+        useNativeDriver: true,
+      }),
+    ]).start();
 
-  // Clear any existing errors when component mounts
-  React.useEffect(() => {
     dispatch(clearError());
-  }, [dispatch]);
+  }, []);
 
-  /**
-   * Validates individual form fields
-   * Uses comprehensive validation rules for user registration
-   */
-  const validateField = (field: string, value: string): string | undefined => {
-    switch (field) {
-      case 'fullName':
-        if (!value.trim()) return 'Full name is required';
-        if (value.trim().length < 2) return 'Full name must be at least 2 characters';
-        return undefined;
-
-      case 'email':
-        if (!value.trim()) return 'Email is required';
-        if (!emailRegex.test(value.trim())) return 'Please enter a valid email address';
-        return undefined;
-
-      case 'password':
-        if (!value) return 'Password is required';
-        if (value.length < 6) return 'Password must be at least 6 characters';
-        if (!/(?=.*[a-z])(?=.*[A-Z])/.test(value)) {
-          return 'Password must contain both uppercase and lowercase letters';
-        }
-        return undefined;
-
-      case 'confirmPassword':
-        if (!value) return 'Please confirm your password';
-        if (value !== formData.password) return 'Passwords do not match';
-        return undefined;
-
-      default:
-        return undefined;
-    }
-  };
-
-  /**
-   * Handles form field updates with real-time validation
-   * Integrates with React state management and validation system
-   */
-  const handleFieldChange = (field: keyof typeof formData, value: string) => {
-    // Update form data
+  const updateFormData = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+  };
 
-    // Clear validation error for this field when user starts typing
-    if (validationErrors[field]) {
-      setValidationErrors(prev => ({ ...prev, [field]: undefined }));
+  const validateForm = () => {
+    const { firstName, lastName, email, password, confirmPassword } = formData;
+
+    if (!firstName || !lastName || !email || !password || !confirmPassword) {
+      Alert.alert('Error', 'Please fill in all fields');
+      return false;
     }
+
+    if (!email.includes('@')) {
+      Alert.alert('Error', 'Please enter a valid email address');
+      return false;
+    }
+
+    if (password.length < 6) {
+      Alert.alert('Error', 'Password must be at least 6 characters long');
+      return false;
+    }
+
+    if (password !== confirmPassword) {
+      Alert.alert('Error', 'Passwords do not match');
+      return false;
+    }
+
+    if (!acceptTerms) {
+      Alert.alert('Error', 'Please accept the Terms & Conditions');
+      return false;
+    }
+
+    return true;
   };
 
-  /**
-   * Validates entire form before submission
-   * Returns true if form is valid, false otherwise
-   */
-  const validateForm = (): boolean => {
-    const errors: typeof validationErrors = {};
-
-    // Validate all fields
-    Object.keys(formData).forEach(field => {
-      const error = validateField(field, formData[field as keyof typeof formData]);
-      if (error) {
-        errors[field as keyof typeof validationErrors] = error;
-      }
-    });
-
-    setValidationErrors(errors);
-    return Object.keys(errors).length === 0;
-  };
-
-  /**
-   * Handles user registration with Supabase integration
-   * Uses Redux Toolkit async thunk for state management
-   * Implements comprehensive error handling and user feedback
-   */
   const handleRegister = async () => {
-    // Validate form before submission
-    if (!validateForm()) {
-      Alert.alert('Validation Error', 'Please correct the errors below');
-      return;
-    }
+    if (!validateForm()) return;
 
     try {
-      // Dispatch signUp action using Redux Toolkit
-      // This integrates with Supabase auth and creates user profile
-      const result = await dispatch(signUp({
-        email: formData.email.trim(),
+      await dispatch(signUp({
+        email: formData.email,
         password: formData.password,
-        fullName: formData.fullName.trim(),
+        firstName: formData.firstName,
+        lastName: formData.lastName,
       })).unwrap();
-
-      // Show success message with email verification instructions
+      
       Alert.alert(
-        'Registration Successful! 🎉',
-        `Welcome to Aura, ${formData.fullName}!\n\nPlease check your email (${formData.email}) to verify your account before signing in.`,
-        [
-          {
-            text: 'OK',
-            onPress: () => navigation.navigate('Login' as never),
-          },
-        ]
+        'Success!',
+        'Account created successfully. Please check your email to verify your account.',
+        [{ text: 'OK', onPress: () => navigation.navigate('Login' as never) }]
       );
     } catch (error: any) {
-      // Handle registration errors with user-friendly messages
-      let errorMessage = 'Registration failed. Please try again.';
-
-      if (error.message?.includes('already registered')) {
-        errorMessage = 'This email is already registered. Please sign in instead.';
-      } else if (error.message?.includes('invalid email')) {
-        errorMessage = 'Please enter a valid email address.';
-      } else if (error.message?.includes('weak password')) {
-        errorMessage = 'Password is too weak. Please choose a stronger password.';
-      } else if (error.message) {
-        errorMessage = error.message;
-      }
-
-      Alert.alert('Registration Failed', errorMessage);
+      Alert.alert('Registration Failed', error.message || 'Failed to create account');
     }
   };
+
+  const renderInput = (
+    placeholder: string,
+    field: string,
+    iconName: string,
+    secureTextEntry = false,
+    keyboardType: any = 'default'
+  ) => (
+    <View style={styles.inputContainer}>
+      <GlassCard style={[
+        styles.inputCard,
+        focusedField === field && styles.inputCardFocused
+      ]}>
+        <View style={styles.inputWrapper}>
+          <Ionicons 
+            name={iconName as any} 
+            size={20} 
+            color={focusedField === field ? Colors.accent[400] : Colors.text.white} 
+            style={styles.inputIcon}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder={placeholder}
+            placeholderTextColor={Colors.text.white + '60'}
+            value={formData[field as keyof typeof formData]}
+            onChangeText={(text) => updateFormData(field, text)}
+            secureTextEntry={secureTextEntry && (field === 'password' ? !showPassword : !showConfirmPassword)}
+            keyboardType={keyboardType}
+            autoCapitalize={field === 'email' ? 'none' : 'words'}
+            onFocus={() => setFocusedField(field)}
+            onBlur={() => setFocusedField(null)}
+          />
+          {secureTextEntry && (
+            <TouchableOpacity
+              style={styles.eyeButton}
+              onPress={() => {
+                if (field === 'password') {
+                  setShowPassword(!showPassword);
+                } else {
+                  setShowConfirmPassword(!showConfirmPassword);
+                }
+              }}
+            >
+              <Ionicons
+                name={(field === 'password' ? showPassword : showConfirmPassword) ? 'eye-off' : 'eye'}
+                size={20}
+                color={Colors.text.white}
+              />
+            </TouchableOpacity>
+          )}
+        </View>
+      </GlassCard>
+    </View>
+  );
 
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="light-content" />
       <LinearGradient
         colors={Colors.gradients.holographic}
         start={{ x: 0, y: 0 }}
@@ -177,259 +184,305 @@ export default function RegisterScreen() {
       />
 
       <KeyboardAvoidingView
-        style={styles.content}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.keyboardView}
       >
         <ScrollView
-          showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
         >
-          <View style={styles.header}>
-            <Text style={styles.title}>Create Account</Text>
-            <Text style={styles.subtitle}>Join the Aura fashion community</Text>
-          </View>
+          <Animated.View
+            style={[
+              styles.content,
+              {
+                opacity: fadeAnim,
+                transform: [{ translateY: slideAnim }],
+              },
+            ]}
+          >
+            {/* Header */}
+            <View style={styles.header}>
+              <TouchableOpacity
+                style={styles.backButton}
+                onPress={() => navigation.goBack()}
+              >
+                <Ionicons name="arrow-back" size={24} color={Colors.text.white} />
+              </TouchableOpacity>
+              
+              <View style={styles.logoContainer}>
+                <LinearGradient
+                  colors={[Colors.accent[400], Colors.accent[600]]}
+                  style={styles.logo}
+                >
+                  <Text style={styles.logoText}>A</Text>
+                </LinearGradient>
+              </View>
+              <Text style={styles.title}>Create Account</Text>
+              <Text style={styles.subtitle}>Join the future of fashion</Text>
+            </View>
 
-          <GlassCard style={styles.formCard}>
+            {/* Form */}
             <View style={styles.form}>
-              {/* Full Name Input */}
-              <View style={styles.inputGroup}>
-                <Text style={styles.label}>Full Name</Text>
-                <TextInput
-                  style={[
-                    styles.input,
-                    validationErrors.fullName && styles.inputError
-                  ]}
-                  value={formData.fullName}
-                  onChangeText={(value) => handleFieldChange('fullName', value)}
-                  placeholder="Enter your full name"
-                  placeholderTextColor={Colors.text.muted}
-                  autoCapitalize="words"
-                  autoCorrect={false}
-                />
-                {validationErrors.fullName && (
-                  <Text style={styles.fieldErrorText}>{validationErrors.fullName}</Text>
-                )}
+              <View style={styles.nameRow}>
+                <View style={styles.nameInput}>
+                  {renderInput('First Name', 'firstName', 'person')}
+                </View>
+                <View style={styles.nameInput}>
+                  {renderInput('Last Name', 'lastName', 'person')}
+                </View>
               </View>
 
-              {/* Email Input */}
-              <View style={styles.inputGroup}>
-                <Text style={styles.label}>Email</Text>
-                <TextInput
-                  style={[
-                    styles.input,
-                    validationErrors.email && styles.inputError
-                  ]}
-                  value={formData.email}
-                  onChangeText={(value) => handleFieldChange('email', value)}
-                  placeholder="Enter your email"
-                  placeholderTextColor={Colors.text.muted}
-                  keyboardType="email-address"
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                />
-                {validationErrors.email && (
-                  <Text style={styles.fieldErrorText}>{validationErrors.email}</Text>
-                )}
-              </View>
+              {renderInput('Email', 'email', 'mail', false, 'email-address')}
+              {renderInput('Password', 'password', 'lock-closed', true)}
+              {renderInput('Confirm Password', 'confirmPassword', 'lock-closed', true)}
 
-              {/* Password Input */}
-              <View style={styles.inputGroup}>
-                <Text style={styles.label}>Password</Text>
-                <TextInput
-                  style={[
-                    styles.input,
-                    validationErrors.password && styles.inputError
-                  ]}
-                  value={formData.password}
-                  onChangeText={(value) => handleFieldChange('password', value)}
-                  placeholder="Create a strong password"
-                  placeholderTextColor={Colors.text.muted}
-                  secureTextEntry
-                  autoCapitalize="none"
-                />
-                {validationErrors.password && (
-                  <Text style={styles.fieldErrorText}>{validationErrors.password}</Text>
-                )}
-              </View>
-
-              {/* Confirm Password Input */}
-              <View style={styles.inputGroup}>
-                <Text style={styles.label}>Confirm Password</Text>
-                <TextInput
-                  style={[
-                    styles.input,
-                    validationErrors.confirmPassword && styles.inputError
-                  ]}
-                  value={formData.confirmPassword}
-                  onChangeText={(value) => handleFieldChange('confirmPassword', value)}
-                  placeholder="Confirm your password"
-                  placeholderTextColor={Colors.text.muted}
-                  secureTextEntry
-                  autoCapitalize="none"
-                />
-                {validationErrors.confirmPassword && (
-                  <Text style={styles.fieldErrorText}>{validationErrors.confirmPassword}</Text>
-                )}
-              </View>
-
-              {/* Global Error Display */}
-              {error && (
-                <Text style={styles.errorText}>{error}</Text>
-              )}
+              {/* Terms & Conditions */}
+              <TouchableOpacity
+                style={styles.termsContainer}
+                onPress={() => setAcceptTerms(!acceptTerms)}
+              >
+                <View style={[styles.checkbox, acceptTerms && styles.checkboxChecked]}>
+                  {acceptTerms && (
+                    <Ionicons name="checkmark" size={16} color={Colors.text.white} />
+                  )}
+                </View>
+                <Text style={styles.termsText}>
+                  I agree to the{' '}
+                  <Text style={styles.termsLink}>Terms & Conditions</Text>
+                  {' '}and{' '}
+                  <Text style={styles.termsLink}>Privacy Policy</Text>
+                </Text>
+              </TouchableOpacity>
 
               {/* Register Button */}
               <GlassButton
-                title="Create Account"
+                title={loading ? "Creating Account..." : "Create Account"}
                 onPress={handleRegister}
-                loading={loading}
-                variant="primary"
-                size="large"
-                fullWidth
+                disabled={loading}
                 gradient
                 gradientColors={Colors.gradients.primary}
                 style={styles.registerButton}
               />
 
-              {/* Navigation Links */}
-              <View style={styles.linkContainer}>
-                <Text style={styles.linkPrompt}>Already have an account?</Text>
-                <TouchableOpacity onPress={() => navigation.navigate('Login' as never)}>
-                  <Text style={styles.linkText}>Sign In</Text>
-                </TouchableOpacity>
+              {/* Social Register */}
+              <View style={styles.socialContainer}>
+                <View style={styles.divider}>
+                  <View style={styles.dividerLine} />
+                  <Text style={styles.dividerText}>or sign up with</Text>
+                  <View style={styles.dividerLine} />
+                </View>
+
+                <View style={styles.socialButtons}>
+                  <TouchableOpacity style={styles.socialButton}>
+                    <Ionicons name="logo-google" size={24} color={Colors.text.white} />
+                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.socialButton}>
+                    <Ionicons name="logo-apple" size={24} color={Colors.text.white} />
+                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.socialButton}>
+                    <Ionicons name="logo-facebook" size={24} color={Colors.text.white} />
+                  </TouchableOpacity>
+                </View>
               </View>
 
-              {/* Legal Agreement */}
-              <View style={styles.legalContainer}>
-                <Text style={styles.legalText}>By creating an account, you agree to our </Text>
-                <TouchableOpacity onPress={() => navigation.navigate('Terms' as never)}>
-                  <Text style={styles.legalLink}>Terms of Service</Text>
-                </TouchableOpacity>
-                <Text style={styles.legalText}> and </Text>
-                <TouchableOpacity onPress={() => navigation.navigate('Privacy' as never)}>
-                  <Text style={styles.legalLink}>Privacy Policy</Text>
+              {/* Login Link */}
+              <View style={styles.loginContainer}>
+                <Text style={styles.loginText}>Already have an account? </Text>
+                <TouchableOpacity onPress={() => navigation.navigate('Login' as never)}>
+                  <Text style={styles.loginLink}>Sign In</Text>
                 </TouchableOpacity>
               </View>
             </View>
-          </GlassCard>
+          </Animated.View>
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
 
-/**
- * StyleSheet following established design patterns from LoginScreen
- * Uses consistent spacing, typography, and color schemes
- * Implements responsive design for different screen sizes
- */
 const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  content: {
+  keyboardView: {
     flex: 1,
-    paddingHorizontal: Spacing.component.screen.horizontal,
-    paddingVertical: Spacing.component.screen.vertical,
   },
   scrollContent: {
     flexGrow: 1,
-    justifyContent: 'center',
-    paddingBottom: Spacing['2xl'], // Extra padding for keyboard
+    paddingHorizontal: Spacing.lg,
+    paddingVertical: Spacing.xl,
+  },
+  content: {
+    flex: 1,
   },
   header: {
     alignItems: 'center',
-    marginBottom: Spacing['4xl'],
+    marginBottom: Spacing.xl,
+    position: 'relative',
+  },
+  backButton: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: 'rgba(255,255,255,0.1)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  logoContainer: {
+    marginBottom: Spacing.lg,
+    marginTop: Spacing.lg,
+  },
+  logo: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  logoText: {
+    ...Typography.styles.h2,
+    color: Colors.text.white,
+    fontWeight: '900',
   },
   title: {
     ...Typography.styles.h1,
     color: Colors.text.white,
     textAlign: 'center',
-    marginBottom: Spacing.md,
+    marginBottom: Spacing.sm,
+    fontSize: 28,
+    fontWeight: '700',
   },
   subtitle: {
     ...Typography.styles.body,
     color: Colors.text.white,
     textAlign: 'center',
-    opacity: 0.9,
-  },
-  formCard: {
-    marginBottom: Spacing['3xl'],
+    opacity: 0.8,
   },
   form: {
-    gap: Spacing.lg,
+    width: '100%',
   },
-  inputGroup: {
-    gap: Spacing.sm,
+  nameRow: {
+    flexDirection: 'row',
+    gap: Spacing.md,
   },
-  label: {
-    ...Typography.styles.label,
-    color: Colors.text.primary,
+  nameInput: {
+    flex: 1,
   },
-  input: {
-    ...Typography.styles.body,
-    backgroundColor: Colors.background.secondary,
-    borderWidth: 1,
-    borderColor: Colors.border.light,
-    borderRadius: Spacing.component.radius.md,
-    paddingHorizontal: Spacing.component.input.paddingHorizontal,
-    paddingVertical: Spacing.component.input.paddingVertical,
-    color: Colors.text.primary,
+  inputContainer: {
+    marginBottom: Spacing.md,
   },
-  inputError: {
-    borderColor: Colors.semantic.error,
+  inputCard: {
+    padding: 0,
+    overflow: 'hidden',
+  },
+  inputCardFocused: {
+    borderColor: Colors.accent[400],
     borderWidth: 2,
   },
-  fieldErrorText: {
-    ...Typography.styles.caption,
-    color: Colors.semantic.error,
-    marginTop: Spacing.xs,
+  inputWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.md,
   },
-  errorText: {
+  inputIcon: {
+    marginRight: Spacing.sm,
+  },
+  input: {
+    flex: 1,
+    color: Colors.text.white,
+    fontSize: 16,
+    fontWeight: '500',
+  },
+  eyeButton: {
+    padding: Spacing.xs,
+  },
+  termsContainer: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    marginBottom: Spacing.lg,
+    paddingHorizontal: Spacing.xs,
+  },
+  checkbox: {
+    width: 20,
+    height: 20,
+    borderRadius: 4,
+    borderWidth: 2,
+    borderColor: Colors.text.white + '60',
+    marginRight: Spacing.sm,
+    marginTop: 2,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  checkboxChecked: {
+    backgroundColor: Colors.accent[400],
+    borderColor: Colors.accent[400],
+  },
+  termsText: {
     ...Typography.styles.caption,
-    color: Colors.semantic.error,
-    textAlign: 'center',
-    backgroundColor: Colors.semantic.errorBackground,
-    padding: Spacing.md,
-    borderRadius: Spacing.component.radius.sm,
+    color: Colors.text.white,
+    opacity: 0.8,
+    flex: 1,
+    lineHeight: 18,
+  },
+  termsLink: {
+    color: Colors.accent[400],
+    fontWeight: '600',
   },
   registerButton: {
-    marginTop: Spacing.lg,
+    marginBottom: Spacing.lg,
   },
-  linkContainer: {
+  socialContainer: {
+    marginBottom: Spacing.lg,
+  },
+  divider: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: Spacing.lg,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: Colors.text.white + '30',
+  },
+  dividerText: {
+    ...Typography.styles.caption,
+    color: Colors.text.white,
+    marginHorizontal: Spacing.md,
+    opacity: 0.7,
+  },
+  socialButtons: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: Spacing.lg,
+  },
+  socialButton: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: 'rgba(255,255,255,0.1)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.2)',
+  },
+  loginContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: Math.max(Spacing.lg, height * 0.02),
-    gap: Spacing.sm,
   },
-  linkPrompt: {
+  loginText: {
     ...Typography.styles.body,
-    fontSize: Math.min(Typography.sizes.sm, width * 0.035),
-    color: Colors.text.secondary,
+    color: Colors.text.white,
+    opacity: 0.8,
   },
-  linkText: {
-    ...Typography.styles.button,
-    fontSize: Math.min(Typography.sizes.sm, width * 0.035),
-    color: Colors.primary[500],
-    textDecorationLine: 'underline',
-  },
-  legalContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: Math.max(Spacing.lg, height * 0.02),
-    paddingHorizontal: Spacing.md,
-  },
-  legalText: {
-    ...Typography.styles.caption,
-    fontSize: Math.min(Typography.sizes.xs, width * 0.03),
-    color: Colors.text.secondary,
-  },
-  legalLink: {
-    ...Typography.styles.caption,
-    fontSize: Math.min(Typography.sizes.xs, width * 0.03),
-    color: Colors.primary[500],
-    textDecorationLine: 'underline',
+  loginLink: {
+    ...Typography.styles.body,
+    color: Colors.accent[400],
+    fontWeight: '600',
   },
 });

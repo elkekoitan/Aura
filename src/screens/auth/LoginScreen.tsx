@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -10,8 +10,12 @@ import {
   Platform,
   TouchableOpacity,
   Dimensions,
+  Animated,
+  StatusBar,
+  ScrollView,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { GlassCard, GlassButton } from '../../components/ui';
 import { Colors, Typography, Spacing } from '../../constants';
@@ -27,11 +31,31 @@ export default function LoginScreen() {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [focusedField, setFocusedField] = useState<string | null>(null);
 
-  // Clear any existing errors when component mounts
-  React.useEffect(() => {
+  // Animations
+  const fadeAnim = new Animated.Value(0);
+  const slideAnim = new Animated.Value(50);
+
+  useEffect(() => {
+    // Entrance animation
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 1000,
+        useNativeDriver: true,
+      }),
+      Animated.timing(slideAnim, {
+        toValue: 0,
+        duration: 800,
+        useNativeDriver: true,
+      }),
+    ]).start();
+
+    // Clear error when component mounts
     dispatch(clearError());
-  }, [dispatch]);
+  }, []);
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -39,100 +63,194 @@ export default function LoginScreen() {
       return;
     }
 
+    if (!email.includes('@')) {
+      Alert.alert('Error', 'Please enter a valid email address');
+      return;
+    }
+
     try {
       await dispatch(signIn({ email, password })).unwrap();
+      // Navigation will be handled by AppNavigator based on auth state
     } catch (error: any) {
-      Alert.alert('Login Failed', error.message || 'An error occurred');
+      Alert.alert('Login Failed', error.message || 'Invalid credentials');
     }
   };
 
+  const handleDemoLogin = () => {
+    setEmail('demo@aura.com');
+    setPassword('demo123');
+    setTimeout(() => {
+      handleLogin();
+    }, 500);
+  };
+
+  const renderInput = (
+    placeholder: string,
+    value: string,
+    onChangeText: (text: string) => void,
+    iconName: string,
+    secureTextEntry = false,
+    keyboardType: any = 'default'
+  ) => (
+    <View style={styles.inputContainer}>
+      <GlassCard style={[
+        styles.inputCard,
+        focusedField === placeholder && styles.inputCardFocused
+      ]}>
+        <View style={styles.inputWrapper}>
+          <Ionicons 
+            name={iconName as any} 
+            size={20} 
+            color={focusedField === placeholder ? Colors.accent[400] : Colors.text.white} 
+            style={styles.inputIcon}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder={placeholder}
+            placeholderTextColor={Colors.text.white + '60'}
+            value={value}
+            onChangeText={onChangeText}
+            secureTextEntry={secureTextEntry && !showPassword}
+            keyboardType={keyboardType}
+            autoCapitalize="none"
+            onFocus={() => setFocusedField(placeholder)}
+            onBlur={() => setFocusedField(null)}
+          />
+          {secureTextEntry && (
+            <TouchableOpacity
+              style={styles.eyeButton}
+              onPress={() => setShowPassword(!showPassword)}
+            >
+              <Ionicons
+                name={showPassword ? 'eye-off' : 'eye'}
+                size={20}
+                color={Colors.text.white}
+              />
+            </TouchableOpacity>
+          )}
+        </View>
+      </GlassCard>
+    </View>
+  );
+
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="light-content" />
       <LinearGradient
         colors={Colors.gradients.holographic}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={StyleSheet.absoluteFillObject}
       />
-      
-      <KeyboardAvoidingView 
-        style={styles.content}
+
+      <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.keyboardView}
       >
-        <View style={styles.header}>
-          <Text style={styles.title}>Welcome Back</Text>
-          <Text style={styles.subtitle}>Sign in to your Aura account</Text>
-        </View>
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+        >
+          <Animated.View
+            style={[
+              styles.content,
+              {
+                opacity: fadeAnim,
+                transform: [{ translateY: slideAnim }],
+              },
+            ]}
+          >
+            {/* Header */}
+            <View style={styles.header}>
+              <View style={styles.logoContainer}>
+                <LinearGradient
+                  colors={[Colors.accent[400], Colors.accent[600]]}
+                  style={styles.logo}
+                >
+                  <Text style={styles.logoText}>A</Text>
+                </LinearGradient>
+              </View>
+              <Text style={styles.title}>Welcome Back</Text>
+              <Text style={styles.subtitle}>Sign in to continue your fashion journey</Text>
+            </View>
 
-        <GlassCard style={styles.formCard}>
-          <View style={styles.form}>
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Email</Text>
-              <TextInput
-                style={styles.input}
-                value={email}
-                onChangeText={setEmail}
-                placeholder="Enter your email"
-                placeholderTextColor={Colors.text.muted}
-                keyboardType="email-address"
-                autoCapitalize="none"
-                autoCorrect={false}
+            {/* Form */}
+            <View style={styles.form}>
+              {renderInput(
+                'Email',
+                email,
+                setEmail,
+                'mail',
+                false,
+                'email-address'
+              )}
+
+              {renderInput(
+                'Password',
+                password,
+                setPassword,
+                'lock-closed',
+                true
+              )}
+
+              {/* Forgot Password */}
+              <TouchableOpacity
+                style={styles.forgotPassword}
+                onPress={() => navigation.navigate('ForgotPassword' as never)}
+              >
+                <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+              </TouchableOpacity>
+
+              {/* Login Button */}
+              <GlassButton
+                title={loading ? "Signing In..." : "Sign In"}
+                onPress={handleLogin}
+                disabled={loading}
+                gradient
+                gradientColors={Colors.gradients.primary}
+                style={styles.loginButton}
               />
-            </View>
 
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Password</Text>
-              <TextInput
-                style={styles.input}
-                value={password}
-                onChangeText={setPassword}
-                placeholder="Enter your password"
-                placeholderTextColor={Colors.text.muted}
-                secureTextEntry
-                autoCapitalize="none"
+              {/* Demo Login */}
+              <GlassButton
+                title="Try Demo Account"
+                onPress={handleDemoLogin}
+                variant="outline"
+                style={styles.demoButton}
               />
+
+              {/* Social Login */}
+              <View style={styles.socialContainer}>
+                <View style={styles.divider}>
+                  <View style={styles.dividerLine} />
+                  <Text style={styles.dividerText}>or continue with</Text>
+                  <View style={styles.dividerLine} />
+                </View>
+
+                <View style={styles.socialButtons}>
+                  <TouchableOpacity style={styles.socialButton}>
+                    <Ionicons name="logo-google" size={24} color={Colors.text.white} />
+                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.socialButton}>
+                    <Ionicons name="logo-apple" size={24} color={Colors.text.white} />
+                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.socialButton}>
+                    <Ionicons name="logo-facebook" size={24} color={Colors.text.white} />
+                  </TouchableOpacity>
+                </View>
+              </View>
+
+              {/* Register Link */}
+              <View style={styles.registerContainer}>
+                <Text style={styles.registerText}>Don't have an account? </Text>
+                <TouchableOpacity onPress={() => navigation.navigate('Register' as never)}>
+                  <Text style={styles.registerLink}>Sign Up</Text>
+                </TouchableOpacity>
+              </View>
             </View>
-
-            {error && (
-              <Text style={styles.errorText}>{error}</Text>
-            )}
-
-            <GlassButton
-              title="Sign In"
-              onPress={handleLogin}
-              loading={loading}
-              variant="primary"
-              size="large"
-              fullWidth
-              gradient
-              gradientColors={Colors.gradients.primary}
-              style={styles.loginButton}
-            />
-
-            {/* Navigation Links */}
-            <View style={styles.linkContainer}>
-              <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword' as never)}>
-                <Text style={styles.linkText}>Forgot Password?</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity onPress={() => navigation.navigate('Register' as never)}>
-                <Text style={styles.linkText}>Create Account</Text>
-              </TouchableOpacity>
-            </View>
-
-            {/* Legal Links */}
-            <View style={styles.legalContainer}>
-              <Text style={styles.legalText}>By signing in, you agree to our </Text>
-              <TouchableOpacity onPress={() => navigation.navigate('Terms' as never)}>
-                <Text style={styles.legalLink}>Terms of Service</Text>
-              </TouchableOpacity>
-              <Text style={styles.legalText}> and </Text>
-              <TouchableOpacity onPress={() => navigation.navigate('Privacy' as never)}>
-                <Text style={styles.legalLink}>Privacy Policy</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </GlassCard>
+          </Animated.View>
+        </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -142,87 +260,153 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  keyboardView: {
+    flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    paddingHorizontal: Spacing.lg,
+    paddingVertical: Spacing.xl,
+  },
   content: {
     flex: 1,
-    paddingHorizontal: Spacing.component.screen.horizontal,
-    paddingVertical: Spacing.component.screen.vertical,
     justifyContent: 'center',
   },
   header: {
     alignItems: 'center',
-    marginBottom: Spacing['4xl'],
+    marginBottom: Spacing.xl * 2,
+  },
+  logoContainer: {
+    marginBottom: Spacing.lg,
+  },
+  logo: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: Colors.accent[400],
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.3,
+    shadowRadius: 20,
+    elevation: 10,
+  },
+  logoText: {
+    ...Typography.styles.h1,
+    color: Colors.text.white,
+    fontWeight: '900',
+    fontSize: 36,
   },
   title: {
     ...Typography.styles.h1,
     color: Colors.text.white,
     textAlign: 'center',
-    marginBottom: Spacing.md,
+    marginBottom: Spacing.sm,
+    fontSize: 32,
+    fontWeight: '700',
   },
   subtitle: {
     ...Typography.styles.body,
     color: Colors.text.white,
     textAlign: 'center',
-    opacity: 0.9,
-  },
-  formCard: {
-    marginBottom: Spacing['3xl'],
+    opacity: 0.8,
+    fontSize: 16,
   },
   form: {
-    gap: Spacing.lg,
+    width: '100%',
   },
-  inputGroup: {
-    gap: Spacing.sm,
+  inputContainer: {
+    marginBottom: Spacing.lg,
   },
-  label: {
-    ...Typography.styles.label,
-    color: Colors.text.primary,
+  inputCard: {
+    padding: 0,
+    overflow: 'hidden',
+  },
+  inputCardFocused: {
+    borderColor: Colors.accent[400],
+    borderWidth: 2,
+  },
+  inputWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.md,
+  },
+  inputIcon: {
+    marginRight: Spacing.sm,
   },
   input: {
-    ...Typography.styles.body,
-    backgroundColor: Colors.background.secondary,
-    borderWidth: 1,
-    borderColor: Colors.border.light,
-    borderRadius: Spacing.component.radius.md,
-    paddingHorizontal: Spacing.component.input.paddingHorizontal,
-    paddingVertical: Spacing.component.input.paddingVertical,
-    color: Colors.text.primary,
+    flex: 1,
+    color: Colors.text.white,
+    fontSize: 16,
+    fontWeight: '500',
   },
-  errorText: {
+  eyeButton: {
+    padding: Spacing.xs,
+  },
+  forgotPassword: {
+    alignSelf: 'flex-end',
+    marginBottom: Spacing.lg,
+  },
+  forgotPasswordText: {
     ...Typography.styles.caption,
-    color: Colors.semantic.error,
-    textAlign: 'center',
+    color: Colors.accent[400],
+    fontWeight: '600',
   },
   loginButton: {
-    marginTop: Spacing.lg,
+    marginBottom: Spacing.md,
   },
-  linkContainer: {
+  demoButton: {
+    marginBottom: Spacing.xl,
+  },
+  socialContainer: {
+    marginBottom: Spacing.xl,
+  },
+  divider: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: Math.max(Spacing.lg, height * 0.02),
-    paddingHorizontal: Spacing.md,
+    alignItems: 'center',
+    marginBottom: Spacing.lg,
   },
-  linkText: {
-    ...Typography.styles.button,
-    fontSize: Math.min(Typography.sizes.sm, width * 0.035),
-    color: Colors.primary[500],
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: Colors.text.white + '30',
   },
-  legalContainer: {
+  dividerText: {
+    ...Typography.styles.caption,
+    color: Colors.text.white,
+    marginHorizontal: Spacing.md,
+    opacity: 0.7,
+  },
+  socialButtons: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
+    justifyContent: 'center',
+    gap: Spacing.lg,
+  },
+  socialButton: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: 'rgba(255,255,255,0.1)',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: Math.max(Spacing.lg, height * 0.02),
-    paddingHorizontal: Spacing.md,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.2)',
   },
-  legalText: {
-    ...Typography.styles.caption,
-    fontSize: Math.min(Typography.sizes.xs, width * 0.03),
-    color: Colors.text.secondary,
+  registerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  legalLink: {
-    ...Typography.styles.caption,
-    fontSize: Math.min(Typography.sizes.xs, width * 0.03),
-    color: Colors.primary[500],
-    textDecorationLine: 'underline',
+  registerText: {
+    ...Typography.styles.body,
+    color: Colors.text.white,
+    opacity: 0.8,
+  },
+  registerLink: {
+    ...Typography.styles.body,
+    color: Colors.accent[400],
+    fontWeight: '600',
   },
 });

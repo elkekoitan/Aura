@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aura Fashion - Interactive Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+
+        .feature-card h3 {
+            color: white;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .feature-card p {
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .demo-button {
+            background: linear-gradient(45deg, #ff6b9d, #a855f7);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .demo-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(255, 107, 157, 0.3);
+        }
+
+        .product-showcase {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .product-card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .product-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(45deg, #f093fb, #f5576c);
+            border-radius: 10px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+        }
+
+        .product-name {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .product-price {
+            color: #667eea;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .ai-styling {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            text-align: center;
+        }
+
+        .ai-styling h2 {
+            color: white;
+            margin-bottom: 20px;
+            font-size: 2rem;
+        }
+
+        .style-preferences {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .style-chip {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .style-chip:hover, .style-chip.active {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌟 Aura Fashion</h1>
+            <p>Experience the Future of Fashion Shopping</p>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card" onclick="showDemo('virtual-tryon')">
+                <h3>📸 Virtual Try-On</h3>
+                <p>See how clothes look on you before buying with our revolutionary AR technology. Upload your photo and try on any outfit instantly.</p>
+                <button class="demo-button">Try Virtual Try-On</button>
+            </div>
+
+            <div class="feature-card" onclick="showDemo('ai-styling')">
+                <h3>🤖 AI Personal Stylist</h3>
+                <p>Get personalized outfit recommendations based on your style preferences, body type, and occasion. Our AI learns your taste.</p>
+                <button class="demo-button">Get AI Styling</button>
+            </div>
+
+            <div class="feature-card" onclick="showDemo('smart-search')">
+                <h3>🔍 Smart Search</h3>
+                <p>Find exactly what you're looking for with intelligent search that understands style, color, occasion, and brand preferences.</p>
+                <button class="demo-button">Try Smart Search</button>
+            </div>
+        </div>
+
+        <div class="product-showcase">
+            <h2 style="color: white; text-align: center; margin-bottom: 20px;">Featured Products</h2>
+            <div class="products-grid">
+                <div class="product-card" onclick="showProductDetail('dress')">
+                    <div class="product-image">👗</div>
+                    <div class="product-name">Elegant Summer Dress</div>
+                    <div class="product-price">$89.99</div>
+                </div>
+                <div class="product-card" onclick="showProductDetail('jacket')">
+                    <div class="product-image">🧥</div>
+                    <div class="product-name">Designer Leather Jacket</div>
+                    <div class="product-price">$299.99</div>
+                </div>
+                <div class="product-card" onclick="showProductDetail('shoes')">
+                    <div class="product-image">👠</div>
+                    <div class="product-name">Premium Heels</div>
+                    <div class="product-price">$159.99</div>
+                </div>
+                <div class="product-card" onclick="showProductDetail('bag')">
+                    <div class="product-image">👜</div>
+                    <div class="product-name">Luxury Handbag</div>
+                    <div class="product-price">$199.99</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ai-styling">
+            <h2>🎨 AI Style Preferences</h2>
+            <p style="color: rgba(255,255,255,0.8); margin-bottom: 20px;">Select your style preferences to get personalized recommendations</p>
+            <div class="style-preferences">
+                <div class="style-chip" onclick="toggleStyle(this)">Casual</div>
+                <div class="style-chip" onclick="toggleStyle(this)">Elegant</div>
+                <div class="style-chip" onclick="toggleStyle(this)">Sporty</div>
+                <div class="style-chip" onclick="toggleStyle(this)">Vintage</div>
+                <div class="style-chip" onclick="toggleStyle(this)">Modern</div>
+                <div class="style-chip" onclick="toggleStyle(this)">Bohemian</div>
+            </div>
+            <button class="demo-button" onclick="generateRecommendations()" style="max-width: 300px; margin: 20px auto;">Generate AI Recommendations</button>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal()">&times;</button>
+            <div id="modal-body"></div>
+        </div>
+    </div>
+
+    <script>
+        function showDemo(feature) {
+            const modal = document.getElementById('modal');
+            const modalBody = document.getElementById('modal-body');
+            
+            let content = '';
+            
+            switch(feature) {
+                case 'virtual-tryon':
+                    content = `
+                        <h2>📸 Virtual Try-On Demo</h2>
+                        <p>This feature would allow you to:</p>
+                        <ul style="text-align: left; margin: 20px 0;">
+                            <li>Upload your photo or use live camera</li>
+                            <li>Select any clothing item</li>
+                            <li>See realistic rendering on your body</li>
+                            <li>Adjust size and fit</li>
+                            <li>Save and share your looks</li>
+                        </ul>
+                        <div style="background: #f0f0f0; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                            <p><strong>🎯 Try-On Simulation</strong></p>
+                            <p>Camera would activate here to show you wearing the selected item in real-time!</p>
+                        </div>
+                    `;
+                    break;
+                case 'ai-styling':
+                    content = `
+                        <h2>🤖 AI Personal Stylist</h2>
+                        <p>Your AI stylist analyzes:</p>
+                        <ul style="text-align: left; margin: 20px 0;">
+                            <li>Your style preferences</li>
+                            <li>Body measurements</li>
+                            <li>Occasion and weather</li>
+                            <li>Current trends</li>
+                            <li>Your existing wardrobe</li>
+                        </ul>
+                        <div style="background: #e8f4fd; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                            <p><strong>💡 AI Recommendation</strong></p>
+                            <p>"Based on your preferences, I recommend pairing the elegant summer dress with the premium heels for your dinner date!"</p>
+                        </div>
+                    `;
+                    break;
+                case 'smart-search':
+                    content = `
+                        <h2>🔍 Smart Search Demo</h2>
+                        <p>Search examples:</p>
+                        <ul style="text-align: left; margin: 20px 0;">
+                            <li>"Red dress for wedding guest"</li>
+                            <li>"Casual outfit for weekend"</li>
+                            <li>"Professional blazer under $200"</li>
+                            <li>"Sustainable fashion brands"</li>
+                        </ul>
+                        <div style="background: #f0f8f0; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                            <input type="text" placeholder="Try searching: 'blue jeans for tall women'" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                            <p style="margin-top: 10px;"><strong>🎯 Smart Results</strong></p>
+                            <p>AI would show personalized results based on your size, style, and preferences!</p>
+                        </div>
+                    `;
+                    break;
+            }
+            
+            modalBody.innerHTML = content;
+            modal.style.display = 'flex';
+        }
+
+        function showProductDetail(product) {
+            const modal = document.getElementById('modal');
+            const modalBody = document.getElementById('modal-body');
+            
+            const products = {
+                dress: {
+                    name: 'Elegant Summer Dress',
+                    price: '$89.99',
+                    emoji: '👗',
+                    description: 'Perfect for summer occasions with breathable fabric and elegant design.'
+                },
+                jacket: {
+                    name: 'Designer Leather Jacket',
+                    price: '$299.99',
+                    emoji: '🧥',
+                    description: 'Premium leather jacket with modern cut and timeless style.'
+                },
+                shoes: {
+                    name: 'Premium Heels',
+                    price: '$159.99',
+                    emoji: '👠',
+                    description: 'Comfortable high heels perfect for special occasions.'
+                },
+                bag: {
+                    name: 'Luxury Handbag',
+                    price: '$199.99',
+                    emoji: '👜',
+                    description: 'Spacious and stylish handbag for everyday elegance.'
+                }
+            };
+            
+            const item = products[product];
+            
+            modalBody.innerHTML = `
+                <div style="font-size: 4rem; margin-bottom: 20px;">${item.emoji}</div>
+                <h2>${item.name}</h2>
+                <p style="font-size: 1.5rem; color: #667eea; font-weight: bold; margin: 10px 0;">${item.price}</p>
+                <p style="margin: 20px 0;">${item.description}</p>
+                <div style="margin: 30px 0;">
+                    <button class="demo-button" onclick="alert('Virtual Try-On would start here!')" style="margin: 5px;">📸 Try On</button>
+                    <button class="demo-button" onclick="alert('Added to cart!')" style="margin: 5px;">🛒 Add to Cart</button>
+                </div>
+                <div style="background: #f9f9f9; padding: 15px; border-radius: 10px; margin-top: 20px;">
+                    <p><strong>🤖 AI Styling Tip:</strong></p>
+                    <p>This item would look great with your selected style preferences!</p>
+                </div>
+            `;
+            
+            modal.style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
+
+        function toggleStyle(chip) {
+            chip.classList.toggle('active');
+        }
+
+        function generateRecommendations() {
+            const activeStyles = document.querySelectorAll('.style-chip.active');
+            if (activeStyles.length === 0) {
+                alert('Please select at least one style preference!');
+                return;
+            }
+            
+            const styles = Array.from(activeStyles).map(chip => chip.textContent);
+            
+            const modal = document.getElementById('modal');
+            const modalBody = document.getElementById('modal-body');
+            
+            modalBody.innerHTML = `
+                <h2>🤖 AI Style Recommendations</h2>
+                <p>Based on your preferences: <strong>${styles.join(', ')}</strong></p>
+                <div style="margin: 30px 0;">
+                    <div style="background: linear-gradient(45deg, #f093fb, #f5576c); color: white; padding: 20px; border-radius: 15px; margin: 15px 0;">
+                        <h3>👗 Outfit #1</h3>
+                        <p>Elegant Summer Dress + Premium Heels</p>
+                        <p><small>Perfect for dinner dates and special occasions</small></p>
+                    </div>
+                    <div style="background: linear-gradient(45deg, #667eea, #764ba2); color: white; padding: 20px; border-radius: 15px; margin: 15px 0;">
+                        <h3>🧥 Outfit #2</h3>
+                        <p>Designer Leather Jacket + Casual Jeans</p>
+                        <p><small>Great for weekend outings and casual meetings</small></p>
+                    </div>
+                    <div style="background: linear-gradient(45deg, #a8edea, #fed6e3); color: #333; padding: 20px; border-radius: 15px; margin: 15px 0;">
+                        <h3>👜 Accessory Match</h3>
+                        <p>Luxury Handbag complements both outfits</p>
+                        <p><small>Versatile piece for your wardrobe</small></p>
+                    </div>
+                </div>
+                <button class="demo-button" onclick="alert('Saving to your style profile!')">💾 Save Recommendations</button>
+            `;
+            
+            modal.style.display = 'flex';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('modal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html>

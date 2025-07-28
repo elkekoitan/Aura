@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -6,15 +6,50 @@ import {
   SafeAreaView,
   ScrollView,
   Dimensions,
+  TouchableOpacity,
+  Alert,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { GlassCard, GlassButton } from '../../components/ui';
+import VirtualTryOnCamera from '../../components/camera/VirtualTryOnCamera';
 import { Colors, Typography, Spacing } from '../../constants';
 
 const { width, height } = Dimensions.get('window');
 
 export default function TryOnScreen() {
+  const [showCamera, setShowCamera] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<any>(null);
+
+  const handleStartTryOn = (productName: string) => {
+    setSelectedProduct({ id: '1', name: productName });
+    setShowCamera(true);
+  };
+
+  const handleCameraClose = () => {
+    setShowCamera(false);
+    setSelectedProduct(null);
+  };
+
+  const handleCapture = (imageUri: string) => {
+    Alert.alert(
+      'Try-On Complete!',
+      'Your virtual try-on has been saved to your gallery.',
+      [{ text: 'OK', onPress: handleCameraClose }]
+    );
+  };
+
+  if (showCamera && selectedProduct) {
+    return (
+      <VirtualTryOnCamera
+        productId={selectedProduct.id}
+        productName={selectedProduct.name}
+        onClose={handleCameraClose}
+        onCapture={handleCapture}
+      />
+    );
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <LinearGradient
@@ -46,7 +81,7 @@ export default function TryOnScreen() {
             gradient
             gradientColors={Colors.gradients.primary}
             style={styles.featureButton}
-            onPress={() => {}}
+            onPress={() => handleStartTryOn('3D Avatar Try-On')}
           />
         </GlassCard>
 

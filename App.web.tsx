@@ -7,10 +7,10 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { store } from './src/store';
 import { supabase } from './src/config/supabase';
-import { AppNavigator } from './src/navigation/AppNavigator';
+import AppNavigator from './src/navigation/AppNavigator';
 import { Colors, Typography, Spacing } from './src/constants';
 import { useAppDispatch, useAppSelector } from './src/store';
-import { setUser, setLoading } from './src/store/slices/authSlice';
+import { setSession, setLoading } from './src/store/slices/authSlice';
 
 /**
  * Web-specific App component without Stripe integration
@@ -28,11 +28,7 @@ function AppContent() {
       async (event, session) => {
         console.log('Auth state changed:', event, session?.user?.id);
         
-        if (session?.user) {
-          dispatch(setUser(session.user));
-        } else {
-          dispatch(setUser(null));
-        }
+        dispatch(setSession({ user: session?.user || null, session }));
         
         if (initializing) {
           setInitializing(false);

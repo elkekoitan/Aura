@@ -2,16 +2,19 @@ import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '../constants';
+import { useAppSelector } from '../store';
 import HomeScreen from '../screens/main/HomeScreen';
 import DiscoverScreen from '../screens/main/DiscoverScreen';
 import TryOnScreen from '../screens/main/TryOnScreen';
 import WardrobeScreen from '../screens/main/WardrobeScreen';
 import ProfileScreen from '../screens/main/ProfileScreen';
-import CartScreen from '../screens/cart/CartScreen';
+import CartScreen from '../screens/main/CartScreen';
 
 const Tab = createBottomTabNavigator();
 
 export default function MainTabNavigator() {
+  const { itemCount } = useAppSelector((state) => state.cart);
+
   return (
     <Tab.Navigator
       screenOptions={{
@@ -67,6 +70,7 @@ export default function MainTabNavigator() {
         component={CartScreen}
         options={{
           title: 'Cart',
+          tabBarBadge: itemCount > 0 ? itemCount : undefined,
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="bag" size={size} color={color} />
           ),
