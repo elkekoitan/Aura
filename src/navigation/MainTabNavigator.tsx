@@ -13,7 +13,8 @@ import CartScreen from '../screens/main/CartScreen';
 const Tab = createBottomTabNavigator();
 
 export default function MainTabNavigator() {
-  const { itemCount } = useAppSelector((state) => state.cart);
+  const { summary } = useAppSelector((state) => state.cart);
+  const itemCount = summary.itemCount;
 
   return (
     <Tab.Navigator

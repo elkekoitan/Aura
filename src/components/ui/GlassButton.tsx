@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo, useCallback } from 'react';
 import {
   TouchableOpacity,
   Text,
@@ -6,15 +6,20 @@ import {
   TextStyle,
   ActivityIndicator,
   View,
+  Dimensions,
 } from 'react-native';
 import { BlurView } from 'expo-blur';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Animated } from 'react-native';
 import { Colors, Typography, Spacing } from '../../constants';
 
+// Performance optimization: memoize styles
+const { width } = Dimensions.get('window');
+const isSmallDevice = width < 375;
+
 interface GlassButtonProps {
   title: string;
-  onPress: () => void;
+  onPress?: (event?: any) => void;
   variant?: 'primary' | 'secondary' | 'outline' | 'ghost';
   size?: 'small' | 'medium' | 'large';
   disabled?: boolean;
@@ -28,7 +33,7 @@ interface GlassButtonProps {
   fullWidth?: boolean;
 }
 
-export const GlassButton: React.FC<GlassButtonProps> = ({
+export const GlassButton: React.FC<GlassButtonProps> = React.memo(({
   title,
   onPress,
   variant = 'primary',
@@ -45,21 +50,23 @@ export const GlassButton: React.FC<GlassButtonProps> = ({
 }) => {
   const scaleValue = React.useRef(new Animated.Value(1)).current;
 
-  const handlePressIn = () => {
+  // Memoize handlers to prevent unnecessary re-renders
+  const handlePressIn = useCallback(() => {
     Animated.spring(scaleValue, {
       toValue: 0.95,
       useNativeDriver: true,
     }).start();
-  };
+  }, [scaleValue]);
 
-  const handlePressOut = () => {
+  const handlePressOut = useCallback(() => {
     Animated.spring(scaleValue, {
       toValue: 1,
       useNativeDriver: true,
     }).start();
-  };
+  }, [scaleValue]);
 
-  const getButtonStyle = (): ViewStyle => {
+  // Memoize styles to prevent recalculations
+  const getButtonStyle = useCallback((): ViewStyle => {
     const baseStyle: ViewStyle = {
       borderRadius: Spacing.component.radius.lg,
       overflow: 'hidden',
@@ -117,9 +124,9 @@ export const GlassButton: React.FC<GlassButtonProps> = ({
     }
 
     return { ...baseStyle, ...style };
-  };
+  }, [variant, size, disabled, fullWidth, style]);
 
-  const getTextStyle = (): TextStyle => {
+  const getTextStyle = useCallback((): TextStyle => {
     const baseTextStyle: TextStyle = {
       ...Typography.styles.button,
       textAlign: 'center',
@@ -152,16 +159,16 @@ export const GlassButton: React.FC<GlassButtonProps> = ({
     }
 
     return { ...baseTextStyle, ...textStyle };
-  };
+  }, [variant, size, textStyle]);
 
-  const renderContent = () => (
+  const renderContent = useMemo(() => (
     <View style={{ flexDirection: 'row', alignItems: 'center', gap: Spacing.sm }}>
       {loading && <ActivityIndicator size="small" color={getTextStyle().color} />}
       {!loading && icon && iconPosition === 'left' && icon}
       {!loading && <Text style={getTextStyle()}>{title}</Text>}
       {!loading && icon && iconPosition === 'right' && icon}
     </View>
-  );
+  ), [loading, icon, iconPosition, title, getTextStyle]);
 
   if (gradient && variant === 'primary') {
     return (
@@ -187,7 +194,7 @@ export const GlassButton: React.FC<GlassButtonProps> = ({
             }}
           />
           <BlurView intensity={20} tint="light" style={{ padding: 0 }}>
-            {renderContent()}
+            {renderContent}
           </BlurView>
         </TouchableOpacity>
       </Animated.View>
@@ -205,11 +212,13 @@ export const GlassButton: React.FC<GlassButtonProps> = ({
         activeOpacity={0.8}
       >
         <BlurView intensity={20} tint="light" style={{ padding: 0 }}>
-          {renderContent()}
+          {renderContent}
         </BlurView>
       </TouchableOpacity>
     </Animated.View>
   );
-};
+});
+
+GlassButton.displayName = 'GlassButton';
 
 export default GlassButton;

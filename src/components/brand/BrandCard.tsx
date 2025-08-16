@@ -78,7 +78,7 @@ export const BrandCard: React.FC<BrandCardProps> = ({
       onPress={handlePress}
       activeOpacity={0.8}
     >
-      <GlassCard style={[styles.card, compact && styles.compactCard]}>
+      <GlassCard style={compact ? styles.compactCard : styles.card}>
         {/* Brand Header */}
         <View style={[styles.header, compact && styles.compactHeader]}>
           {/* Brand Logo */}

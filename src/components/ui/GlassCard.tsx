@@ -6,7 +6,7 @@ import { Colors, Spacing } from '../../constants';
 
 interface GlassCardProps {
   children: React.ReactNode;
-  style?: ViewStyle;
+  style?: ViewStyle | ViewStyle[];
   intensity?: number;
   tint?: 'light' | 'dark' | 'default';
   gradient?: boolean;
@@ -29,12 +29,23 @@ export const GlassCard: React.FC<GlassCardProps> = ({
   margin = Spacing.component.card.margin,
   shadow = true,
 }) => {
-  const cardStyle: ViewStyle = {
+  const baseCardStyle: ViewStyle = {
     borderRadius,
     margin,
     overflow: 'hidden',
-    ...style,
   };
+
+  const shadowStyle: ViewStyle = shadow
+    ? {
+        shadowColor: Colors.shadow.colored,
+        shadowOffset: { width: 0, height: 8 },
+        shadowOpacity: 0.3,
+        shadowRadius: 16,
+        elevation: 8,
+      }
+    : {};
+
+  const containerStyle: any = [baseCardStyle, shadowStyle, style];
 
   const contentStyle: ViewStyle = {
     padding,
@@ -44,17 +55,9 @@ export const GlassCard: React.FC<GlassCardProps> = ({
     backgroundColor: Colors.glass.white,
   };
 
-  if (shadow) {
-    cardStyle.shadowColor = Colors.shadow.colored;
-    cardStyle.shadowOffset = { width: 0, height: 8 };
-    cardStyle.shadowOpacity = 0.3;
-    cardStyle.shadowRadius = 16;
-    cardStyle.elevation = 8;
-  }
-
   if (gradient) {
     return (
-      <View style={cardStyle}>
+      <View style={containerStyle}>
         <LinearGradient
           colors={gradientColors as any}
           start={{ x: 0, y: 0 }}
@@ -69,7 +72,7 @@ export const GlassCard: React.FC<GlassCardProps> = ({
   }
 
   return (
-    <View style={cardStyle}>
+    <View style={containerStyle}>
       <BlurView intensity={intensity} tint={tint} style={contentStyle}>
         {children}
       </BlurView>

@@ -17,7 +17,9 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useNavigationType } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../navigation/types';
 import { GlassCard, GlassButton } from '../../components/ui';
 import { AdminCard } from '../../components/admin/AdminCard';
 import { Colors, Typography, Spacing } from '../../constants';
@@ -30,7 +32,7 @@ import {
 import { AdminActivity } from '../../store/types/admin';
 
 export default function AdminDashboard() {
-  const navigation = useNavigation();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const dispatch = useAppDispatch();
   
   const { 

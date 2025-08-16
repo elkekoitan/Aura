@@ -93,7 +93,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       onPress={handlePress}
       activeOpacity={0.8}
     >
-      <GlassCard style={[styles.card, compact && styles.compactCard]}>
+      <GlassCard style={compact ? styles.compactCard : styles.card}>
         {/* Product Image */}
         <View style={[styles.imageContainer, compact && styles.compactImageContainer]}>
           <Image

@@ -8,9 +8,10 @@ import {
   Dimensions,
   Platform,
 } from 'react-native';
-import { Camera, CameraType } from 'expo-camera';
+import * as ImagePicker from 'expo-image-picker';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import * as ExpoCamera from 'expo-camera';
 import { GlassCard } from '../ui';
 import { Colors, Typography, Spacing } from '../../constants';
 
@@ -30,53 +31,80 @@ export default function VirtualTryOnCamera({
   onCapture,
 }: VirtualTryOnCameraProps) {
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
-  const [type, setType] = useState(CameraType.front);
   const [isRecording, setIsRecording] = useState(false);
-  const [flashMode, setFlashMode] = useState(false);
-  const cameraRef = useRef<Camera>(null);
+  const cameraRef = useRef<any>(null);
 
   useEffect(() => {
     (async () => {
-      const { status } = await Camera.requestCameraPermissionsAsync();
+      // Request camera permissions
+      const [cameraPermissions, requestCameraPermissions] = ExpoCamera.useCameraPermissions();
+      const status = cameraPermissions?.status;
       setHasPermission(status === 'granted');
+      
+      // Request media library permissions
+      if (Platform.OS !== 'web') {
+        const { status: mediaStatus } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        console.log('Media library permission:', mediaStatus);
+      }
     })();
   }, []);
 
   const takePicture = async () => {
-    if (cameraRef.current) {
-      try {
-        setIsRecording(true);
-        const photo = await cameraRef.current.takePictureAsync({
-          quality: 0.8,
-          base64: false,
-          skipProcessing: false,
-        });
+    try {
+      setIsRecording(true);
+      
+      // Launch image picker
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 0.8,
+      });
+
+      if (!result.canceled) {
+        const photoUri = result.assets[0].uri;
         
         // Simulate AI processing
         setTimeout(() => {
           setIsRecording(false);
-          onCapture(photo.uri);
+          onCapture(photoUri);
           Alert.alert(
             'Virtual Try-On Complete!',
             `AI has processed your try-on for ${productName}. Check the results!`,
             [{ text: 'OK', onPress: onClose }]
           );
         }, 2000);
-      } catch (error) {
+      } else {
         setIsRecording(false);
-        Alert.alert('Error', 'Failed to capture photo. Please try again.');
       }
+    } catch (error) {
+      setIsRecording(false);
+      Alert.alert('Error', 'Failed to select photo. Please try again.');
     }
   };
 
-  const toggleCameraType = () => {
-    setType(current => 
-      current === CameraType.back ? CameraType.front : CameraType.back
-    );
-  };
+  const openCamera = async () => {
+    try {
+      const result = await ImagePicker.launchCameraAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 0.8,
+      });
 
-  const toggleFlash = () => {
-    setFlashMode(!flashMode);
+      if (!result.canceled) {
+        const photoUri = result.assets[0].uri;
+        setIsRecording(false);
+        onCapture(photoUri);
+        Alert.alert(
+          'Virtual Try-On Complete!',
+          `AI has processed your try-on for ${productName}. Check the results!`,
+          [{ text: 'OK', onPress: onClose }]
+        );
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Failed to capture photo. Please try again.');
+    }
   };
 
   if (hasPermission === null) {
@@ -114,11 +142,9 @@ export default function VirtualTryOnCamera({
 
   return (
     <View style={styles.container}>
-      <Camera
-        ref={cameraRef}
-        style={styles.camera}
-        type={type}
-        flashMode={flashMode ? 'on' : 'off'}
+      <LinearGradient
+        colors={[Colors.primary[600], Colors.primary[800]]}
+        style={styles.container}
       >
         {/* Header */}
         <View style={styles.header}>
@@ -126,13 +152,7 @@ export default function VirtualTryOnCamera({
             <Ionicons name="close" size={24} color={Colors.text.white} />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>Virtual Try-On</Text>
-          <TouchableOpacity style={styles.headerButton} onPress={toggleFlash}>
-            <Ionicons 
-              name={flashMode ? "flash" : "flash-off"} 
-              size={24} 
-              color={Colors.text.white} 
-            />
-          </TouchableOpacity>
+          <View style={styles.headerButton} />
         </View>
 
         {/* Product Info */}
@@ -150,11 +170,11 @@ export default function VirtualTryOnCamera({
 
         {/* Controls */}
         <View style={styles.controls}>
-          <TouchableOpacity 
-            style={styles.controlButton} 
-            onPress={toggleCameraType}
+          <TouchableOpacity
+            style={styles.controlButton}
+            onPress={openCamera}
           >
-            <Ionicons name="camera-reverse" size={32} color={Colors.text.white} />
+            <Ionicons name="camera" size={32} color={Colors.text.white} />
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -170,7 +190,7 @@ export default function VirtualTryOnCamera({
                 <Text style={styles.recordingText}>Processing...</Text>
               </View>
             ) : (
-              <Ionicons name="camera" size={32} color={Colors.text.white} />
+              <Ionicons name="image" size={32} color={Colors.text.white} />
             )}
           </TouchableOpacity>
 
@@ -183,11 +203,11 @@ export default function VirtualTryOnCamera({
         <View style={styles.instructions}>
           <GlassCard style={styles.instructionCard}>
             <Text style={styles.instructionText}>
-              Position yourself in the frame and tap the camera button
+              Select a photo from your gallery or take a new one
             </Text>
           </GlassCard>
         </View>
-      </Camera>
+      </LinearGradient>
     </View>
   );
 }

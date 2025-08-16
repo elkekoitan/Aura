@@ -6,18 +6,8 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "newArchEnabled": true,
     "scheme": "aura",
     "description": "Discover, try on, and style designer fashion with AI-powered virtual try-on technology. Your digital fashion aura awaits.",
-    "keywords": [
-      "fashion",
-      "virtual try-on",
-      "AI styling",
-      "digital fashion",
-      "shopping",
-      "style"
-    ],
-    "privacy": "public",
     "platforms": [
       "ios",
       "android",
@@ -58,9 +48,6 @@
       "edgeToEdgeEnabled": true,
       "package": "com.aurafashion.app",
       "versionCode": 1,
-      "compileSdkVersion": 34,
-      "targetSdkVersion": 34,
-      "minSdkVersion": 21,
       "permissions": [
         "android.permission.CAMERA",
         "android.permission.RECORD_AUDIO",
@@ -79,7 +66,6 @@
         "android.permission.SYSTEM_ALERT_WINDOW"
       ],
       "playStoreUrl": "https://play.google.com/store/apps/details?id=com.aurafashion.app",
-      "googleServicesFile": "./google-services.json",
       "intentFilters": [
         {
           "action": "VIEW",

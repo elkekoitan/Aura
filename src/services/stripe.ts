@@ -1,7 +1,12 @@
 import { loadStripe } from '@stripe/stripe-js';
 import { supabase } from '../config/supabase';
 
-// Initialize Stripe
+// PLATFORM COMPATIBILITY FIX:
+// @stripe/stripe-react-native only works on mobile platforms
+// Web platform requires different approach
+// Using platform-specific code to ensure compatibility across both platforms
+
+// Initialize Stripe - Platform-specific
 const stripePromise = loadStripe(process.env.EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
 export interface PaymentIntentData {
@@ -45,6 +50,12 @@ export interface StripePrice {
 
 class StripeService {
   private stripe: any = null;
+  private isWeb: boolean;
+
+  constructor() {
+    // Platform detection - Web için true, mobile için false
+    this.isWeb = typeof window !== 'undefined' && !(window as any).ReactNativeWebView;
+  }
 
   async initialize() {
     if (!this.stripe) {

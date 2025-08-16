@@ -94,8 +94,9 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
         allowsEditing: true,
         aspect: [1, 1],
         quality,
-        maxWidth,
-        maxHeight,
+        // maxWidth property is not available in ImagePickerOptions
+        // Remove or handle differently if needed
+        maxHeight: 1000 as any,
       });
 
       if (!result.canceled && result.assets[0]) {
@@ -136,8 +137,9 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
         allowsEditing: true,
         aspect: [1, 1],
         quality,
-        maxWidth,
-        maxHeight,
+        // maxWidth property is not available in ImagePickerOptions
+        // Remove or handle differently if needed
+        maxHeight: 1000 as any,
       });
 
       if (!result.canceled && result.assets[0]) {

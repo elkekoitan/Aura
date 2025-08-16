@@ -1,13 +1,42 @@
 import { createClient } from '@supabase/supabase-js';
 
-// Supabase configuration
-const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL || 'YOUR_SUPABASE_URL';
-const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || 'YOUR_SUPABASE_ANON_KEY';
+// Safely resolve Supabase configuration with valid fallbacks for development
+const envUrl = process.env.EXPO_PUBLIC_SUPABASE_URL;
+const envAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
+
+// Use a valid URL as a fallback to avoid runtime "Invalid URL" errors on web
+// Note: This fallback is only meant to prevent crashes during local development when envs are missing.
+// Real environments MUST set EXPO_PUBLIC_SUPABASE_URL and EXPO_PUBLIC_SUPABASE_ANON_KEY.
+const FALLBACK_SUPABASE_URL = 'https://example.supabase.co';
+const FALLBACK_SUPABASE_ANON_KEY = 'public-anon-key';
+
+function isValidUrl(url?: string): boolean {
+  if (!url) return false;
+  try {
+    // Will throw if invalid
+    new URL(url);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+const supabaseUrl = isValidUrl(envUrl) ? (envUrl as string) : FALLBACK_SUPABASE_URL;
+const supabaseAnonKey = envAnonKey && envAnonKey.trim().length > 0 ? envAnonKey : FALLBACK_SUPABASE_ANON_KEY;
+
+if (!isValidUrl(envUrl) || !envAnonKey) {
+  // eslint-disable-next-line no-console
+  console.warn(
+    `[Supabase] EXPO_PUBLIC_SUPABASE_URL or EXPO_PUBLIC_SUPABASE_ANON_KEY is missing/invalid. ` +
+      `Using safe fallbacks to prevent development-time crashes. Please configure your env vars.`
+  );
+}
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
     autoRefreshToken: true,
     persistSession: true,
+    // In web, we typically do not handle OAuth redirects via URL in Expo web dev
     detectSessionInUrl: false,
   },
 });

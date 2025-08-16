@@ -138,8 +138,8 @@ export const webAnalytics = {
   
   // User interaction tracking
   trackUserInteraction: (action: string, category: string, label?: string) => {
-    if (webErrorHandling.enableAnalytics && typeof gtag !== 'undefined') {
-      gtag('event', action, {
+    if (webErrorHandling.enableAnalytics && typeof (window as any).gtag !== 'undefined') {
+      (window as any).gtag('event', action, {
         event_category: category,
         event_label: label,
       });

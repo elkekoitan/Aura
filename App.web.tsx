@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View, Text, ActivityIndicator } from 'react-native';
+// Initialize React Native bridge config for web
+import './src/utils/fbBatchedBridge-web-stub';
+// Initialize TurboModuleRegistry for web
+import './src/utils/turboModuleRegistry-web-stub';
 import { Provider } from 'react-redux';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';

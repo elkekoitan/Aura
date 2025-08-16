@@ -171,6 +171,7 @@ export default function TryOnProcessingScreen() {
    */
   const handleTryAgain = () => {
     dispatch(clearCurrentSession());
+    // @ts-ignore - Navigation type issue, will be fixed in navigation setup
     navigation.navigate('TryOnCamera', { productId, product });
   };
 
@@ -179,6 +180,7 @@ export default function TryOnProcessingScreen() {
    */
   const handleDone = () => {
     dispatch(clearCurrentSession());
+    // @ts-ignore - Navigation type issue, will be fixed in navigation setup
     navigation.navigate('Discover');
   };
 

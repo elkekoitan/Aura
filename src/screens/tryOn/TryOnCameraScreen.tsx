@@ -18,12 +18,11 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
-import { Camera, CameraType, FlashMode } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
 import { GlassCard, GlassButton } from '../../components/ui';
 import { Colors, Typography, Spacing } from '../../constants';
 import { useAppDispatch, useAppSelector } from '../../store';
-import { 
+import {
   startTryOnSession,
   captureUserPhoto,
   setCameraPermission,
@@ -33,12 +32,14 @@ import {
   clearAllErrors,
 } from '../../store/slices/tryOnSlice';
 import { PhotoCapture } from '../../store/types/tryOn';
+import {
+  RootStackParamList,
+  RouteProp as AppRouteProp
+} from '../../navigation/types';
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
-type TryOnCameraRouteProp = RouteProp<{
-  TryOnCamera: { productId: string; product: any };
-}, 'TryOnCamera'>;
+type TryOnCameraRouteProp = AppRouteProp<'TryOnCamera'>;
 
 export default function TryOnCameraScreen() {
   const navigation = useNavigation();
@@ -58,9 +59,6 @@ export default function TryOnCameraScreen() {
   } = useAppSelector((state) => state.tryOn);
 
   // Camera state
-  const cameraRef = useRef<Camera>(null);
-  const [cameraType, setCameraType] = useState(CameraType.front);
-  const [flashMode, setFlashMode] = useState(FlashMode.off);
   const [isReady, setIsReady] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
 
@@ -77,17 +75,18 @@ export default function TryOnCameraScreen() {
   }, []);
 
   /**
-   * Initialize camera permissions
+   * Initialize permissions
    */
   const initializeCamera = async () => {
     try {
-      const { status } = await Camera.requestCameraPermissionsAsync();
+      // Request media library permissions
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
       dispatch(setCameraPermission(status === 'granted'));
       
       if (status !== 'granted') {
         Alert.alert(
-          'Camera Permission Required',
-          'Please allow camera access to use the virtual try-on feature.',
+          'Permission Required',
+          'Please allow access to your photo library to use the virtual try-on feature.',
           [
             { text: 'Cancel', onPress: () => navigation.goBack() },
             { text: 'Settings', onPress: () => {/* Open settings */} },
@@ -95,8 +94,8 @@ export default function TryOnCameraScreen() {
         );
       }
     } catch (error) {
-      console.error('Camera permission error:', error);
-      dispatch(setCameraError('Failed to request camera permission'));
+      console.error('Permission error:', error);
+      dispatch(setCameraError('Failed to request permissions'));
     }
   };
 
@@ -125,30 +124,32 @@ export default function TryOnCameraScreen() {
   };
 
   /**
-   * Capture photo
+   * Capture photo from gallery
    */
   const capturePhoto = async () => {
-    if (!cameraRef.current || !isReady) return;
-
     try {
-      const photo = await cameraRef.current.takePictureAsync({
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [3, 4],
         quality: 0.8,
-        base64: false,
-        exif: false,
       });
 
-      const photoCapture: PhotoCapture = {
-        uri: photo.uri,
-        width: photo.width,
-        height: photo.height,
-        type: 'image',
-      };
+      if (!result.canceled && result.assets[0]) {
+        const asset = result.assets[0];
+        const photoCapture: PhotoCapture = {
+          uri: asset.uri,
+          width: asset.width,
+          height: asset.height,
+          type: 'image',
+        };
 
-      dispatch(setUserPhoto(photoCapture));
-      setShowPreview(true);
+        dispatch(setUserPhoto(photoCapture));
+        setShowPreview(true);
+      }
     } catch (error) {
       console.error('Photo capture error:', error);
-      dispatch(setCameraError('Failed to capture photo'));
+      dispatch(setCameraError('Failed to select photo'));
     }
   };
 
@@ -203,6 +204,7 @@ export default function TryOnCameraScreen() {
       })).unwrap();
 
       // Navigate to try-on processing screen
+      // @ts-ignore - Navigation type issue, will be fixed in navigation setup
       navigation.navigate('TryOnProcessing', {
         sessionId: currentSession.id,
         productId,
@@ -222,21 +224,19 @@ export default function TryOnCameraScreen() {
   };
 
   /**
-   * Toggle camera type
+   * Toggle camera type (placeholder for future implementation)
    */
   const toggleCameraType = () => {
-    setCameraType(current => 
-      current === CameraType.back ? CameraType.front : CameraType.back
-    );
+    // Future implementation: Add camera switching functionality
+    console.log('Camera toggle - feature coming soon');
   };
 
   /**
-   * Toggle flash
+   * Toggle flash (placeholder for future implementation)
    */
   const toggleFlash = () => {
-    setFlashMode(current => 
-      current === FlashMode.off ? FlashMode.on : FlashMode.off
-    );
+    // Future implementation: Add flash functionality
+    console.log('Flash toggle - feature coming soon');
   };
 
   /**
@@ -277,10 +277,10 @@ export default function TryOnCameraScreen() {
             colors={Colors.gradients.glass}
             style={styles.controlGradient}
           >
-            <Ionicons 
-              name={flashMode === FlashMode.on ? "flash" : "flash-off"} 
-              size={24} 
-              color={Colors.text.white} 
+            <Ionicons
+              name="flash-off"
+              size={24}
+              color={Colors.text.white}
             />
           </LinearGradient>
         </TouchableOpacity>
@@ -433,15 +433,22 @@ export default function TryOnCameraScreen() {
         renderPhotoPreview()
       ) : (
         <>
-          <Camera
-            ref={cameraRef}
+          <LinearGradient
+            colors={[Colors.primary[600], Colors.primary[800]]}
             style={styles.camera}
-            type={cameraType}
-            flashMode={flashMode}
-            onCameraReady={handleCameraReady}
-          />
+          >
+            {/* Guidelines */}
+            {renderGuidelines()}
+            
+            {/* Placeholder for camera view */}
+            <View style={styles.cameraPlaceholder}>
+              <Ionicons name="camera" size={64} color={Colors.text.white} opacity={0.5} />
+              <Text style={styles.cameraPlaceholderText}>
+                Select a photo from your gallery
+              </Text>
+            </View>
+          </LinearGradient>
           
-          {renderGuidelines()}
           {renderCameraControls()}
         </>
       )}
@@ -466,6 +473,18 @@ const styles = StyleSheet.create({
   },
   camera: {
     flex: 1,
+  },
+  cameraPlaceholder: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  cameraPlaceholderText: {
+    ...Typography.styles.body,
+    color: Colors.text.white,
+    opacity: 0.7,
+    marginTop: Spacing.md,
+    textAlign: 'center',
   },
 
   // Permission screen

@@ -24,6 +24,17 @@ export const Colors = {
     yellow: '#F59E0B',
   },
 
+  // Missing accent colors
+  accent: {
+    400: '#FF6B9D',
+    500: '#A855F7',
+  },
+
+  // Missing neutral colors
+  neutral: {
+    200: '#F3F4F6',
+  },
+
   // Glassmorphism Colors
   glass: {
     white: 'rgba(255, 255, 255, 0.25)',
@@ -32,6 +43,7 @@ export const Colors = {
     darkStrong: 'rgba(0, 0, 0, 0.4)',
     turquoise: 'rgba(49, 151, 149, 0.25)',
     turquoiseStrong: 'rgba(49, 151, 149, 0.4)',
+    light: 'rgba(255, 255, 255, 0.15)',
   },
 
   // Background Gradients
@@ -40,6 +52,8 @@ export const Colors = {
     holographic: ['#FF6B9D', '#A855F7', '#3B82F6', '#06B6D4'] as const,
     dark: ['#1D4044', '#234E52', '#285E61'] as const,
     light: ['#E6FFFA', '#B2F5EA', '#81E6D9'] as const,
+    error: ['#EF4444', '#DC2626'] as const,
+    glass: ['rgba(255,255,255,0.1)', 'rgba(255,255,255,0.05)'] as const,
   },
 
   // Semantic Colors

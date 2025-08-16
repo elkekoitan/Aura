@@ -17,7 +17,9 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useNavigationType } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../navigation/types';
 import { GlassCard, GlassButton, SearchBar } from '../../components/ui';
 import { ProductCard } from '../../components/product';
 import { Colors, Typography, Spacing } from '../../constants';
@@ -31,7 +33,7 @@ import { deleteProduct } from '../../store/slices/adminSlice';
 import { Product } from '../../store/types/product';
 
 export default function ProductManagement() {
-  const navigation = useNavigation();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const dispatch = useAppDispatch();
   
   const { 
@@ -203,7 +205,7 @@ export default function ProductManagement() {
       >
         <GlassCard style={[
           styles.productCard,
-          isSelectionMode && selectedProducts.includes(item.id) && styles.selectedCard
+          isSelectionMode && selectedProducts.includes(item.id) ? styles.selectedCard : undefined
         ]}>
           {/* Selection indicator */}
           {isSelectionMode && (

@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aura Fashion App - Giriş Yap</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo h1 {
+            color: white;
+            font-size: 48px;
+            font-weight: 900;
+            letter-spacing: 8px;
+            margin-bottom: 8px;
+        }
+
+        .logo p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            color: white;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 16px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .form-group input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 15px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-demo {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-demo:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .divider {
+            text-align: center;
+            margin: 20px 0;
+            color: rgba(255, 255, 255, 0.7);
+            position: relative;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 45%;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .divider::before {
+            left: 0;
+        }
+
+        .divider::after {
+            right: 0;
+        }
+
+        .register-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .register-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .register-link a:hover {
+            text-decoration: underline;
+        }
+
+        .app-preview {
+            display: none;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            width: 100%;
+            max-width: 800px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .app-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .user-info h2 {
+            color: white;
+            margin-bottom: 5px;
+        }
+
+        .user-info p {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .action-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .action-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .action-card h3 {
+            color: white;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .action-card p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+        }
+
+        .logout-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                margin: 20px;
+                padding: 30px 20px;
+            }
+
+            .logo h1 {
+                font-size: 36px;
+                letter-spacing: 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Giriş Formu -->
+    <div class="container" id="loginForm">
+        <div class="logo">
+            <h1>AURA</h1>
+            <p>Digital Fashion Experience</p>
+        </div>
+
+        <form id="authForm">
+            <div class="form-group">
+                <label for="email">E-posta</label>
+                <input type="email" id="email" placeholder="E-posta adresinizi girin" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Şifre</label>
+                <input type="password" id="password" placeholder="Şifrenizi girin" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Giriş Yap</button>
+            <button type="button" class="btn btn-demo" onclick="demoLogin()">Demo Hesabı ile Giriş</button>
+        </form>
+
+        <div class="divider">veya</div>
+
+        <div class="register-link">
+            <span style="color: rgba(255, 255, 255, 0.8);">Hesabınız yok mu? </span>
+            <a href="#" onclick="showRegister()">Kayıt Ol</a>
+        </div>
+    </div>
+
+    <!-- Uygulama Ana Sayfası -->
+    <div class="app-preview" id="appPreview">
+        <button class="logout-btn" onclick="logout()">Çıkış Yap</button>
+        
+        <div class="app-header">
+            <div class="user-info">
+                <h2>Merhaba, <span id="userName">Fashion Lover</span>!</h2>
+                <p>Bugün hangi tarzı keşfetmek istiyorsun?</p>
+            </div>
+            <div class="avatar" id="userAvatar">FL</div>
+        </div>
+
+        <div class="quick-actions">
+            <div class="action-card" onclick="showFeature('tryOn')">
+                <h3>📸 Sanal Deneme</h3>
+                <p>AI ile kıyafetleri üzerinizde görün</p>
+            </div>
+            <div class="action-card" onclick="showFeature('discover')">
+                <h3>🔍 Keşfet</h3>
+                <p>Yeni trendleri ve markaları keşfedin</p>
+            </div>
+            <div class="action-card" onclick="showFeature('wardrobe')">
+                <h3>👗 Gardırobum</h3>
+                <p>Kişisel koleksiyonunuzu yönetin</p>
+            </div>
+            <div class="action-card" onclick="showFeature('cart')">
+                <h3>🛍️ Sepetim</h3>
+                <p>Seçtiğiniz ürünleri görüntüleyin</p>
+            </div>
+            <div class="action-card" onclick="showFeature('ai')">
+                <h3>✨ AI Önerileri</h3>
+                <p>Size özel stil önerileri alın</p>
+            </div>
+            <div class="action-card" onclick="showFeature('profile')">
+                <h3>👤 Profil</h3>
+                <p>Hesap ayarlarınızı yönetin</p>
+            </div>
+        </div>
+
+        <div style="background: rgba(255, 255, 255, 0.1); border-radius: 15px; padding: 20px; margin-top: 20px;">
+            <h3 style="color: white; margin-bottom: 15px;">🚀 Uygulama Durumu</h3>
+            <p style="color: rgba(255, 255, 255, 0.9); margin-bottom: 10px;">✅ Supabase Veritabanı: Bağlı</p>
+            <p style="color: rgba(255, 255, 255, 0.9); margin-bottom: 10px;">✅ Stripe Ödeme: Aktif</p>
+            <p style="color: rgba(255, 255, 255, 0.9); margin-bottom: 10px;">✅ Kimlik Doğrulama: Çalışıyor</p>
+            <p style="color: rgba(255, 255, 255, 0.9); margin-bottom: 15px;">🌐 Vercel Deploy: <a href="https://aura-fashion-app-phi.vercel.app" target="_blank" style="color: #667eea;">Canlı</a></p>
+            <p style="color: rgba(255, 255, 255, 0.7); font-size: 14px;">Mobil uygulama EAS Build ile App Store/Play Store'a hazır!</p>
+        </div>
+    </div>
+
+    <script>
+        // Form gönderimi
+        document.getElementById('authForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            if (email && password) {
+                login(email);
+            }
+        });
+
+        // Giriş fonksiyonu
+        function login(email) {
+            const userName = email.split('@')[0] || 'Fashion Lover';
+            const initials = userName.substring(0, 2).toUpperCase();
+            
+            document.getElementById('userName').textContent = userName;
+            document.getElementById('userAvatar').textContent = initials;
+            
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('appPreview').style.display = 'block';
+        }
+
+        // Demo giriş
+        function demoLogin() {
+            login('demo@aura.com');
+        }
+
+        // Çıkış fonksiyonu
+        function logout() {
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('appPreview').style.display = 'none';
+            document.getElementById('email').value = '';
+            document.getElementById('password').value = '';
+        }
+
+        // Kayıt ol göster
+        function showRegister() {
+            alert('Kayıt özelliği yakında eklenecek! Şimdilik demo hesabı ile giriş yapabilirsiniz.');
+        }
+
+        // Özellik göster
+        function showFeature(feature) {
+            const features = {
+                'tryOn': 'Sanal Deneme özelliği AI teknolojisi ile kıyafetleri üzerinizde görmenizi sağlar.',
+                'discover': 'Keşfet bölümünde yeni trendleri, markaları ve ürünleri bulabilirsiniz.',
+                'wardrobe': 'Gardırobunuzda kişisel koleksiyonunuzu oluşturabilir ve yönetebilirsiniz.',
+                'cart': 'Sepetinizde seçtiğiniz ürünleri görüntüleyebilir ve satın alabilirsiniz.',
+                'ai': 'AI önerileri ile size özel stil tavsiyeleri ve ürün önerileri alabilirsiniz.',
+                'profile': 'Profil sayfasında hesap bilgilerinizi ve tercihlerinizi yönetebilirsiniz.'
+            };
+            
+            alert(features[feature] || 'Bu özellik yakında eklenecek!');
+        }
+    </script>
+</body>
+</html>

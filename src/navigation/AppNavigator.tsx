@@ -2,7 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useAppSelector } from '../store';
+import { useAppSelector, useAppDispatch } from '../store';
+import {
+  RootStackParamList,
+  NavigationProp
+} from './types';
 
 // Import Screens
 import WelcomeScreen from '../screens/onboarding/WelcomeScreen';
@@ -27,13 +31,14 @@ import BodyMeasurementsScreen from '../screens/profile/BodyMeasurementsScreen';
 import TryOnCameraScreen from '../screens/tryOn/TryOnCameraScreen';
 import TryOnProcessingScreen from '../screens/tryOn/TryOnProcessingScreen';
 import TryOnHistoryScreen from '../screens/tryOn/TryOnHistoryScreen';
+import { SupabaseTest } from '../components/SupabaseTest';
 
 const Stack = createStackNavigator();
 
 export default function AppNavigator() {
   const { isAuthenticated } = useAppSelector((state) => state.auth);
-  const [showOnboarding, setShowOnboarding] = useState(true);
-  const [isFirstLaunch, setIsFirstLaunch] = useState(true);
+  const [showOnboarding, setShowOnboarding] = useState(false);
+  const [isFirstLaunch, setIsFirstLaunch] = useState(false);
 
   useEffect(() => {
     checkFirstLaunch();
@@ -97,9 +102,17 @@ export default function AppNavigator() {
           // Authenticated User Flow
           <>
             <Stack.Screen name="MainTabs" component={MainTabNavigator} />
-            <Stack.Screen 
-              name="StripeTest" 
+            <Stack.Screen
+              name="StripeTest"
               component={StripeTestScreen}
+              options={{
+                presentation: 'modal',
+                gestureEnabled: true,
+              }}
+            />
+            <Stack.Screen
+              name="SupabaseTest"
+              component={SupabaseTest}
               options={{
                 presentation: 'modal',
                 gestureEnabled: true,

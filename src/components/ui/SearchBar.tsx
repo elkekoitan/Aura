@@ -52,7 +52,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   const [isFocused, setIsFocused] = useState(false);
   const [showSuggestionsList, setShowSuggestionsList] = useState(false);
   const inputRef = useRef<TextInput>(null);
-  const debounceRef = useRef<NodeJS.Timeout>();
+  const debounceRef = useRef<NodeJS.Timeout | null>(null);
 
   /**
    * Handle input change with debouncing
@@ -160,7 +160,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   return (
     <View style={styles.container}>
       {/* Search Input */}
-      <GlassCard style={[styles.searchCard, isFocused && styles.searchCardFocused]}>
+      <GlassCard style={isFocused ? styles.searchCardFocused : styles.searchCard}>
         <View style={styles.searchContainer}>
           {/* Search Icon */}
           <TouchableOpacity

@@ -6,6 +6,59 @@
     <title>Aura Fashion - AI-Powered Fashion App</title>
     <meta name="description" content="Experience the future of fashion with Aura - AI-powered virtual try-on, smart shopping, and personalized style recommendations.">
     
+    <!-- React Native Bridge Config for Web -->
+    <script>
+        if (typeof window !== 'undefined' && !window.__fbBatchedBridgeConfig) {
+            window.__fbBatchedBridgeConfig = {
+                remoteModuleConfig: [],
+                localModulesConfig: []
+            };
+            console.log('Set window.__fbBatchedBridgeConfig from index.html');
+        }
+        if (typeof global !== 'undefined' && !global.__fbBatchedBridgeConfig) {
+            global.__fbBatchedBridgeConfig = {
+                remoteModuleConfig: [],
+                localModulesConfig: []
+            };
+            console.log('Set global.__fbBatchedBridgeConfig from index.html');
+        }
+        
+        // Set up TurboModuleRegistry stub for web
+        if (typeof window !== 'undefined' && !window.TurboModuleRegistry) {
+            window.TurboModuleRegistry = {
+                get: function(name) {
+                    console.warn('TurboModuleRegistry.get("' + name + '") called on web - returning null');
+                    return null;
+                },
+                getEnforcing: function(name) {
+                    console.warn('TurboModuleRegistry.getEnforcing("' + name + '") called on web - returning stub');
+                    
+                    if (name === 'DevSettings') {
+                        return {
+                            addMenuItem: function() {},
+                            reload: function() {
+                                if (typeof window !== 'undefined') {
+                                    window.location.reload();
+                                }
+                            },
+                            onFastRefresh: function() {},
+                            setHotLoadingEnabled: function() {},
+                            setLiveReloadEnabled: function() {},
+                            setProfilingEnabled: function() {},
+                            setRemoteDebuggingEnabled: function() {}
+                        };
+                    }
+                    
+                    return {};
+                }
+            };
+        }
+        
+        if (typeof global !== 'undefined' && !global.TurboModuleRegistry) {
+            global.TurboModuleRegistry = window.TurboModuleRegistry;
+        }
+    </script>
+
     <style>
         * {
             margin: 0;
@@ -190,6 +243,9 @@
     </style>
 </head>
 <body>
+    <!-- Expo Web root mount point -->
+    <div id="root"></div>
+
     <div class="container">
         <!-- Hero Section -->
         <div class="hero">
