@@ -1,13 +1,23 @@
 /**
- * Camera Web Stub
- * Provides web-compatible implementations of camera functions
- * Uses HTML5 getUserMedia API for web camera access
+ * @module utils/camera-web-stub
+ * @description Provides a web-compatible mock implementation of the React Native Camera component
+ * and its related functions. It uses the HTML5 `getUserMedia` API to access the camera on web platforms.
  */
-
 import React, { useRef, useEffect, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-// Mock Camera component for web
+/**
+ * A mock Camera component for web platforms that mimics the behavior of `expo-camera`.
+ * It uses a `<video>` element to display the camera stream.
+ * @param {object} props - The component props.
+ * @param {object} props.style - The style for the component's container.
+ * @param {function} props.onCameraReady - A callback function that is called when the camera is ready.
+ * @param {string} props.type - The camera type ('front' or 'back').
+ * @param {string} props.flashMode - The flash mode (not implemented for web).
+ * @param {React.ReactNode} props.children - Children to be rendered on top of the camera view.
+ * @param {React.Ref} ref - The ref to expose the component's imperative methods.
+ * @returns {React.Component} A camera view component for the web.
+ */
 export const Camera = React.forwardRef(({ style, onCameraReady, type, flashMode, children, ...props }, ref) => {
   const videoRef = useRef(null);
   const [stream, setStream] = useState(null);
@@ -54,6 +64,12 @@ export const Camera = React.forwardRef(({ style, onCameraReady, type, flashMode,
 
   // Expose takePictureAsync method
   React.useImperativeHandle(ref, () => ({
+    /**
+     * Takes a picture and returns the captured image data.
+     * @param {object} [options={}] - Options for taking the picture.
+     * @param {number} [options.quality=0.8] - The quality of the captured image (0 to 1).
+     * @returns {Promise<{uri: string, width: number, height: number, type: string}>} A promise that resolves with the image data.
+     */
     takePictureAsync: async (options = {}) => {
       if (!videoRef.current || !stream) {
         throw new Error('Camera not ready');
@@ -109,7 +125,10 @@ export const Camera = React.forwardRef(({ style, onCameraReady, type, flashMode,
   );
 });
 
-// Mock camera permission functions
+/**
+ * A mock function to request camera permissions on the web.
+ * @returns {Promise<{status: 'granted' | 'denied'}>} A promise that resolves with the permission status.
+ */
 export const requestCameraPermissionsAsync = async () => {
   try {
     await navigator.mediaDevices.getUserMedia({ video: true });
@@ -119,13 +138,19 @@ export const requestCameraPermissionsAsync = async () => {
   }
 };
 
-// Mock camera types
+/**
+ * An object containing mock camera types.
+ * @type {{front: string, back: string}}
+ */
 export const CameraType = {
   front: 'front',
   back: 'back'
 };
 
-// Mock flash modes
+/**
+ * An object containing mock flash modes.
+ * @type {{on: string, off: string, auto: string}}
+ */
 export const FlashMode = {
   on: 'on',
   off: 'off',

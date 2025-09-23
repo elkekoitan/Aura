@@ -1,7 +1,5 @@
 /**
- * ProductCard Component
- * Reusable product card with glassmorphism design
- * Displays product image, name, price, brand with interactive actions
+ * @module components/product/ProductCard
  */
 
 import React from 'react';
@@ -33,6 +31,20 @@ interface ProductCardProps {
   isFavorite?: boolean;
 }
 
+/**
+ * A reusable card component to display product information.
+ * It features a glassmorphism design and includes actions for adding to cart and favoriting.
+ * @param {object} props - The component props.
+ * @param {Product} props.product - The product object to display.
+ * @param {(product: Product) => void} [props.onPress] - Function to call when the card is pressed.
+ * @param {(product: Product) => void} [props.onAddToCart] - Function to call when the add to cart button is pressed.
+ * @param {(product: Product) => void} [props.onToggleFavorite] - Function to call when the favorite button is toggled.
+ * @param {boolean} [props.showBrand=true] - Whether to show the brand name.
+ * @param {boolean} [props.showPrice=true] - Whether to show the product price.
+ * @param {boolean} [props.compact=false] - Whether to render a compact version of the card.
+ * @param {boolean} [props.isFavorite=false] - Whether the product is marked as a favorite.
+ * @returns {React.FC} A React component.
+ */
 export const ProductCard: React.FC<ProductCardProps> = ({
   product,
   onPress,
@@ -44,7 +56,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   isFavorite = false,
 }) => {
   /**
-   * Get primary product image with fallback
+   * Gets the primary image URL for the product, with a fallback.
+   * @returns {string} The URL of the product's primary image.
    */
   const getPrimaryImage = (): string => {
     if (product.product_images && product.product_images.length > 0) {
@@ -58,21 +71,24 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   };
 
   /**
-   * Format price with currency
+   * Formats the price with a currency symbol.
+   * @param {number} price - The price to format.
+   * @returns {string} The formatted price string.
    */
   const formatPrice = (price: number): string => {
     return `$${price.toFixed(2)}`;
   };
 
   /**
-   * Handle card press
+   * Handles the press event on the card.
    */
   const handlePress = () => {
     onPress?.(product);
   };
 
   /**
-   * Handle add to cart
+   * Handles the press event on the "Add to Cart" button.
+   * @param {any} event - The press event object.
    */
   const handleAddToCart = (event: any) => {
     event.stopPropagation();
@@ -80,7 +96,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   };
 
   /**
-   * Handle toggle favorite
+   * Handles the press event on the favorite button.
+   * @param {any} event - The press event object.
    */
   const handleToggleFavorite = (event: any) => {
     event.stopPropagation();

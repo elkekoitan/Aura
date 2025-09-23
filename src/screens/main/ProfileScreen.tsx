@@ -1,3 +1,8 @@
+/**
+ * @module screens/main/ProfileScreen
+ * @description The user's profile screen, displaying their information and providing access to various account-related sections and developer options.
+ */
+
 import React from 'react';
 import {
   View,
@@ -17,11 +22,18 @@ import { signOut } from '../../store/slices/authSlice';
 
 const { width, height } = Dimensions.get('window');
 
+/**
+ * The user's profile screen, displaying their information and providing access to various account-related sections and developer options.
+ * @returns {React.FC} A React component.
+ */
 export default function ProfileScreen() {
   const navigation = useNavigation();
   const dispatch = useAppDispatch();
   const { user, profile } = useAppSelector((state) => state.auth);
 
+  /**
+   * Handles the sign-out process, with a confirmation alert.
+   */
   const handleSignOut = async () => {
     Alert.alert(
       'Sign Out',
@@ -43,30 +55,51 @@ export default function ProfileScreen() {
     );
   };
 
+  /**
+   * Navigates to the Stripe test screen.
+   */
   const handleStripeTest = () => {
     navigation.navigate('StripeTest' as never);
   };
 
+  /**
+   * Navigates to the admin dashboard.
+   */
   const handleAdminAccess = () => {
     navigation.navigate('AdminDashboard' as never);
   };
 
+  /**
+   * Navigates to the order history screen.
+   */
   const handleOrderHistory = () => {
     navigation.navigate('OrderHistory' as never);
   };
 
+  /**
+   * Navigates to the profile editing screen.
+   */
   const handleEditProfile = () => {
     navigation.navigate('ProfileEdit' as never);
   };
 
+  /**
+   * Navigates to the style preferences screen.
+   */
   const handleStylePreferences = () => {
     navigation.navigate('StylePreferences' as never);
   };
 
+  /**
+   * Navigates to the body measurements screen.
+   */
   const handleBodyMeasurements = () => {
     navigation.navigate('BodyMeasurements' as never);
   };
 
+  /**
+   * Navigates to the try-on history screen.
+   */
   const handleTryOnHistory = () => {
     navigation.navigate('TryOnHistory' as never);
   };

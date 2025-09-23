@@ -1,3 +1,7 @@
+/**
+ * @module components/ui/GlassCard
+ */
+
 import React from 'react';
 import { View, ViewStyle, StyleSheet } from 'react-native';
 import { BlurView } from 'expo-blur';
@@ -17,6 +21,22 @@ interface GlassCardProps {
   shadow?: boolean;
 }
 
+/**
+ * A card component with a frosted glass effect using `expo-blur`.
+ * It can be customized with gradients, shadows, and various other properties.
+ * @param {object} props - The component props.
+ * @param {React.ReactNode} props.children - The content to render inside the card.
+ * @param {ViewStyle} [props.style] - Custom styles for the card container.
+ * @param {number} [props.intensity=20] - The intensity of the blur effect.
+ * @param {'light' | 'dark' | 'default'} [props.tint='light'] - The tint of the blur view.
+ * @param {boolean} [props.gradient=false] - Whether to apply a gradient background.
+ * @param {readonly string[]} [props.gradientColors=Colors.gradients.primary] - The colors for the gradient.
+ * @param {number} [props.borderRadius=Spacing.component.radius.lg] - The border radius of the card.
+ * @param {number} [props.padding=Spacing.component.card.padding] - The padding inside the card.
+ * @param {number} [props.margin=Spacing.component.card.margin] - The margin around the card.
+ * @param {boolean} [props.shadow=true] - Whether to apply a shadow to the card.
+ * @returns {React.FC} A React component.
+ */
 export const GlassCard: React.FC<GlassCardProps> = ({
   children,
   style,

@@ -1,9 +1,18 @@
-// Aura App - Spacing System
+/**
+ * @module constants/Spacing
+ * @description Defines the spacing system for the Aura Fashion app, based on a 4px grid.
+ * This includes a general spacing scale and component-specific spacing values.
+ */
+
 export const Spacing = {
-  // Base spacing unit (4px)
+  /**
+   * The base unit for the spacing system (4px).
+   */
   unit: 4,
 
-  // Spacing scale
+  /**
+   * A general-purpose spacing scale for consistent layout.
+   */
   xs: 4,    // 4px
   sm: 8,    // 8px
   md: 12,   // 12px
@@ -17,9 +26,13 @@ export const Spacing = {
   '7xl': 80, // 80px
   '8xl': 96, // 96px
 
-  // Component specific spacing
+  /**
+   * Spacing values tailored for specific UI components.
+   */
   component: {
-    // Padding
+    /**
+     * Padding values for components.
+     */
     padding: {
       xs: 8,
       sm: 12,
@@ -28,7 +41,9 @@ export const Spacing = {
       xl: 24,
     },
     
-    // Margins
+    /**
+     * Margin values for components.
+     */
     margin: {
       xs: 8,
       sm: 12,
@@ -37,7 +52,9 @@ export const Spacing = {
       xl: 24,
     },
 
-    // Gaps
+    /**
+     * Gap values for use in flexbox layouts.
+     */
     gap: {
       xs: 4,
       sm: 8,
@@ -46,7 +63,9 @@ export const Spacing = {
       xl: 20,
     },
 
-    // Border radius
+    /**
+     * Border radius values for rounding corners.
+     */
     radius: {
       xs: 4,
       sm: 8,
@@ -58,55 +77,71 @@ export const Spacing = {
       full: 9999,
     },
 
-    // Screen padding
+    /**
+     * Default padding for screens.
+     */
     screen: {
       horizontal: 20,
       vertical: 16,
     },
 
-    // Card spacing
+    /**
+     * Spacing for card components.
+     */
     card: {
       padding: 16,
       margin: 12,
       gap: 12,
     },
 
-    // Button spacing
+    /**
+     * Spacing for button components.
+     */
     button: {
       paddingHorizontal: 20,
       paddingVertical: 12,
       gap: 8,
     },
 
-    // Input spacing
+    /**
+     * Spacing for input components.
+     */
     input: {
       paddingHorizontal: 16,
       paddingVertical: 12,
       gap: 8,
     },
 
-    // Header spacing
+    /**
+     * Spacing for headers.
+     */
     header: {
       height: 60,
       paddingHorizontal: 20,
       paddingVertical: 12,
     },
 
-    // Tab bar spacing
+    /**
+     * Spacing for tab bars.
+     */
     tabBar: {
       height: 80,
       paddingHorizontal: 20,
       paddingVertical: 12,
     },
 
-    // Modal spacing
+    /**
+     * Spacing for modals.
+     */
     modal: {
       padding: 20,
       margin: 20,
       gap: 16,
     },
 
-    // List spacing
+    /**
+     * Spacing for lists and list items.
+     */
     list: {
       itemPadding: 16,
       itemGap: 8,

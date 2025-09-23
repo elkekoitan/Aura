@@ -1,3 +1,21 @@
+/**
+ * @module supabase/functions/create-payment-intent
+ * @description This Supabase edge function creates a Stripe Payment Intent for a transaction.
+ * It also creates a corresponding order record in the Supabase database, including the order items.
+ *
+ * @requires deno.land/std/http/server
+ * @requires @supabase/supabase-js
+ * @requires stripe
+ *
+ * @param {Request} req - The incoming HTTP request.
+ * @param {object} req.body - The request body.
+ * @param {number} req.body.amount - The total amount for the payment intent in the base currency unit (e.g., dollars).
+ * @param {string} [req.body.currency='usd'] - The currency for the payment intent.
+ * @param {string[]} req.body.productIds - An array of product IDs included in the order.
+ * @param {object} req.body.shippingAddress - The shipping address for the order.
+ *
+ * @returns {Response} A response object with the Payment Intent's client secret and the created order's ID, or an error message.
+ */
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import Stripe from 'https://esm.sh/stripe@14.21.0'

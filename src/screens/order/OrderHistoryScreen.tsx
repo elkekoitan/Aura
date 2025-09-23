@@ -1,7 +1,6 @@
 /**
- * OrderHistoryScreen
- * Complete order history with search, filtering, and order management
- * Displays user's order history with status tracking and actions
+ * @module screens/order/OrderHistoryScreen
+ * @description A screen that displays the user's order history, with options to search, filter by status, and view order details.
  */
 
 import React, { useState, useEffect } from 'react';
@@ -50,6 +49,10 @@ const ORDER_STATUS_ICONS: Record<OrderStatus, string> = {
   returned: 'return-down-back-outline',
 };
 
+/**
+ * A screen that displays the user's order history, with options to search, filter by status, and view order details.
+ * @returns {React.FC} A React component.
+ */
 export default function OrderHistoryScreen() {
   const navigation = useNavigation();
   const dispatch = useAppDispatch();
@@ -66,14 +69,14 @@ export default function OrderHistoryScreen() {
   const [selectedStatus, setSelectedStatus] = useState<OrderStatus | 'all'>('all');
 
   /**
-   * Load orders on mount
+   * Loads the user's orders when the component mounts.
    */
   useEffect(() => {
     loadOrders();
   }, []);
 
   /**
-   * Load orders
+   * Fetches the list of orders from the store.
    */
   const loadOrders = async () => {
     try {
@@ -84,7 +87,7 @@ export default function OrderHistoryScreen() {
   };
 
   /**
-   * Handle refresh
+   * Handles the pull-to-refresh action to reload the order list.
    */
   const handleRefresh = async () => {
     setRefreshing(true);
@@ -96,7 +99,9 @@ export default function OrderHistoryScreen() {
   };
 
   /**
-   * Handle search
+   * Handles searching for orders.
+   * @param {string} query - The search query.
+   * @todo Implement search functionality.
    */
   const handleSearch = (query: string) => {
     dispatch(setSearchQuery(query));
@@ -104,7 +109,9 @@ export default function OrderHistoryScreen() {
   };
 
   /**
-   * Handle status filter
+   * Handles filtering orders by status.
+   * @param {OrderStatus | 'all'} status - The status to filter by.
+   * @todo Implement filtering functionality.
    */
   const handleStatusFilter = (status: OrderStatus | 'all') => {
     setSelectedStatus(status);
@@ -117,21 +124,25 @@ export default function OrderHistoryScreen() {
   };
 
   /**
-   * Handle order press
+   * Navigates to the order detail screen.
+   * @param {Order} order - The order to view.
    */
   const handleOrderPress = (order: Order) => {
     navigation.navigate('OrderDetail', { orderId: order.id, order });
   };
 
   /**
-   * Handle track order
+   * Navigates to the order tracking screen.
+   * @param {Order} order - The order to track.
    */
   const handleTrackOrder = (order: Order) => {
     navigation.navigate('OrderTracking', { orderId: order.id });
   };
 
   /**
-   * Handle reorder
+   * Handles reordering items from a previous order.
+   * @param {Order} order - The order to reorder from.
+   * @todo Implement reorder functionality.
    */
   const handleReorder = (order: Order) => {
     // TODO: Implement reorder functionality
@@ -139,7 +150,9 @@ export default function OrderHistoryScreen() {
   };
 
   /**
-   * Format order date
+   * Formats a date string for display.
+   * @param {string} dateString - The ISO date string to format.
+   * @returns {string} The formatted date string (e.g., "Jan 1, 2024").
    */
   const formatOrderDate = (dateString: string): string => {
     const date = new Date(dateString);
@@ -151,14 +164,19 @@ export default function OrderHistoryScreen() {
   };
 
   /**
-   * Get status display text
+   * Gets the display text for a given order status.
+   * @param {OrderStatus} status - The order status.
+   * @returns {string} The formatted status text.
    */
   const getStatusDisplayText = (status: OrderStatus): string => {
     return status.charAt(0).toUpperCase() + status.slice(1).replace('_', ' ');
   };
 
   /**
-   * Render order item
+   * Renders a single order item for the list.
+   * @param {object} params - The render item parameters.
+   * @param {Order} params.item - The order item to render.
+   * @returns {React.ReactElement} The rendered order item component.
    */
   const renderOrderItem = ({ item }: { item: Order }) => (
     <TouchableOpacity
@@ -234,7 +252,8 @@ export default function OrderHistoryScreen() {
   );
 
   /**
-   * Render status filter
+   * Renders the status filter buttons.
+   * @returns {React.ReactElement} The status filter component.
    */
   const renderStatusFilter = () => {
     const statuses: Array<{ key: OrderStatus | 'all'; label: string }> = [
@@ -281,7 +300,8 @@ export default function OrderHistoryScreen() {
   };
 
   /**
-   * Render empty state
+   * Renders a view to display when there are no orders.
+   * @returns {React.ReactElement} The empty state component.
    */
   const renderEmptyState = () => (
     <View style={styles.emptyContainer}>

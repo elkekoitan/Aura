@@ -1,3 +1,9 @@
+/**
+ * @module screens/test/StripeTestScreen.web
+ * @description A web-specific version of the Stripe test screen.
+ * It provides a demo of the payment flow for web users, as full payment processing is only available on mobile.
+ */
+
 import React from 'react';
 import {
   View,
@@ -11,7 +17,15 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { GlassCard, GlassButton } from '../../components/ui';
 import { Colors, Typography, Spacing } from '../../constants';
 
+/**
+ * A web-specific version of the Stripe test screen.
+ * It provides a demo of the payment flow for web users, as full payment processing is only available on mobile.
+ * @returns {React.FC} A React component.
+ */
 export default function StripeTestScreen() {
+  /**
+   * Handles the web payment demo by showing an informational alert.
+   */
   const handleWebPaymentDemo = () => {
     Alert.alert(
       'Payment Demo',

@@ -1,3 +1,9 @@
+/**
+ * @module screens/auth/RegisterScreen
+ * @description A screen for new users to create an account.
+ * It includes a multi-field form with real-time validation and handles the registration process.
+ */
+
 import React, { useState } from 'react';
 import {
   View,
@@ -21,6 +27,11 @@ import { signUp, clearError } from '../../store/slices/authSlice';
 
 const { width, height } = Dimensions.get('window');
 
+/**
+ * A screen for new users to create an account.
+ * It includes a multi-field form with real-time validation and handles the registration process.
+ * @returns {React.FC} A React component.
+ */
 export default function RegisterScreen() {
   const navigation = useNavigation();
   const dispatch = useAppDispatch();
@@ -51,8 +62,10 @@ export default function RegisterScreen() {
   }, [dispatch]);
 
   /**
-   * Validates individual form fields
-   * Uses comprehensive validation rules for user registration
+   * Validates a single form field based on a set of rules.
+   * @param {string} field - The name of the field to validate.
+   * @param {string} value - The value of the field to validate.
+   * @returns {string | undefined} An error message if validation fails, otherwise undefined.
    */
   const validateField = (field: string, value: string): string | undefined => {
     switch (field) {
@@ -85,8 +98,9 @@ export default function RegisterScreen() {
   };
 
   /**
-   * Handles form field updates with real-time validation
-   * Integrates with React state management and validation system
+   * Handles changes to form fields, updating the state and clearing validation errors.
+   * @param {keyof typeof formData} field - The name of the field that changed.
+   * @param {string} value - The new value of the field.
    */
   const handleFieldChange = (field: keyof typeof formData, value: string) => {
     // Update form data
@@ -99,8 +113,8 @@ export default function RegisterScreen() {
   };
 
   /**
-   * Validates entire form before submission
-   * Returns true if form is valid, false otherwise
+   * Validates the entire form and updates the validation errors state.
+   * @returns {boolean} True if the form is valid, false otherwise.
    */
   const validateForm = (): boolean => {
     const errors: typeof validationErrors = {};
@@ -118,9 +132,8 @@ export default function RegisterScreen() {
   };
 
   /**
-   * Handles user registration with Supabase integration
-   * Uses Redux Toolkit async thunk for state management
-   * Implements comprehensive error handling and user feedback
+   * Handles the user registration process. It validates the form, dispatches the signUp action,
+   * and provides feedback to the user.
    */
   const handleRegister = async () => {
     // Validate form before submission

@@ -1,7 +1,7 @@
 /**
- * BodyMeasurementsScreen
- * Comprehensive body measurements and size management
- * Helps users track their measurements for better size recommendations
+ * @module screens/profile/BodyMeasurementsScreen
+ * @description A screen for users to input and manage their body measurements and fit preferences
+ * to receive better size recommendations.
  */
 
 import React, { useState, useEffect } from 'react';
@@ -47,6 +47,11 @@ const BODY_TYPES = [
   { key: 'inverted-triangle', label: 'Inverted Triangle', description: 'Broad shoulders, narrow hips' },
 ];
 
+/**
+ * A screen for users to input and manage their body measurements and fit preferences
+ * to receive better size recommendations.
+ * @returns {React.FC} A React component.
+ */
 export default function BodyMeasurementsScreen() {
   const navigation = useNavigation();
   const dispatch = useAppDispatch();
@@ -82,7 +87,7 @@ export default function BodyMeasurementsScreen() {
   });
 
   /**
-   * Set editing section on mount
+   * Sets the editing section in the profile slice when the component mounts.
    */
   useEffect(() => {
     dispatch(setEditingSection('measurements'));
@@ -92,7 +97,9 @@ export default function BodyMeasurementsScreen() {
   }, []);
 
   /**
-   * Handle field change
+   * Handles changes to a form field.
+   * @param {keyof UpdateBodyMeasurementsParams} field - The name of the field to update.
+   * @param {any} value - The new value for the field.
    */
   const handleFieldChange = (field: keyof UpdateBodyMeasurementsParams, value: any) => {
     setMeasurements(prev => ({
@@ -102,7 +109,9 @@ export default function BodyMeasurementsScreen() {
   };
 
   /**
-   * Handle fit preference change
+   * Handles changes to the user's fit preference for a specific clothing category.
+   * @param {'tops' | 'bottoms' | 'dresses'} category - The clothing category.
+   * @param {FitPreference} preference - The selected fit preference.
    */
   const handleFitPreferenceChange = (
     category: 'tops' | 'bottoms' | 'dresses',
@@ -118,7 +127,7 @@ export default function BodyMeasurementsScreen() {
   };
 
   /**
-   * Handle save measurements
+   * Handles saving the user's body measurements.
    */
   const handleSave = async () => {
     try {
@@ -132,7 +141,13 @@ export default function BodyMeasurementsScreen() {
   };
 
   /**
-   * Render measurement input
+   * Renders a single measurement input field.
+   * @param {string} label - The label for the input field.
+   * @param {keyof UpdateBodyMeasurementsParams} field - The name of the field in the state.
+   * @param {string} unit - The unit of measurement (e.g., "cm", "kg").
+   * @param {string} placeholder - The placeholder text for the input.
+   * @param {'numeric' | 'default'} [keyboardType='numeric'] - The keyboard type for the input.
+   * @returns {React.ReactElement} The rendered input field component.
    */
   const renderMeasurementInput = (
     label: string,
@@ -163,7 +178,10 @@ export default function BodyMeasurementsScreen() {
   );
 
   /**
-   * Render fit preference selector
+   * Renders a selector for fit preferences for a given clothing category.
+   * @param {string} title - The title of the fit preference section.
+   * @param {'tops' | 'bottoms' | 'dresses'} category - The clothing category.
+   * @returns {React.ReactElement} The rendered fit preference selector component.
    */
   const renderFitPreferenceSelector = (
     title: string,

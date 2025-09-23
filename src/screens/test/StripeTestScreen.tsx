@@ -1,3 +1,9 @@
+/**
+ * @module screens/test/StripeTestScreen
+ * @description A test screen for verifying the Stripe payment integration.
+ * It provides a mock purchase flow and a button to check the Stripe key configuration.
+ */
+
 import React, { useState } from 'react';
 import {
   View,
@@ -23,6 +29,11 @@ if (Platform.OS !== 'web') {
 import { GlassCard, GlassButton } from '../../components/ui';
 import { Colors, Typography, Spacing } from '../../constants';
 
+/**
+ * A test screen for verifying the Stripe payment integration.
+ * It provides a mock purchase flow and a button to check the Stripe key configuration.
+ * @returns {React.FC} A React component.
+ */
 export default function StripeTestScreen() {
   const [loading, setLoading] = useState(false);
   const { initPaymentSheet, presentPaymentSheet } = useStripe();
@@ -48,6 +59,10 @@ export default function StripeTestScreen() {
     },
   ];
 
+  /**
+   * Handles the purchase of a test product.
+   * @param {any} product - The product to purchase.
+   */
   const handlePurchase = async (product: any) => {
     setLoading(true);
     
@@ -71,6 +86,10 @@ export default function StripeTestScreen() {
     }
   };
 
+  /**
+   * Processes the payment for a test product using Stripe.
+   * @param {any} product - The product to process the payment for.
+   */
   const processPayment = async (product: any) => {
     try {
       // Check if Stripe is available (mobile platforms)
@@ -114,6 +133,9 @@ export default function StripeTestScreen() {
     }
   };
 
+  /**
+   * Tests the Stripe connection and key configuration.
+   */
   const testStripeConnection = async () => {
     setLoading(true);
     

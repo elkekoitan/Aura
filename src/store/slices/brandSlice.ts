@@ -1,7 +1,7 @@
 /**
- * Brand Redux Slice
- * Manages brand state, search, filtering, and CRUD operations
- * Integrates with Supabase for real-time brand data
+ * @module store/slices/brandSlice
+ * @description A Redux slice for managing brand-related state, including fetching, searching,
+ * filtering, and performing CRUD operations on brands.
  */
 
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
@@ -46,7 +46,9 @@ const initialState: BrandState = {
 };
 
 /**
- * Fetch all brands with optional filtering and pagination
+ * An async thunk to fetch a paginated and filtered list of brands.
+ * @param {BrandSearchParams} [params={}] - The parameters for fetching brands.
+ * @returns {Promise<BrandsResponse>} A promise that resolves with the list of brands and pagination information.
  */
 export const fetchBrands = createAsyncThunk(
   'brands/fetchBrands',
@@ -106,7 +108,9 @@ export const fetchBrands = createAsyncThunk(
 );
 
 /**
- * Fetch featured brands for homepage display
+ * An async thunk to fetch a list of featured brands.
+ * @param {number} [limit=6] - The maximum number of featured brands to fetch.
+ * @returns {Promise<Brand[]>} A promise that resolves with the list of featured brands.
  */
 export const fetchFeaturedBrands = createAsyncThunk(
   'brands/fetchFeaturedBrands',
@@ -130,7 +134,9 @@ export const fetchFeaturedBrands = createAsyncThunk(
 );
 
 /**
- * Fetch single brand by ID with full details
+ * An async thunk to fetch a single brand by its ID.
+ * @param {string} brandId - The ID of the brand to fetch.
+ * @returns {Promise<any>} A promise that resolves with the brand data.
  */
 export const fetchBrandById = createAsyncThunk(
   'brands/fetchBrandById',
@@ -153,7 +159,9 @@ export const fetchBrandById = createAsyncThunk(
 );
 
 /**
- * Search brands with debounced query
+ * An async thunk to search for brands based on a query.
+ * @param {string} query - The search query.
+ * @returns {Promise<Brand[]>} A promise that resolves with a list of matching brands.
  */
 export const searchBrands = createAsyncThunk(
   'brands/searchBrands',
@@ -181,7 +189,8 @@ export const searchBrands = createAsyncThunk(
 );
 
 /**
- * Fetch brand statistics including product counts and price ranges
+ * An async thunk to fetch statistics for all brands.
+ * @returns {Promise<BrandStats[]>} A promise that resolves with a list of brand statistics.
  */
 export const fetchBrandStats = createAsyncThunk(
   'brands/fetchBrandStats',
@@ -229,7 +238,9 @@ export const fetchBrandStats = createAsyncThunk(
 );
 
 /**
- * Create new brand (admin function)
+ * An async thunk to create a new brand (admin function).
+ * @param {Omit<Brand, 'id' | 'created_at' | 'updated_at'>} brandData - The data for the new brand.
+ * @returns {Promise<any>} A promise that resolves with the newly created brand data.
  */
 export const createBrand = createAsyncThunk(
   'brands/createBrand',
@@ -249,7 +260,11 @@ export const createBrand = createAsyncThunk(
 );
 
 /**
- * Update existing brand (admin function)
+ * An async thunk to update an existing brand (admin function).
+ * @param {object} params - The parameters for the update.
+ * @param {string} params.id - The ID of the brand to update.
+ * @param {Partial<Brand>} params.updateData - The data to update.
+ * @returns {Promise<any>} A promise that resolves with the updated brand data.
  */
 export const updateBrand = createAsyncThunk(
   'brands/updateBrand',
@@ -270,7 +285,9 @@ export const updateBrand = createAsyncThunk(
 );
 
 /**
- * Delete brand (admin function)
+ * An async thunk to delete a brand (admin function).
+ * @param {string} brandId - The ID of the brand to delete.
+ * @returns {Promise<string>} A promise that resolves with the ID of the deleted brand.
  */
 export const deleteBrand = createAsyncThunk(
   'brands/deleteBrand',
@@ -293,55 +310,106 @@ const brandSlice = createSlice({
   name: 'brands',
   initialState,
   reducers: {
-    // Search and filtering actions
+    /**
+     * Sets the search query for brands.
+     * @param {BrandState} state - The current state.
+     * @param {PayloadAction<string>} action - The action containing the search query.
+     */
     setSearchQuery: (state, action: PayloadAction<string>) => {
       state.searchQuery = action.payload;
     },
     
+    /**
+     * Sets the filters for brands.
+     * @param {BrandState} state - The current state.
+     * @param {PayloadAction<BrandFilters>} action - The action containing the brand filters.
+     */
     setFilters: (state, action: PayloadAction<BrandFilters>) => {
       state.filters = action.payload;
     },
     
+    /**
+     * Updates existing brand filters.
+     * @param {BrandState} state - The current state.
+     * @param {PayloadAction<Partial<BrandFilters>>} action - The action containing the partial brand filters.
+     */
     updateFilters: (state, action: PayloadAction<Partial<BrandFilters>>) => {
       state.filters = { ...state.filters, ...action.payload };
     },
     
+    /**
+     * Clears all brand filters.
+     * @param {BrandState} state - The current state.
+     */
     clearFilters: (state) => {
       state.filters = {};
     },
     
+    /**
+     * Sets the sorting option for brands.
+     * @param {BrandState} state - The current state.
+     * @param {PayloadAction<BrandSortOption>} action - The action containing the sort option.
+     */
     setSortBy: (state, action: PayloadAction<BrandSortOption>) => {
       state.sortBy = action.payload;
     },
     
+    /**
+     * Sets the sort order for brands.
+     * @param {BrandState} state - The current state.
+     * @param {PayloadAction<'asc' | 'desc'>} action - The action containing the sort order.
+     */
     setSortOrder: (state, action: PayloadAction<'asc' | 'desc'>) => {
       state.sortOrder = action.payload;
     },
     
-    // Brand selection actions
+    /**
+     * Sets the currently selected brand.
+     * @param {BrandState} state - The current state.
+     * @param {PayloadAction<Brand | null>} action - The action containing the selected brand.
+     */
     setSelectedBrand: (state, action: PayloadAction<Brand | null>) => {
       state.selectedBrand = action.payload;
     },
     
-    // Pagination actions
+    /**
+     * Sets the current page for brand pagination.
+     * @param {BrandState} state - The current state.
+     * @param {PayloadAction<number>} action - The action containing the page number.
+     */
     setCurrentPage: (state, action: PayloadAction<number>) => {
       state.currentPage = action.payload;
     },
     
-    // Error clearing actions
+    /**
+     * Clears the main error state.
+     * @param {BrandState} state - The current state.
+     */
     clearError: (state) => {
       state.error = null;
     },
     
+    /**
+     * Clears the search error state.
+     * @param {BrandState} state - The current state.
+     */
     clearSearchError: (state) => {
       state.searchError = null;
     },
     
+    /**
+     * Clears the stats error state.
+     * @param {BrandState} state - The current state.
+     */
     clearStatsError: (state) => {
       state.statsError = null;
     },
     
-    // Reset state
+    /**
+     * Resets the brand state to its initial values.
+     * @param {BrandState} state - The current state.
+     * @returns {BrandState} The initial state.
+     */
     resetBrandState: (state) => {
       return { ...initialState };
     },

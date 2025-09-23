@@ -1,7 +1,7 @@
 /**
- * BrandDetailScreen
- * Comprehensive brand detail view with products, stats, and actions
- * Integrates with Redux state management and navigation
+ * @module screens/brand/BrandDetailScreen
+ * @description A screen that displays detailed information about a specific brand,
+ * including its products, statistics, and actions like following and visiting the website.
  */
 
 import React, { useState, useEffect } from 'react';
@@ -35,6 +35,11 @@ type BrandDetailRouteProp = RouteProp<{
   BrandDetail: { brandId: string; brand?: Brand };
 }, 'BrandDetail'>;
 
+/**
+ * A screen that displays detailed information about a specific brand,
+ * including its products, statistics, and actions like following and visiting the website.
+ * @returns {React.FC} A React component.
+ */
 export default function BrandDetailScreen() {
   const route = useRoute<BrandDetailRouteProp>();
   const navigation = useNavigation();
@@ -55,14 +60,14 @@ export default function BrandDetailScreen() {
   const brand = selectedBrand || routeBrand;
 
   /**
-   * Initialize data on mount
+   * Initializes the screen by loading the brand's data when the component mounts or brandId changes.
    */
   useEffect(() => {
     loadBrandData();
   }, [brandId]);
 
   /**
-   * Load brand data and products
+   * Fetches the brand's details and products from the store.
    */
   const loadBrandData = async () => {
     try {
@@ -80,7 +85,7 @@ export default function BrandDetailScreen() {
   };
 
   /**
-   * Handle refresh
+   * Handles the pull-to-refresh action to reload the brand's data.
    */
   const handleRefresh = async () => {
     setRefreshing(true);
@@ -92,7 +97,8 @@ export default function BrandDetailScreen() {
   };
 
   /**
-   * Handle follow brand
+   * Toggles the follow state for the brand.
+   * @todo Implement the actual follow functionality with the backend.
    */
   const handleFollowBrand = () => {
     setIsFollowing(!isFollowing);
@@ -101,7 +107,7 @@ export default function BrandDetailScreen() {
   };
 
   /**
-   * Handle visit website
+   * Opens the brand's website in the device's default browser.
    */
   const handleVisitWebsite = async () => {
     if (brand?.website_url) {
@@ -114,7 +120,9 @@ export default function BrandDetailScreen() {
   };
 
   /**
-   * Handle product press
+   * Handles the press event on a product card.
+   * @param {Product} product - The product that was pressed.
+   * @todo Navigate to the product detail screen.
    */
   const handleProductPress = (product: Product) => {
     console.log('Navigate to product:', product.id);
@@ -122,7 +130,9 @@ export default function BrandDetailScreen() {
   };
 
   /**
-   * Handle add to cart
+   * Handles adding a product to the cart.
+   * @param {Product} product - The product to add to the cart.
+   * @todo Implement the add to cart functionality.
    */
   const handleAddToCart = (product: Product) => {
     console.log('Add to cart:', product.id);
@@ -130,7 +140,9 @@ export default function BrandDetailScreen() {
   };
 
   /**
-   * Handle toggle favorite
+   * Toggles the favorite state of a product.
+   * @param {Product} product - The product to toggle as a favorite.
+   * @todo Implement the favorites functionality.
    */
   const handleToggleFavorite = (product: Product) => {
     console.log('Toggle favorite:', product.id);
@@ -138,14 +150,16 @@ export default function BrandDetailScreen() {
   };
 
   /**
-   * Get brand logo with fallback
+   * Gets the brand's logo URL, providing a fallback if one doesn't exist.
+   * @returns {string} The URL of the brand's logo.
    */
   const getBrandLogo = (): string => {
     return brand?.logo_url || 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=200&h=200&fit=crop';
   };
 
   /**
-   * Get product count
+   * Gets the number of products for the brand.
+   * @returns {number} The product count.
    */
   const getProductCount = (): number => {
     return brandProducts.length || brand?.product_count || brand?.products?.length || 0;

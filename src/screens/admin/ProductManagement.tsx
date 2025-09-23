@@ -1,7 +1,7 @@
 /**
- * ProductManagement Screen
- * Admin interface for managing products with CRUD operations
- * Includes search, filtering, and bulk operations
+ * @module screens/admin/ProductManagement
+ * @description A screen for administrators to manage products.
+ * It provides functionalities for viewing, searching, editing, deleting, and bulk-managing products.
  */
 
 import React, { useState, useEffect } from 'react';
@@ -30,6 +30,11 @@ import {
 import { deleteProduct } from '../../store/slices/adminSlice';
 import { Product } from '../../store/types/product';
 
+/**
+ * A screen for administrators to manage products.
+ * It provides functionalities for viewing, searching, editing, deleting, and bulk-managing products.
+ * @returns {React.FC} A React component.
+ */
 export default function ProductManagement() {
   const navigation = useNavigation();
   const dispatch = useAppDispatch();
@@ -46,14 +51,14 @@ export default function ProductManagement() {
   const [isSelectionMode, setIsSelectionMode] = useState(false);
 
   /**
-   * Load products on mount
+   * Loads the initial list of products when the component mounts.
    */
   useEffect(() => {
     loadProducts();
   }, []);
 
   /**
-   * Load all products
+   * Fetches the list of products from the store.
    */
   const loadProducts = async () => {
     try {
@@ -64,7 +69,7 @@ export default function ProductManagement() {
   };
 
   /**
-   * Handle refresh
+   * Handles the pull-to-refresh action to reload the product list.
    */
   const handleRefresh = async () => {
     setRefreshing(true);
@@ -76,7 +81,8 @@ export default function ProductManagement() {
   };
 
   /**
-   * Handle search
+   * Handles the search functionality, dispatching a search action or reloading all products if the query is empty.
+   * @param {string} query - The search query.
    */
   const handleSearch = (query: string) => {
     dispatch(setSearchQuery(query));
@@ -88,14 +94,16 @@ export default function ProductManagement() {
   };
 
   /**
-   * Handle product edit
+   * Navigates to the product editing screen.
+   * @param {Product} product - The product to edit.
    */
   const handleEditProduct = (product: Product) => {
     navigation.navigate('EditProduct', { productId: product.id, product });
   };
 
   /**
-   * Handle product delete
+   * Shows a confirmation alert before deleting a product.
+   * @param {Product} product - The product to delete.
    */
   const handleDeleteProduct = (product: Product) => {
     Alert.alert(
@@ -113,7 +121,8 @@ export default function ProductManagement() {
   };
 
   /**
-   * Confirm product deletion
+   * Confirms and dispatches the delete action for a single product.
+   * @param {string} productId - The ID of the product to delete.
    */
   const confirmDeleteProduct = async (productId: string) => {
     try {
@@ -126,7 +135,8 @@ export default function ProductManagement() {
   };
 
   /**
-   * Toggle product selection
+   * Toggles the selection state of a product in selection mode.
+   * @param {string} productId - The ID of the product to select/deselect.
    */
   const toggleProductSelection = (productId: string) => {
     setSelectedProducts(prev => {
@@ -139,7 +149,7 @@ export default function ProductManagement() {
   };
 
   /**
-   * Toggle selection mode
+   * Toggles the selection mode on or off.
    */
   const toggleSelectionMode = () => {
     setIsSelectionMode(!isSelectionMode);
@@ -147,7 +157,7 @@ export default function ProductManagement() {
   };
 
   /**
-   * Handle bulk delete
+   * Shows a confirmation alert before deleting multiple products.
    */
   const handleBulkDelete = () => {
     if (selectedProducts.length === 0) return;
@@ -167,7 +177,7 @@ export default function ProductManagement() {
   };
 
   /**
-   * Confirm bulk deletion
+   * Confirms and dispatches the delete action for all selected products.
    */
   const confirmBulkDelete = async () => {
     try {
@@ -186,7 +196,10 @@ export default function ProductManagement() {
   };
 
   /**
-   * Render product item for admin list
+   * Renders a single product item for the admin list.
+   * @param {object} params - The render item parameters.
+   * @param {Product} params.item - The product item to render.
+   * @returns {React.ReactElement} The rendered product item component.
    */
   const renderProductItem = ({ item }: { item: Product }) => (
     <View style={styles.productItem}>
@@ -262,7 +275,8 @@ export default function ProductManagement() {
   );
 
   /**
-   * Render header with actions
+   * Renders the header component with actions for selection mode and adding new products.
+   * @returns {React.ReactElement} The header actions component.
    */
   const renderHeader = () => (
     <View style={styles.headerActions}>

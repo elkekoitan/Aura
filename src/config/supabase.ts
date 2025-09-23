@@ -1,9 +1,18 @@
+/**
+ * @module config/supabase
+ * @description Initializes the Supabase client and defines database types.
+ */
+
 import { createClient } from '@supabase/supabase-js';
 
 // Supabase configuration
 const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL || 'YOUR_SUPABASE_URL';
 const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || 'YOUR_SUPABASE_ANON_KEY';
 
+/**
+ * The Supabase client instance.
+ * @type {SupabaseClient}
+ */
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
     autoRefreshToken: true,
@@ -13,6 +22,11 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
 });
 
 // Database Types
+
+/**
+ * Represents a user in the authentication system.
+ * @interface User
+ */
 export interface User {
   id: string;
   email: string;
@@ -22,6 +36,10 @@ export interface User {
   updated_at: string;
 }
 
+/**
+ * Represents a user's public profile.
+ * @interface UserProfile
+ */
 export interface UserProfile {
   id: string;
   user_id: string;
@@ -46,6 +64,10 @@ export interface UserProfile {
   updated_at: string;
 }
 
+/**
+ * Represents a brand in the database.
+ * @interface Brand
+ */
 export interface Brand {
   id: string;
   name: string;
@@ -58,6 +80,10 @@ export interface Brand {
   updated_at: string;
 }
 
+/**
+ * Represents a product in the database.
+ * @interface Product
+ */
 export interface Product {
   id: string;
   brand_id: string;
@@ -77,6 +103,10 @@ export interface Product {
   updated_at: string;
 }
 
+/**
+ * Represents a "look" or outfit created by a user.
+ * @interface Look
+ */
 export interface Look {
   id: string;
   user_id: string;
@@ -92,6 +122,10 @@ export interface Look {
   updated_at: string;
 }
 
+/**
+ * Represents a user's interaction with a look (e.g., like, save, try).
+ * @interface UserLook
+ */
 export interface UserLook {
   id: string;
   user_id: string;
@@ -100,6 +134,10 @@ export interface UserLook {
   created_at: string;
 }
 
+/**
+ * Represents a user's 3D avatar.
+ * @interface Avatar
+ */
 export interface Avatar {
   id: string;
   user_id: string;

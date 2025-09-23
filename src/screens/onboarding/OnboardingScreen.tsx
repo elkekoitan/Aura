@@ -1,3 +1,9 @@
+/**
+ * @module screens/onboarding/OnboardingScreen
+ * @description A multi-step onboarding screen that introduces users to the app's features.
+ * It uses a FlatList for swipeable slides and includes pagination.
+ */
+
 import React, { useState, useRef } from 'react';
 import {
   View,
@@ -51,11 +57,21 @@ const onboardingData = [
   },
 ];
 
+/**
+ * A multi-step onboarding screen that introduces users to the app's features.
+ * It uses a FlatList for swipeable slides and includes pagination.
+ * @param {object} props - The component props.
+ * @param {() => void} props.onComplete - A callback function to be called when the onboarding is completed or skipped.
+ * @returns {React.FC} A React component.
+ */
 export default function OnboardingScreen({ onComplete }: OnboardingScreenProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const flatListRef = useRef<FlatList>(null);
   const scrollX = useRef(new Animated.Value(0)).current;
 
+  /**
+   * Handles navigation to the next onboarding slide or completes the onboarding process.
+   */
   const handleNext = () => {
     if (currentIndex < onboardingData.length - 1) {
       const nextIndex = currentIndex + 1;
@@ -66,6 +82,9 @@ export default function OnboardingScreen({ onComplete }: OnboardingScreenProps) 
     }
   };
 
+  /**
+   * Handles navigation to the previous onboarding slide.
+   */
   const handlePrevious = () => {
     if (currentIndex > 0) {
       const prevIndex = currentIndex - 1;
@@ -74,10 +93,20 @@ export default function OnboardingScreen({ onComplete }: OnboardingScreenProps) 
     }
   };
 
+  /**
+   * Handles skipping the onboarding process.
+   */
   const handleSkip = () => {
     onComplete();
   };
 
+  /**
+   * Renders a single onboarding slide.
+   * @param {object} params - The render item parameters.
+   * @param {any} params.item - The data for the slide.
+   * @param {number} params.index - The index of the slide.
+   * @returns {React.ReactElement} The rendered slide component.
+   */
   const renderOnboardingItem = ({ item, index }: { item: any; index: number }) => (
     <View style={styles.slide}>
       <LinearGradient
@@ -98,6 +127,10 @@ export default function OnboardingScreen({ onComplete }: OnboardingScreenProps) 
     </View>
   );
 
+  /**
+   * Renders the pagination dots for the onboarding slides.
+   * @returns {React.ReactElement} The pagination component.
+   */
   const renderPagination = () => (
     <View style={styles.pagination}>
       {onboardingData.map((_, index) => {

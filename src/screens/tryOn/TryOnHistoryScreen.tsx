@@ -1,7 +1,7 @@
 /**
- * TryOnHistoryScreen
- * History of virtual try-on sessions with results and management
- * Displays saved try-on results with sharing and re-try options
+ * @module screens/tryOn/TryOnHistoryScreen
+ * @description A screen that displays the user's history of virtual try-on sessions.
+ * It allows users to view, share, and manage their past try-on results.
  */
 
 import React, { useEffect, useState } from 'react';
@@ -28,6 +28,11 @@ import {
 } from '../../store/slices/tryOnSlice';
 import { TryOnSession, TryOnResult } from '../../store/types/tryOn';
 
+/**
+ * A screen that displays the user's history of virtual try-on sessions.
+ * It allows users to view, share, and manage their past try-on results.
+ * @returns {React.FC} A React component.
+ */
 export default function TryOnHistoryScreen() {
   const navigation = useNavigation();
   const dispatch = useAppDispatch();
@@ -44,14 +49,14 @@ export default function TryOnHistoryScreen() {
   const [refreshing, setRefreshing] = useState(false);
 
   /**
-   * Load history on mount
+   * Loads the try-on history when the component mounts.
    */
   useEffect(() => {
     loadHistory();
   }, []);
 
   /**
-   * Load try-on history
+   * Fetches the user's try-on history from the store.
    */
   const loadHistory = async () => {
     if (!user) return;
@@ -64,7 +69,7 @@ export default function TryOnHistoryScreen() {
   };
 
   /**
-   * Handle refresh
+   * Handles the pull-to-refresh action to reload the history.
    */
   const handleRefresh = async () => {
     setRefreshing(true);
@@ -76,7 +81,8 @@ export default function TryOnHistoryScreen() {
   };
 
   /**
-   * Handle session select
+   * Handles selecting a session from the history list.
+   * @param {TryOnSession} session - The selected session.
    */
   const handleSessionSelect = (session: TryOnSession) => {
     // Navigate to result view or re-process
@@ -104,7 +110,8 @@ export default function TryOnHistoryScreen() {
   };
 
   /**
-   * Handle retry session
+   * Handles retrying an incomplete try-on session.
+   * @param {TryOnSession} session - The session to retry.
    */
   const handleRetrySession = (session: TryOnSession) => {
     dispatch(clearCurrentSession());
@@ -115,7 +122,9 @@ export default function TryOnHistoryScreen() {
   };
 
   /**
-   * Handle share result
+   * Handles sharing a try-on result.
+   * @param {TryOnResult} result - The result to share.
+   * @todo Implement sharing functionality.
    */
   const handleShareResult = (result: TryOnResult) => {
     // TODO: Implement sharing functionality
@@ -123,7 +132,9 @@ export default function TryOnHistoryScreen() {
   };
 
   /**
-   * Handle delete session
+   * Handles deleting a try-on session.
+   * @param {TryOnSession} session - The session to delete.
+   * @todo Implement delete functionality.
    */
   const handleDeleteSession = (session: TryOnSession) => {
     Alert.alert(
@@ -144,7 +155,9 @@ export default function TryOnHistoryScreen() {
   };
 
   /**
-   * Format date
+   * Formats a date string for display.
+   * @param {string} dateString - The ISO date string to format.
+   * @returns {string} The formatted date string.
    */
   const formatDate = (dateString: string): string => {
     const date = new Date(dateString);
@@ -156,7 +169,9 @@ export default function TryOnHistoryScreen() {
   };
 
   /**
-   * Get status color
+   * Gets the color associated with a given session status.
+   * @param {TryOnSession['status']} status - The session status.
+   * @returns {string} The color hex code.
    */
   const getStatusColor = (status: TryOnSession['status']): string => {
     switch (status) {
@@ -174,7 +189,10 @@ export default function TryOnHistoryScreen() {
   };
 
   /**
-   * Render session item
+   * Renders a single session item for the history list.
+   * @param {object} params - The render item parameters.
+   * @param {TryOnSession} params.item - The session item to render.
+   * @returns {React.ReactElement} The rendered session item component.
    */
   const renderSessionItem = ({ item }: { item: TryOnSession }) => (
     <TouchableOpacity
@@ -256,7 +274,8 @@ export default function TryOnHistoryScreen() {
   );
 
   /**
-   * Render empty state
+   * Renders a view to display when the try-on history is empty.
+   * @returns {React.ReactElement} The empty state component.
    */
   const renderEmptyState = () => (
     <View style={styles.emptyContainer}>

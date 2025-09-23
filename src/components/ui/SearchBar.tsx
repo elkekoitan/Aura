@@ -1,7 +1,5 @@
 /**
- * SearchBar Component
- * Glassmorphism search input with suggestions and debounced search
- * Integrates with product search functionality
+ * @module components/ui/SearchBar
  */
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -36,6 +34,23 @@ interface SearchBarProps {
   debounceMs?: number;
 }
 
+/**
+ * A search input component with a glassmorphism design.
+ * It features debounced search, suggestions, and a loading state.
+ * @param {object} props - The component props.
+ * @param {string} props.query - The current search query.
+ * @param {(query: string) => void} props.onQueryChange - Function to call when the query changes.
+ * @param {(query: string) => void} props.onSearch - Function to call when a search is submitted.
+ * @param {string[]} [props.suggestions=[]] - A list of suggestions to display.
+ * @param {boolean} [props.loading=false] - Whether to show a loading indicator.
+ * @param {string} [props.placeholder="Search products..."] - The placeholder text for the search input.
+ * @param {boolean} [props.showSuggestions=true] - Whether to show the suggestions list.
+ * @param {(suggestion: string) => void} [props.onSuggestionPress] - Function to call when a suggestion is pressed.
+ * @param {() => void} [props.onFocus] - Function to call when the input is focused.
+ * @param {() => void} [props.onBlur] - Function to call when the input is blurred.
+ * @param {number} [props.debounceMs=300] - The debounce delay in milliseconds for the search.
+ * @returns {React.FC} A React component.
+ */
 export const SearchBar: React.FC<SearchBarProps> = ({
   query,
   onQueryChange,
@@ -55,7 +70,8 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   const debounceRef = useRef<NodeJS.Timeout>();
 
   /**
-   * Handle input change with debouncing
+   * Handles changes to the input text with debouncing to trigger search.
+   * @param {string} text - The new text from the input.
    */
   const handleInputChange = (text: string) => {
     onQueryChange(text);
@@ -74,7 +90,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   };
 
   /**
-   * Handle search submission
+   * Handles the submission of the search, usually from the keyboard.
    */
   const handleSubmit = () => {
     if (query.trim()) {
@@ -85,7 +101,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   };
 
   /**
-   * Handle clear search
+   * Clears the search input and hides suggestions.
    */
   const handleClear = () => {
     onQueryChange('');
@@ -94,7 +110,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   };
 
   /**
-   * Handle focus
+   * Handles the focus event on the input.
    */
   const handleFocus = () => {
     setIsFocused(true);
@@ -103,7 +119,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   };
 
   /**
-   * Handle blur
+   * Handles the blur event on the input.
    */
   const handleBlur = () => {
     setIsFocused(false);
@@ -115,7 +131,8 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   };
 
   /**
-   * Handle suggestion press
+   * Handles the press event on a suggestion item.
+   * @param {string} suggestion - The suggestion that was pressed.
    */
   const handleSuggestionPress = (suggestion: string) => {
     onQueryChange(suggestion);
@@ -126,7 +143,10 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   };
 
   /**
-   * Render suggestion item
+   * Renders a single suggestion item for the FlatList.
+   * @param {object} params - The render item parameters.
+   * @param {string} params.item - The suggestion item to render.
+   * @returns {React.ReactElement} The rendered suggestion item.
    */
   const renderSuggestion = ({ item }: { item: string }) => (
     <TouchableOpacity

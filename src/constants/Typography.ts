@@ -1,13 +1,22 @@
-// Aura App - Typography System
+/**
+ * @module constants/Typography
+ * @description Defines the typography system for the Aura Fashion app.
+ * This includes font families, sizes, weights, line heights, letter spacing, and pre-defined text styles.
+ */
+
 export const Typography = {
-  // Font Families
+  /**
+   * Font families used throughout the application.
+   */
   fonts: {
     primary: 'System', // iOS: San Francisco, Android: Roboto
     secondary: 'System',
     mono: 'Courier New',
   },
 
-  // Font Sizes
+  /**
+   * A scale of font sizes for consistent typography.
+   */
   sizes: {
     xs: 12,
     sm: 14,
@@ -22,7 +31,9 @@ export const Typography = {
     '7xl': 72,
   },
 
-  // Font Weights
+  /**
+   * A scale of font weights.
+   */
   weights: {
     thin: '100' as const,
     extraLight: '200' as const,
@@ -35,7 +46,9 @@ export const Typography = {
     black: '900' as const,
   },
 
-  // Line Heights
+  /**
+   * A scale of line heights for text.
+   */
   lineHeights: {
     tight: 1.2,
     normal: 1.4,
@@ -43,7 +56,9 @@ export const Typography = {
     loose: 1.8,
   },
 
-  // Letter Spacing
+  /**
+   * A scale of letter spacing values.
+   */
   letterSpacing: {
     tight: -0.5,
     normal: 0,
@@ -52,7 +67,9 @@ export const Typography = {
     widest: 2,
   },
 
-  // Text Styles
+  /**
+   * A set of pre-defined text styles for common UI elements like headings, body text, and buttons.
+   */
   styles: {
     h1: {
       fontSize: 36,

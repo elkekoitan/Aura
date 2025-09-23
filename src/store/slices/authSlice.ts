@@ -1,3 +1,9 @@
+/**
+ * @module store/slices/authSlice
+ * @description A Redux slice for managing authentication state, including user, session, and profile information.
+ * It provides async thunks for signing up, signing in, signing out, resetting passwords, and managing user profiles.
+ */
+
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase, UserProfile } from '../../config/supabase';
@@ -21,6 +27,14 @@ const initialState: AuthState = {
 };
 
 // Async thunks
+/**
+ * An async thunk for signing up a new user.
+ * @param {object} params - The sign-up parameters.
+ * @param {string} params.email - The user's email address.
+ * @param {string} params.password - The user's password.
+ * @param {string} [params.fullName] - The user's full name.
+ * @returns {Promise<any>} A promise that resolves with the sign-up data.
+ */
 export const signUp = createAsyncThunk(
   'auth/signUp',
   async ({ email, password, fullName }: { email: string; password: string; fullName?: string }) => {
@@ -39,6 +53,13 @@ export const signUp = createAsyncThunk(
   }
 );
 
+/**
+ * An async thunk for signing in a user.
+ * @param {object} params - The sign-in parameters.
+ * @param {string} params.email - The user's email address.
+ * @param {string} params.password - The user's password.
+ * @returns {Promise<any>} A promise that resolves with the sign-in data.
+ */
 export const signIn = createAsyncThunk(
   'auth/signIn',
   async ({ email, password }: { email: string; password: string }) => {
@@ -52,11 +73,19 @@ export const signIn = createAsyncThunk(
   }
 );
 
+/**
+ * An async thunk for signing out the current user.
+ */
 export const signOut = createAsyncThunk('auth/signOut', async () => {
   const { error } = await supabase.auth.signOut();
   if (error) throw error;
 });
 
+/**
+ * An async thunk for sending a password reset email.
+ * @param {object} params - The password reset parameters.
+ * @param {string} params.email - The user's email address.
+ */
 export const resetPassword = createAsyncThunk(
   'auth/resetPassword',
   async ({ email }: { email: string }) => {
@@ -65,6 +94,11 @@ export const resetPassword = createAsyncThunk(
   }
 );
 
+/**
+ * An async thunk for updating a user's profile.
+ * @param {Partial<UserProfile>} updates - The profile updates.
+ * @returns {Promise<any>} A promise that resolves with the updated profile data.
+ */
 export const updateProfile = createAsyncThunk(
   'auth/updateProfile',
   async (updates: Partial<UserProfile>) => {
@@ -80,6 +114,11 @@ export const updateProfile = createAsyncThunk(
   }
 );
 
+/**
+ * An async thunk for fetching a user's profile.
+ * @param {string} userId - The ID of the user whose profile to fetch.
+ * @returns {Promise<any>} A promise that resolves with the user's profile data.
+ */
 export const fetchProfile = createAsyncThunk(
   'auth/fetchProfile',
   async (userId: string) => {
@@ -98,14 +137,28 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
+    /**
+     * Sets the user and session in the state.
+     * @param {AuthState} state - The current state.
+     * @param {PayloadAction<{ user: User | null; session: Session | null }>} action - The action containing the user and session.
+     */
     setSession: (state, action: PayloadAction<{ user: User | null; session: Session | null }>) => {
       state.user = action.payload.user;
       state.session = action.payload.session;
       state.isAuthenticated = !!action.payload.user;
     },
+    /**
+     * Clears any authentication-related errors.
+     * @param {AuthState} state - The current state.
+     */
     clearError: (state) => {
       state.error = null;
     },
+    /**
+     * Sets the loading state.
+     * @param {AuthState} state - The current state.
+     * @param {PayloadAction<boolean>} action - The action containing the loading state.
+     */
     setLoading: (state, action: PayloadAction<boolean>) => {
       state.loading = action.payload;
     },

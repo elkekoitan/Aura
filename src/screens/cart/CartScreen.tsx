@@ -1,7 +1,7 @@
 /**
- * CartScreen
- * Shopping cart interface with item management and checkout functionality
- * Integrates with Redux cart state and navigation
+ * @module screens/cart/CartScreen
+ * @description A screen that displays the user's shopping cart.
+ * It allows users to manage items in their cart, view a summary, and proceed to checkout.
  */
 
 import React, { useEffect } from 'react';
@@ -29,6 +29,11 @@ import {
 } from '../../store/slices/cartSlice';
 import { CartItem } from '../../store/types/cart';
 
+/**
+ * A screen that displays the user's shopping cart.
+ * It allows users to manage items in their cart, view a summary, and proceed to checkout.
+ * @returns {React.FC} A React component.
+ */
 export default function CartScreen() {
   const navigation = useNavigation();
   const dispatch = useAppDispatch();
@@ -43,14 +48,16 @@ export default function CartScreen() {
   } = useAppSelector((state) => state.cart);
 
   /**
-   * Load cart on mount
+   * Loads the cart from storage when the component mounts.
    */
   useEffect(() => {
     dispatch(loadCartFromStorage());
   }, []);
 
   /**
-   * Handle quantity update
+   * Handles updating the quantity of an item in the cart.
+   * @param {string} itemId - The ID of the cart item to update.
+   * @param {number} newQuantity - The new quantity for the item.
    */
   const handleUpdateQuantity = (itemId: string, newQuantity: number) => {
     if (newQuantity <= 0) {
@@ -62,7 +69,8 @@ export default function CartScreen() {
   };
 
   /**
-   * Handle item removal
+   * Handles removing an item from the cart, with a confirmation alert.
+   * @param {string} itemId - The ID of the cart item to remove.
    */
   const handleRemoveItem = (itemId: string) => {
     const item = items.find(i => i.id === itemId);
@@ -83,7 +91,7 @@ export default function CartScreen() {
   };
 
   /**
-   * Handle clear cart
+   * Handles clearing all items from the cart, with a confirmation alert.
    */
   const handleClearCart = () => {
     Alert.alert(
@@ -101,7 +109,7 @@ export default function CartScreen() {
   };
 
   /**
-   * Handle checkout
+   * Navigates to the checkout screen.
    */
   const handleCheckout = () => {
     if (items.length === 0) return;
@@ -110,7 +118,9 @@ export default function CartScreen() {
   };
 
   /**
-   * Get product image
+   * Gets the primary image URL for a product in the cart.
+   * @param {CartItem} item - The cart item.
+   * @returns {string} The URL of the product's image.
    */
   const getProductImage = (item: CartItem): string => {
     if (item.product.product_images && item.product.product_images.length > 0) {
@@ -124,7 +134,10 @@ export default function CartScreen() {
   };
 
   /**
-   * Render cart item
+   * Renders a single item for the cart list.
+   * @param {object} params - The render item parameters.
+   * @param {CartItem} params.item - The cart item to render.
+   * @returns {React.ReactElement} The rendered cart item component.
    */
   const renderCartItem = ({ item }: { item: CartItem }) => (
     <GlassCard style={styles.cartItem}>
@@ -203,7 +216,8 @@ export default function CartScreen() {
   );
 
   /**
-   * Render cart summary
+   * Renders the order summary component.
+   * @returns {React.ReactElement} The order summary component.
    */
   const renderSummary = () => (
     <GlassCard style={styles.summaryCard}>
@@ -243,7 +257,8 @@ export default function CartScreen() {
   );
 
   /**
-   * Render empty cart
+   * Renders a view to display when the cart is empty.
+   * @returns {React.ReactElement} The empty cart component.
    */
   const renderEmptyCart = () => (
     <View style={styles.emptyContainer}>

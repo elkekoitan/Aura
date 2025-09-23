@@ -1,7 +1,7 @@
 /**
- * OrderConfirmationScreen
- * Order confirmation and success screen with order details and tracking
- * Displays order summary, estimated delivery, and next steps
+ * @module screens/checkout/OrderConfirmationScreen
+ * @description A screen that displays a confirmation of a successfully placed order.
+ * It shows order details, shipping information, and provides actions for tracking and sharing.
  */
 
 import React from 'react';
@@ -25,6 +25,11 @@ type OrderConfirmationRouteProp = RouteProp<{
   OrderConfirmation: { order: Order };
 }, 'OrderConfirmation'>;
 
+/**
+ * A screen that displays a confirmation of a successfully placed order.
+ * It shows order details, shipping information, and provides actions for tracking and sharing.
+ * @returns {React.FC} A React component.
+ */
 export default function OrderConfirmationScreen() {
   const route = useRoute<OrderConfirmationRouteProp>();
   const navigation = useNavigation();
@@ -32,7 +37,9 @@ export default function OrderConfirmationScreen() {
   const { order } = route.params;
 
   /**
-   * Format date for display
+   * Formats a date string for display.
+   * @param {string} dateString - The ISO date string to format.
+   * @returns {string} The formatted date string (e.g., "Monday, January 1, 2024").
    */
   const formatDate = (dateString: string): string => {
     const date = new Date(dateString);
@@ -45,7 +52,7 @@ export default function OrderConfirmationScreen() {
   };
 
   /**
-   * Handle share order
+   * Handles sharing the order details using the native share functionality.
    */
   const handleShareOrder = async () => {
     try {
@@ -59,7 +66,8 @@ export default function OrderConfirmationScreen() {
   };
 
   /**
-   * Handle track order
+   * Navigates to the order tracking screen.
+   * @todo Implement the order tracking screen and navigation.
    */
   const handleTrackOrder = () => {
     // TODO: Navigate to order tracking screen
@@ -67,7 +75,7 @@ export default function OrderConfirmationScreen() {
   };
 
   /**
-   * Handle continue shopping
+   * Navigates to the Discover screen to continue shopping.
    */
   const handleContinueShopping = () => {
     navigation.navigate('Discover');

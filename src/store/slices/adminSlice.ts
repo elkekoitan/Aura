@@ -1,7 +1,7 @@
 /**
- * Admin Redux Slice
- * Manages admin dashboard state, operations, and form management
- * Integrates with Supabase for admin-level operations
+ * @module store/slices/adminSlice
+ * @description A Redux slice for managing the state of the admin dashboard, including statistics,
+ * recent activity, and admin operations like creating, updating, and deleting products.
  */
 
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
@@ -63,7 +63,8 @@ const initialState: AdminState = {
 };
 
 /**
- * Fetch admin dashboard statistics
+ * An async thunk to fetch statistics for the admin dashboard.
+ * @returns {Promise<AdminDashboardStats>} A promise that resolves with the dashboard statistics.
  */
 export const fetchDashboardStats = createAsyncThunk(
   'admin/fetchDashboardStats',
@@ -151,7 +152,8 @@ export const fetchDashboardStats = createAsyncThunk(
 );
 
 /**
- * Fetch recent admin activity
+ * An async thunk to fetch recent admin activity.
+ * @returns {Promise<AdminActivity[]>} A promise that resolves with a list of recent activities.
  */
 export const fetchRecentActivity = createAsyncThunk(
   'admin/fetchRecentActivity',
@@ -190,7 +192,12 @@ export const fetchRecentActivity = createAsyncThunk(
 );
 
 /**
- * Upload image to Supabase Storage
+ * An async thunk to upload an image to Supabase Storage.
+ * @param {object} params - The parameters for the upload.
+ * @param {any} params.file - The file to upload.
+ * @param {string} [params.bucket='product-images'] - The storage bucket to upload to.
+ * @param {string} params.path - The path to upload the file to.
+ * @returns {Promise<FileUploadResult>} A promise that resolves with the result of the file upload.
  */
 export const uploadImage = createAsyncThunk(
   'admin/uploadImage',
@@ -223,7 +230,9 @@ export const uploadImage = createAsyncThunk(
 );
 
 /**
- * Create new product (admin operation)
+ * An async thunk to create a new product.
+ * @param {ProductFormData} productData - The data for the new product.
+ * @returns {Promise<any>} A promise that resolves with the newly created product data.
  */
 export const createProduct = createAsyncThunk(
   'admin/createProduct',
@@ -246,7 +255,11 @@ export const createProduct = createAsyncThunk(
 );
 
 /**
- * Update existing product (admin operation)
+ * An async thunk to update an existing product.
+ * @param {object} params - The parameters for the update.
+ * @param {string} params.id - The ID of the product to update.
+ * @param {Partial<ProductFormData>} params.updateData - The data to update.
+ * @returns {Promise<any>} A promise that resolves with the updated product data.
  */
 export const updateProduct = createAsyncThunk(
   'admin/updateProduct',
@@ -267,7 +280,9 @@ export const updateProduct = createAsyncThunk(
 );
 
 /**
- * Delete product (admin operation)
+ * An async thunk to delete a product.
+ * @param {string} productId - The ID of the product to delete.
+ * @returns {Promise<string>} A promise that resolves with the ID of the deleted product.
  */
 export const deleteProduct = createAsyncThunk(
   'admin/deleteProduct',
@@ -290,15 +305,28 @@ const adminSlice = createSlice({
   name: 'admin',
   initialState,
   reducers: {
-    // Form management actions
+    /**
+     * Sets the data for the product form.
+     * @param {AdminState} state - The current state.
+     * @param {PayloadAction<Partial<ProductFormData>>} action - The action containing the form data.
+     */
     setProductFormData: (state, action: PayloadAction<Partial<ProductFormData>>) => {
       state.productForm.data = { ...state.productForm.data, ...action.payload };
     },
     
+    /**
+     * Sets the errors for the product form.
+     * @param {AdminState} state - The current state.
+     * @param {PayloadAction<Record<string, string>>} action - The action containing the form errors.
+     */
     setProductFormErrors: (state, action: PayloadAction<Record<string, string>>) => {
       state.productForm.errors = action.payload;
     },
     
+    /**
+     * Clears the product form data and errors.
+     * @param {AdminState} state - The current state.
+     */
     clearProductForm: (state) => {
       state.productForm = {
         data: {},
@@ -307,14 +335,28 @@ const adminSlice = createSlice({
       };
     },
     
+    /**
+     * Sets the data for the brand form.
+     * @param {AdminState} state - The current state.
+     * @param {PayloadAction<Partial<BrandFormData>>} action - The action containing the form data.
+     */
     setBrandFormData: (state, action: PayloadAction<Partial<BrandFormData>>) => {
       state.brandForm.data = { ...state.brandForm.data, ...action.payload };
     },
     
+    /**
+     * Sets the errors for the brand form.
+     * @param {AdminState} state - The current state.
+     * @param {PayloadAction<Record<string, string>>} action - The action containing the form errors.
+     */
     setBrandFormErrors: (state, action: PayloadAction<Record<string, string>>) => {
       state.brandForm.errors = action.payload;
     },
     
+    /**
+     * Clears the brand form data and errors.
+     * @param {AdminState} state - The current state.
+     */
     clearBrandForm: (state) => {
       state.brandForm = {
         data: {},
@@ -323,25 +365,43 @@ const adminSlice = createSlice({
       };
     },
     
-    // File upload actions
+    /**
+     * Sets the progress of a file upload.
+     * @param {AdminState} state - The current state.
+     * @param {PayloadAction<number>} action - The action containing the upload progress.
+     */
     setUploadProgress: (state, action: PayloadAction<number>) => {
       state.fileUpload.progress = action.payload;
     },
     
+    /**
+     * Clears any file upload errors.
+     * @param {AdminState} state - The current state.
+     */
     clearUploadError: (state) => {
       state.fileUpload.error = null;
     },
     
-    // Error clearing actions
+    /**
+     * Clears any dashboard-related errors.
+     * @param {AdminState} state - The current state.
+     */
     clearDashboardError: (state) => {
       state.dashboardError = null;
     },
     
+    /**
+     * Clears any operation-related errors.
+     * @param {AdminState} state - The current state.
+     */
     clearOperationError: (state) => {
       state.operationError = null;
     },
     
-    // Reset state
+    /**
+     * Resets the admin state to its initial state.
+     * @param {AdminState} state - The current state.
+     */
     resetAdminState: (state) => {
       return { ...initialState };
     },

@@ -1,7 +1,5 @@
 /**
- * BrandGrid Component
- * Responsive grid layout for displaying brands
- * Supports infinite scrolling, loading states, and empty states
+ * @module components/brand/BrandGrid
  */
 
 import React from 'react';
@@ -40,6 +38,28 @@ interface BrandGridProps {
   showProducts?: boolean;
 }
 
+/**
+ * A responsive grid layout for displaying a list of brands.
+ * It supports infinite scrolling, loading states, empty states, and pull-to-refresh.
+ * @param {object} props - The component props.
+ * @param {Brand[]} props.brands - An array of brand objects to display.
+ * @param {(brand: Brand) => void} [props.onBrandPress] - Function to call when a brand card is pressed.
+ * @param {(brand: Brand) => void} [props.onFollow] - Function to call when a brand's follow button is pressed.
+ * @param {boolean} [props.loading=false] - Whether the initial data is loading.
+ * @param {boolean} [props.refreshing=false] - Whether the grid is currently being refreshed.
+ * @param {() => void} [props.onRefresh] - Function to call when the user pulls to refresh.
+ * @param {number} [props.numColumns=2] - The number of columns in the grid.
+ * @param {boolean} [props.showLoadMore=false] - Whether to show the "Load More" button.
+ * @param {() => void} [props.onLoadMore] - Function to call when the user reaches the end of the list.
+ * @param {boolean} [props.loadingMore=false] - Whether more data is being loaded.
+ * @param {string} [props.emptyTitle="No Brands Found"] - The title for the empty state.
+ * @param {string} [props.emptyMessage="Try adjusting your search or filters to find brands."] - The message for the empty state.
+ * @param {string[]} [props.followingBrandIds=[]] - An array of brand IDs that the user is following.
+ * @param {boolean} [props.compact=false] - Whether to render the brand cards in a compact style.
+ * @param {boolean} [props.showStats=true] - Whether to show stats on the brand cards.
+ * @param {boolean} [props.showProducts=false] - Whether to show products on the brand cards.
+ * @returns {React.FC} A React component.
+ */
 export const BrandGrid: React.FC<BrandGridProps> = ({
   brands,
   onBrandPress,
@@ -59,7 +79,10 @@ export const BrandGrid: React.FC<BrandGridProps> = ({
   showProducts = false,
 }) => {
   /**
-   * Render individual brand item
+   * Renders a single brand card item for the FlatList.
+   * @param {object} params - The render item parameters.
+   * @param {Brand} params.item - The brand item to render.
+   * @returns {React.ReactElement} The rendered BrandCard component.
    */
   const renderBrand = ({ item }: { item: Brand }) => (
     <BrandCard
@@ -74,7 +97,8 @@ export const BrandGrid: React.FC<BrandGridProps> = ({
   );
 
   /**
-   * Render loading skeleton
+   * Renders a loading skeleton placeholder while the initial data is being fetched.
+   * @returns {React.ReactElement} The loading skeleton view.
    */
   const renderLoadingSkeleton = () => (
     <View style={styles.skeletonContainer}>
@@ -100,7 +124,8 @@ export const BrandGrid: React.FC<BrandGridProps> = ({
   );
 
   /**
-   * Render empty state
+   * Renders a view to display when there are no brands to show.
+   * @returns {React.ReactElement} The empty state view.
    */
   const renderEmptyState = () => (
     <View style={styles.emptyContainer}>
@@ -126,7 +151,8 @@ export const BrandGrid: React.FC<BrandGridProps> = ({
   );
 
   /**
-   * Render load more footer
+   * Renders the footer component for the FlatList, showing a "Load More" button or an activity indicator.
+   * @returns {React.ReactElement | null} The footer component, or null.
    */
   const renderFooter = () => {
     if (!showLoadMore) return null;
@@ -159,7 +185,10 @@ export const BrandGrid: React.FC<BrandGridProps> = ({
   };
 
   /**
-   * Calculate item layout for grid
+   * Calculates the layout of an item in the list for performance optimization.
+   * @param {any} data - The list data.
+   * @param {number} index - The index of the item.
+   * @returns {{length: number, offset: number, index: number}} The layout object.
    */
   const getItemLayout = (data: any, index: number) => {
     const itemHeight = compact ? 80 : (width - Spacing.component.screen.horizontal * 2 - Spacing.lg) / 2 * 1.4;

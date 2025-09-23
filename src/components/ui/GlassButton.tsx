@@ -1,3 +1,7 @@
+/**
+ * @module components/ui/GlassButton
+ */
+
 import React from 'react';
 import {
   TouchableOpacity,
@@ -28,6 +32,25 @@ interface GlassButtonProps {
   fullWidth?: boolean;
 }
 
+/**
+ * A stylish button with a glass-like, blurred background effect.
+ * It supports different variants, sizes, loading states, and icons.
+ * @param {object} props - The component props.
+ * @param {string} props.title - The text to display on the button.
+ * @param {() => void} props.onPress - The function to call when the button is pressed.
+ * @param {'primary' | 'secondary' | 'outline' | 'ghost'} [props.variant='primary'] - The button's visual style.
+ * @param {'small' | 'medium' | 'large'} [props.size='medium'] - The size of the button.
+ * @param {boolean} [props.disabled=false] - Whether the button is disabled.
+ * @param {boolean} [props.loading=false] - Whether to show a loading indicator.
+ * @param {ViewStyle} [props.style] - Custom styles for the button container.
+ * @param {TextStyle} [props.textStyle] - Custom styles for the button text.
+ * @param {React.ReactNode} [props.icon] - An icon to display on the button.
+ * @param {'left' | 'right'} [props.iconPosition='left'] - The position of the icon relative to the text.
+ * @param {boolean} [props.gradient=false] - Whether to apply a gradient background.
+ * @param {readonly string[]} [props.gradientColors=Colors.gradients.primary] - The colors for the gradient.
+ * @param {boolean} [props.fullWidth=false] - Whether the button should take up the full width of its container.
+ * @returns {React.FC} A React component.
+ */
 export const GlassButton: React.FC<GlassButtonProps> = ({
   title,
   onPress,
@@ -45,6 +68,9 @@ export const GlassButton: React.FC<GlassButtonProps> = ({
 }) => {
   const scaleValue = React.useRef(new Animated.Value(1)).current;
 
+  /**
+   * Handles the press-in event to animate the button scale down.
+   */
   const handlePressIn = () => {
     Animated.spring(scaleValue, {
       toValue: 0.95,
@@ -52,6 +78,9 @@ export const GlassButton: React.FC<GlassButtonProps> = ({
     }).start();
   };
 
+  /**
+   * Handles the press-out event to animate the button scale back to normal.
+   */
   const handlePressOut = () => {
     Animated.spring(scaleValue, {
       toValue: 1,
@@ -59,6 +88,10 @@ export const GlassButton: React.FC<GlassButtonProps> = ({
     }).start();
   };
 
+  /**
+   * Determines the button's style based on its variant, size, and state.
+   * @returns {ViewStyle} The computed button style.
+   */
   const getButtonStyle = (): ViewStyle => {
     const baseStyle: ViewStyle = {
       borderRadius: Spacing.component.radius.lg,
@@ -119,6 +152,10 @@ export const GlassButton: React.FC<GlassButtonProps> = ({
     return { ...baseStyle, ...style };
   };
 
+  /**
+   * Determines the text style based on the button's variant and size.
+   * @returns {TextStyle} The computed text style.
+   */
   const getTextStyle = (): TextStyle => {
     const baseTextStyle: TextStyle = {
       ...Typography.styles.button,
@@ -154,6 +191,10 @@ export const GlassButton: React.FC<GlassButtonProps> = ({
     return { ...baseTextStyle, ...textStyle };
   };
 
+  /**
+   * Renders the content of the button, including the icon, text, and loading indicator.
+   * @returns {React.ReactElement} The button content.
+   */
   const renderContent = () => (
     <View style={{ flexDirection: 'row', alignItems: 'center', gap: Spacing.sm }}>
       {loading && <ActivityIndicator size="small" color={getTextStyle().color} />}

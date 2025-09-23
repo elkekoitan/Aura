@@ -1,7 +1,5 @@
 /**
- * BrandCard Component
- * Reusable brand card with glassmorphism design
- * Displays brand logo, name, stats, and interactive actions
+ * @module components/brand/BrandCard
  */
 
 import React from 'react';
@@ -33,6 +31,20 @@ interface BrandCardProps {
   productCount?: number;
 }
 
+/**
+ * A reusable card component to display brand information.
+ * It features a glassmorphism design and can be configured to show stats, products, and follow actions.
+ * @param {object} props - The component props.
+ * @param {Brand} props.brand - The brand object to display.
+ * @param {(brand: Brand) => void} [props.onPress] - Function to call when the card is pressed.
+ * @param {(brand: Brand) => void} [props.onFollow] - Function to call when the follow button is pressed.
+ * @param {boolean} [props.showStats=true] - Whether to show brand statistics.
+ * @param {boolean} [props.showProducts=false] - Whether to show a preview of the brand's products.
+ * @param {boolean} [props.compact=false] - Whether to render a compact version of the card.
+ * @param {boolean} [props.isFollowing=false] - Whether the current user is following the brand.
+ * @param {number} [props.productCount] - The number of products the brand has.
+ * @returns {React.FC} A React component.
+ */
 export const BrandCard: React.FC<BrandCardProps> = ({
   brand,
   onPress,
@@ -44,28 +56,31 @@ export const BrandCard: React.FC<BrandCardProps> = ({
   productCount,
 }) => {
   /**
-   * Get brand logo with fallback
+   * Gets the brand's logo URL, providing a fallback if one doesn't exist.
+   * @returns {string} The URL of the brand's logo.
    */
   const getBrandLogo = (): string => {
     return brand.logo_url || 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=200&h=200&fit=crop';
   };
 
   /**
-   * Get product count display
+   * Gets the number of products for the brand.
+   * @returns {number} The product count.
    */
   const getProductCount = (): number => {
     return productCount || brand.product_count || brand.products?.length || 0;
   };
 
   /**
-   * Handle card press
+   * Handles the press event on the card.
    */
   const handlePress = () => {
     onPress?.(brand);
   };
 
   /**
-   * Handle follow toggle
+   * Handles the press event on the follow button.
+   * @param {any} event - The press event object.
    */
   const handleFollow = (event: any) => {
     event.stopPropagation();

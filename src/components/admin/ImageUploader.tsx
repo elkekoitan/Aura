@@ -1,7 +1,5 @@
 /**
- * ImageUploader Component
- * Handles image selection, upload, and preview for admin forms
- * Integrates with Expo ImagePicker and Supabase Storage
+ * @module components/admin/ImageUploader
  */
 
 import React, { useState } from 'react';
@@ -23,6 +21,18 @@ import { ImageUploaderProps, FileUploadResult } from '../../store/types/admin';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { uploadImage, setUploadProgress, clearUploadError } from '../../store/slices/adminSlice';
 
+/**
+ * A component that handles image selection, upload, and preview for admin forms.
+ * It integrates with Expo ImagePicker for image selection and Supabase Storage for uploads.
+ * @param {object} props - The component props.
+ * @param {(result: FileUploadResult) => void} props.onUpload - Callback function triggered on successful upload.
+ * @param {(error: string) => void} props.onError - Callback function triggered on error.
+ * @param {object} [props.options] - Optional configuration for image validation and processing.
+ * @param {string} [props.currentImage] - The URL of an existing image to display.
+ * @param {string} [props.placeholder="Upload Image"] - The placeholder text for the uploader.
+ * @param {object} [props.style] - Custom styles for the component container.
+ * @returns {React.FC} A React component.
+ */
 export const ImageUploader: React.FC<ImageUploaderProps> = ({
   onUpload,
   onError,
@@ -45,7 +55,8 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
   } = options;
 
   /**
-   * Request camera permissions
+   * Requests camera roll permissions from the user.
+   * @returns {Promise<boolean>} A promise that resolves to true if permission is granted, false otherwise.
    */
   const requestPermissions = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -61,7 +72,9 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
   };
 
   /**
-   * Validate selected image
+   * Validates the selected image based on size and type.
+   * @param {any} imageInfo - The image information object from ImagePicker.
+   * @returns {string | null} An error message if validation fails, otherwise null.
    */
   const validateImage = (imageInfo: any): string | null => {
     if (imageInfo.fileSize && imageInfo.fileSize > maxSize) {
@@ -82,7 +95,7 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
   };
 
   /**
-   * Handle image selection from gallery
+   * Handles image selection from the device's gallery.
    */
   const selectFromGallery = async () => {
     const hasPermission = await requestPermissions();
@@ -118,7 +131,7 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
   };
 
   /**
-   * Handle image capture from camera
+   * Handles image capture from the device's camera.
    */
   const captureFromCamera = async () => {
     const { status } = await ImagePicker.requestCameraPermissionsAsync();
@@ -160,7 +173,8 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
   };
 
   /**
-   * Handle image upload to Supabase
+   * Handles the actual image upload process to Supabase Storage.
+   * @param {any} imageInfo - The image information object from ImagePicker.
    */
   const handleUpload = async (imageInfo: any) => {
     try {
@@ -195,7 +209,7 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
   };
 
   /**
-   * Show image selection options
+   * Shows an alert with options for selecting an image (Camera or Gallery).
    */
   const showImageOptions = () => {
     Alert.alert(
@@ -210,7 +224,7 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
   };
 
   /**
-   * Remove selected image
+   * Removes the currently selected image and clears any upload errors.
    */
   const removeImage = () => {
     setSelectedImage(null);

@@ -1,7 +1,7 @@
 /**
- * ProductDetailScreen
- * Comprehensive product detail view with images, specifications, and purchase options
- * Integrates with Redux state management and shopping cart functionality
+ * @module screens/product/ProductDetailScreen
+ * @description A screen that displays detailed information about a specific product.
+ * It includes an image gallery, product details, options for size and color, and actions like adding to cart and virtual try-on.
  */
 
 import React, { useState, useEffect } from 'react';
@@ -32,6 +32,11 @@ type ProductDetailRouteProp = RouteProp<{
   ProductDetail: { productId: string; product?: Product };
 }, 'ProductDetail'>;
 
+/**
+ * A screen that displays detailed information about a specific product.
+ * It includes an image gallery, product details, options for size and color, and actions like adding to cart and virtual try-on.
+ * @returns {React.FC} A React component.
+ */
 export default function ProductDetailScreen() {
   const route = useRoute<ProductDetailRouteProp>();
   const navigation = useNavigation();
@@ -54,14 +59,14 @@ export default function ProductDetailScreen() {
   const product = selectedProduct || routeProduct;
 
   /**
-   * Initialize data on mount
+   * Loads the product data when the component mounts or the productId changes.
    */
   useEffect(() => {
     loadProductData();
   }, [productId]);
 
   /**
-   * Load product data
+   * Fetches the product data from the store.
    */
   const loadProductData = async () => {
     try {
@@ -74,7 +79,8 @@ export default function ProductDetailScreen() {
   };
 
   /**
-   * Get product images
+   * Gets the list of image URLs for the product.
+   * @returns {string[]} An array of image URLs.
    */
   const getProductImages = (): string[] => {
     if (product?.product_images && product.product_images.length > 0) {
@@ -89,7 +95,7 @@ export default function ProductDetailScreen() {
   };
 
   /**
-   * Handle add to cart
+   * Handles adding the product to the cart, with validation for size and color selection.
    */
   const handleAddToCart = async () => {
     if (!product) return;
@@ -123,7 +129,7 @@ export default function ProductDetailScreen() {
   };
 
   /**
-   * Handle virtual try-on
+   * Navigates to the virtual try-on screen for the current product.
    */
   const handleTryOn = () => {
     if (!product) return;
@@ -135,7 +141,8 @@ export default function ProductDetailScreen() {
   };
 
   /**
-   * Handle buy now
+   * Handles the "Buy Now" action, with validation for size and color selection.
+   * @todo Implement navigation to the checkout screen.
    */
   const handleBuyNow = () => {
     if (!selectedSize && product?.sizes && product.sizes.length > 0) {
@@ -157,7 +164,8 @@ export default function ProductDetailScreen() {
   };
 
   /**
-   * Toggle favorite
+   * Toggles the favorite state of the product.
+   * @todo Implement the favorites functionality with the backend.
    */
   const handleToggleFavorite = () => {
     setIsFavorite(!isFavorite);
@@ -165,7 +173,7 @@ export default function ProductDetailScreen() {
   };
 
   /**
-   * Handle brand press
+   * Navigates to the brand detail screen for the product's brand.
    */
   const handleBrandPress = () => {
     if (product?.brand) {

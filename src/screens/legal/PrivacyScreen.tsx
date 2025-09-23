@@ -1,3 +1,8 @@
+/**
+ * @module screens/legal/PrivacyScreen
+ * @description A screen that displays the application's privacy policy.
+ */
+
 import React from 'react';
 import {
   View,
@@ -16,6 +21,10 @@ import { Colors, Typography, Spacing } from '../../constants';
 
 const { width, height } = Dimensions.get('window');
 
+/**
+ * A screen that displays the application's privacy policy.
+ * @returns {React.FC} A React component.
+ */
 export default function PrivacyScreen() {
   const navigation = useNavigation();
 

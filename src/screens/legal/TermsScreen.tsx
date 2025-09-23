@@ -1,3 +1,8 @@
+/**
+ * @module screens/legal/TermsScreen
+ * @description A screen that displays the application's terms of service.
+ */
+
 import React from 'react';
 import {
   View,
@@ -16,6 +21,10 @@ import { Colors, Typography, Spacing } from '../../constants';
 
 const { width, height } = Dimensions.get('window');
 
+/**
+ * A screen that displays the application's terms of service.
+ * @returns {React.FC} A React component.
+ */
 export default function TermsScreen() {
   const navigation = useNavigation();
 

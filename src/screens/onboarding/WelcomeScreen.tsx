@@ -1,3 +1,9 @@
+/**
+ * @module screens/onboarding/WelcomeScreen
+ * @description The initial welcome screen of the application, displayed on the first launch.
+ * It features an animated introduction and a "Get Started" button to begin the onboarding process.
+ */
+
 import React from 'react';
 import {
   View,
@@ -18,6 +24,13 @@ interface WelcomeScreenProps {
   onGetStarted: () => void;
 }
 
+/**
+ * The initial welcome screen of the application, displayed on the first launch.
+ * It features an animated introduction and a "Get Started" button to begin the onboarding process.
+ * @param {object} props - The component props.
+ * @param {() => void} props.onGetStarted - A callback function to be called when the "Get Started" button is pressed.
+ * @returns {React.FC} A React component.
+ */
 export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onGetStarted }) => {
   // Animation values
   const logoScale = React.useRef(new Animated.Value(0)).current;

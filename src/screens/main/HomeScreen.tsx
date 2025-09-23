@@ -1,3 +1,9 @@
+/**
+ * @module screens/main/HomeScreen
+ * @description The main home screen of the application, displayed after a user logs in.
+ * It provides a personalized greeting, quick actions, and AI-powered style recommendations.
+ */
+
 import React from 'react';
 import {
   View,
@@ -15,6 +21,11 @@ import { useAppSelector } from '../../store';
 
 const { width, height } = Dimensions.get('window');
 
+/**
+ * The main home screen of the application, displayed after a user logs in.
+ * It provides a personalized greeting, quick actions, and AI-powered style recommendations.
+ * @returns {React.FC} A React component.
+ */
 export default function HomeScreen() {
   const { user, profile } = useAppSelector((state) => state.auth);
 

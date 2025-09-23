@@ -1,13 +1,21 @@
 /**
- * Stripe Web Stub
- * Provides empty implementations of Stripe React Native functions for web builds
- * This prevents build errors when Stripe React Native is imported on web platform
+ * @module utils/stripe-web-stub
+ * @description Provides mock implementations of Stripe React Native components and hooks
+ * for web builds where the native library is not available. This prevents build errors.
  */
 
-// Mock StripeProvider component for web
+/**
+ * A mock StripeProvider component for web builds. It simply renders its children.
+ * @param {object} props - The component props.
+ * @param {React.ReactNode} props.children - The child components to render.
+ * @returns {React.ReactNode} The children of the component.
+ */
 export const StripeProvider = ({ children }) => children;
 
-// Mock useStripe hook for web
+/**
+ * A mock useStripe hook for web builds.
+ * @returns {object} An object with null values for all Stripe methods.
+ */
 export const useStripe = () => ({
   initPaymentSheet: null,
   presentPaymentSheet: null,
@@ -22,15 +30,33 @@ export const useStripe = () => ({
   createGooglePayPaymentMethod: null,
 });
 
-// Mock CardField component for web
+/**
+ * A mock CardField component for web builds. It renders nothing.
+ * @returns {null}
+ */
 export const CardField = () => null;
 
-// Mock other Stripe components that might be used
+/**
+ * A mock ApplePayButton component for web builds. It renders nothing.
+ * @returns {null}
+ */
 export const ApplePayButton = () => null;
+
+/**
+ * A mock GooglePayButton component for web builds. It renders nothing.
+ * @returns {null}
+ */
 export const GooglePayButton = () => null;
+
+/**
+ * A mock AuBECSDebitForm component for web builds. It renders nothing.
+ * @returns {null}
+ */
 export const AuBECSDebitForm = () => null;
 
-// Default export
+/**
+ * The default export containing all the mock Stripe components and hooks.
+ */
 export default {
   StripeProvider,
   useStripe,

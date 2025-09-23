@@ -1,9 +1,8 @@
 /**
- * Product Redux Slice
- * Manages product state, search, filtering, and CRUD operations
- * Integrates with Supabase for real-time data synchronization
+ * @module store/slices/productSlice
+ * @description A Redux slice for managing product-related state, including fetching, searching,
+ * filtering, and selecting products. It interfaces with a Supabase backend for data retrieval.
  */
-
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { supabase } from '../../config/supabase';
 import { 
@@ -15,7 +14,10 @@ import {
   ProductSortOption 
 } from '../types/product';
 
-// Initial state
+/**
+ * The initial state of the product slice.
+ * @type {ProductState}
+ */
 const initialState: ProductState = {
   // Product data
   products: [],
@@ -56,8 +58,9 @@ const initialState: ProductState = {
 };
 
 /**
- * Fetch products with optional filtering and pagination
- * Integrates with Supabase PostgreSQL for efficient querying
+ * An async thunk to fetch a paginated and filtered list of products.
+ * @param {ProductSearchParams} [params={}] - The parameters for fetching products.
+ * @returns {Promise<ProductsResponse>} A promise that resolves with the list of products and pagination information.
  */
 export const fetchProducts = createAsyncThunk(
   'products/fetchProducts',
@@ -136,7 +139,9 @@ export const fetchProducts = createAsyncThunk(
 );
 
 /**
- * Fetch featured products for homepage display
+ * An async thunk to fetch a list of featured products.
+ * @param {number} [limit=10] - The maximum number of featured products to fetch.
+ * @returns {Promise<Product[]>} A promise that resolves with the list of featured products.
  */
 export const fetchFeaturedProducts = createAsyncThunk(
   'products/fetchFeaturedProducts',
@@ -161,7 +166,9 @@ export const fetchFeaturedProducts = createAsyncThunk(
 );
 
 /**
- * Fetch single product by ID with full details
+ * An async thunk to fetch a single product by its ID.
+ * @param {string} productId - The ID of the product to fetch.
+ * @returns {Promise<any>} A promise that resolves with the product data.
  */
 export const fetchProductById = createAsyncThunk(
   'products/fetchProductById',
@@ -188,7 +195,9 @@ export const fetchProductById = createAsyncThunk(
 );
 
 /**
- * Search products with debounced query
+ * An async thunk to search for products based on a query.
+ * @param {string} query - The search query.
+ * @returns {Promise<Product[]>} A promise that resolves with a list of matching products.
  */
 export const searchProducts = createAsyncThunk(
   'products/searchProducts',
@@ -217,7 +226,9 @@ export const searchProducts = createAsyncThunk(
 );
 
 /**
- * Fetch products by brand
+ * An async thunk to fetch products belonging to a specific brand.
+ * @param {string} brandId - The ID of the brand.
+ * @returns {Promise<Product[]>} A promise that resolves with a list of products.
  */
 export const fetchProductsByBrand = createAsyncThunk(
   'products/fetchProductsByBrand',
@@ -241,7 +252,9 @@ export const fetchProductsByBrand = createAsyncThunk(
 );
 
 /**
- * Fetch products by category
+ * An async thunk to fetch products belonging to a specific category.
+ * @param {string} category - The name of the category.
+ * @returns {Promise<Product[]>} A promise that resolves with a list of products.
  */
 export const fetchProductsByCategory = createAsyncThunk(
   'products/fetchProductsByCategory',
@@ -264,64 +277,123 @@ export const fetchProductsByCategory = createAsyncThunk(
   }
 );
 
-// Product slice
+/**
+ * The Redux slice for managing products.
+ */
 const productSlice = createSlice({
   name: 'products',
   initialState,
   reducers: {
-    // Search and filtering actions
+    /**
+     * Sets the search query for products.
+     * @param {ProductState} state - The current state.
+     * @param {PayloadAction<string>} action - The action containing the search query.
+     */
     setSearchQuery: (state, action: PayloadAction<string>) => {
       state.searchQuery = action.payload;
     },
     
+    /**
+     * Sets the filters for products.
+     * @param {ProductState} state - The current state.
+     * @param {PayloadAction<ProductFilters>} action - The action containing the product filters.
+     */
     setFilters: (state, action: PayloadAction<ProductFilters>) => {
       state.filters = action.payload;
     },
     
+    /**
+     * Updates existing product filters.
+     * @param {ProductState} state - The current state.
+     * @param {PayloadAction<Partial<ProductFilters>>} action - The action containing the partial product filters.
+     */
     updateFilters: (state, action: PayloadAction<Partial<ProductFilters>>) => {
       state.filters = { ...state.filters, ...action.payload };
     },
     
+    /**
+     * Clears all product filters.
+     * @param {ProductState} state - The current state.
+     */
     clearFilters: (state) => {
       state.filters = {};
     },
     
+    /**
+     * Sets the sorting option for products.
+     * @param {ProductState} state - The current state.
+     * @param {PayloadAction<ProductSortOption>} action - The action containing the sort option.
+     */
     setSortBy: (state, action: PayloadAction<ProductSortOption>) => {
       state.sortBy = action.payload;
     },
     
+    /**
+     * Sets the sort order for products.
+     * @param {ProductState} state - The current state.
+     * @param {PayloadAction<'asc' | 'desc'>} action - The action containing the sort order.
+     */
     setSortOrder: (state, action: PayloadAction<'asc' | 'desc'>) => {
       state.sortOrder = action.payload;
     },
     
-    // Product selection actions
+    /**
+     * Sets the currently selected product.
+     * @param {ProductState} state - The current state.
+     * @param {PayloadAction<Product | null>} action - The action containing the selected product.
+     */
     setSelectedProduct: (state, action: PayloadAction<Product | null>) => {
       state.selectedProduct = action.payload;
     },
     
+    /**
+     * Sets the currently selected brand.
+     * @param {ProductState} state - The current state.
+     * @param {PayloadAction<any | null>} action - The action containing the selected brand.
+     */
     setSelectedBrand: (state, action: PayloadAction<any | null>) => {
       state.selectedBrand = action.payload;
     },
     
+    /**
+     * Sets the currently selected category.
+     * @param {ProductState} state - The current state.
+     * @param {PayloadAction<any | null>} action - The action containing the selected category.
+     */
     setSelectedCategory: (state, action: PayloadAction<any | null>) => {
       state.selectedCategory = action.payload;
     },
     
-    // Pagination actions
+    /**
+     * Sets the current page for product pagination.
+     * @param {ProductState} state - The current state.
+     * @param {PayloadAction<number>} action - The action containing the page number.
+     */
     setCurrentPage: (state, action: PayloadAction<number>) => {
       state.currentPage = action.payload;
     },
     
-    // Error clearing actions
+    /**
+     * Clears the main error state.
+     * @param {ProductState} state - The current state.
+     */
     clearError: (state) => {
       state.error = null;
     },
     
+    /**
+     * Clears the search error state.
+     * @param {ProductState} state - The current state.
+     */
     clearSearchError: (state) => {
       state.searchError = null;
     },
     
-    // Reset state
+    /**
+     * Resets the product state to its initial values.
+     * @param {ProductState} state - The current state.
+     * @returns {ProductState} The initial state.
+     */
     resetProductState: (state) => {
       return { ...initialState };
     },

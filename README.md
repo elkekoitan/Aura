@@ -1,244 +1,146 @@
-# 🌟 Aura Fashion App
+# 🌟 Aura Fashion - AI-Powered Fashion Discovery
 
-**Discover Your Style with AI-Powered Fashion**
+Aura is a cutting-edge, mobile-first fashion discovery platform that leverages AI to provide a personalized styling and shopping experience. Built with a modern tech stack including React Native, Expo, and Supabase, Aura features a stunning glassmorphism design and a rich, interactive user interface.
 
-A cutting-edge fashion discovery platform that combines stunning glassmorphism design with powerful features for the modern fashion enthusiast. Built with React Native, Expo, and Supabase.
+## ✨ Key Features
 
-## ✨ Features
+-   **AI-Powered Styling**: Personalized style recommendations, color analysis, and trend predictions.
+-   **Virtual Try-On**: Augmented reality feature to try on clothes in real-time. (Future Implementation)
+-   **Brand-Centric Discovery**: Explore and follow your favorite fashion brands.
+-   **Advanced Product Search**: Powerful search and filtering capabilities to find the perfect item.
+-   **Seamless Shopping Cart**: A persistent and user-friendly shopping cart experience.
+-   **Comprehensive User Profiles**: Manage personal details, style preferences, and body measurements.
+-   **Secure Authentication**: Robust email/password authentication powered by Supabase.
+-   **Admin Dashboard**: A full-featured content management system for products, brands, and analytics.
 
-### 🛍️ **Shopping Experience**
-- **Product Discovery**: Browse thousands of fashion items with advanced search and filtering
-- **Brand Exploration**: Discover and follow your favorite fashion brands
-- **Smart Cart**: Seamless shopping cart with persistent storage
-- **Product Details**: Rich product pages with multiple images and size/color selection
-
-### 🎨 **Design Excellence**
-- **Glassmorphism UI**: Modern, translucent design with beautiful gradients
-- **Responsive Layout**: Optimized for all screen sizes and orientations
-- **Smooth Animations**: Fluid transitions and micro-interactions
-- **Holographic Themes**: Stunning visual effects and color palettes
-
-### 🔐 **Authentication & Security**
-- **Secure Login**: Email/password authentication with Supabase
-- **Password Recovery**: Secure password reset functionality
-- **Profile Management**: Complete user profile customization
-- **Admin Dashboard**: Full content management system
-
-### 👔 **Admin Features**
-- **Content Management**: Full CRUD operations for products and brands
-- **Analytics Dashboard**: Real-time statistics and insights
-- **Image Upload**: Professional image management with Supabase Storage
-- **Bulk Operations**: Efficient management of large inventories
-
-## 🚀 **Technology Stack**
-
-- **React Native** with Expo SDK 50
-- **TypeScript** for complete type safety
-- **Redux Toolkit** for state management
-- **Supabase** for backend and authentication
-- **PostgreSQL** with Row Level Security
-- **Glassmorphism Design System**
-
-## 📱 **Platform Support**
-
-- ✅ **iOS** (iPhone & iPad)
-- ✅ **Android** (Phone & Tablet)
-- 🔄 **Web** (Progressive Web App - Coming Soon)
-
-## 🏆 **Key Features**
-
-1. **Glassmorphism Design**: First fashion app with full glassmorphism UI
-2. **Brand-Centric Discovery**: Focus on brand relationships and discovery
-3. **Admin-Friendly**: Complete content management system included
-4. **Performance Optimized**: Smooth 60fps animations and interactions
-5. **Type-Safe**: Full TypeScript implementation for reliability
-
-## 📊 **App Statistics**
-
-- **25+ Screens** with consistent design
-- **2000+ Lines** of TypeScript code
-- **75+ Components** with reusable architecture
-- **Zero TypeScript Errors** - Production ready
-- **Responsive Design** for all device sizes
-
-## 🎨 Özellikler
-
-### ✨ Tasarım
-- **Turquoise + Holographic** renk paleti
-- **3D Glassmorphism** efektleri
-- **Neomorphism** butonlar
-- **Fluid animations** ve **micro-interactions**
-
-### 🤖 AI-Powered Özellikler
-- **AI Stil Danışmanı** - Kişisel stil önerileri
-- **Akıllı Renk Analizi** - Ten tonuna göre renk önerileri
-- **Trend Prediction** - Gelecek trendleri tahmin etme
-- **Smart Wardrobe** - Gardırop optimizasyonu
-
-### 🌟 Yenilikçi Özellikler
-- **AR Try-On** - Gerçek zamanlı deneme
-- **Virtual Closet** - 3D gardırop
-- **Style DNA** - Kişisel stil profili
-- **Mood-Based Styling** - Ruh haline göre kıyafet önerisi
-
-## 🛠 Teknoloji Stack
+## 🛠️ Technology Stack
 
 ### Frontend
-- **React Native** + **Expo** - Cross-platform development
-- **TypeScript** - Type safety
-- **React Navigation** - Navigation
-- **React Native Reanimated** - Animations
-- **Expo Linear Gradient** - Gradients
-- **Expo Blur** - Glassmorphism effects
+-   **React Native & Expo**: For cross-platform iOS, Android, and Web development.
+-   **TypeScript**: Ensures a type-safe and reliable codebase.
+-   **Redux Toolkit**: For predictable and centralized state management.
+-   **React Navigation**: For handling navigation and screen transitions.
+--   **Expo Linear Gradient & Blur**: To create the signature glassmorphism effects.
+-   **Stripe**: For processing payments securely.
 
-### Backend
-- **Supabase** - Database, Authentication, Storage
-- **PostgreSQL** - Database
-- **Row Level Security** - Data security
+### Backend & Database
+-   **Supabase**: Provides the backend, database, authentication, and storage.
+-   **PostgreSQL**: The underlying database with Row Level Security for data protection.
+-   **Deno**: For writing Supabase Edge Functions in TypeScript.
 
-### State Management
-- **Redux Toolkit** - Global state management
-- **React Redux** - React bindings
+## 📂 Project Structure
 
-### 3D & AR
-- **Three.js** - 3D graphics
-- **Expo GL** - WebGL support
-- **Expo Three** - Three.js integration
+The project follows a feature-oriented directory structure to keep the codebase organized and scalable.
 
-## 📱 Ekranlar
-
-### Onboarding (13 ekran)
-- [x] Welcome Screen - Hoş geldin ekranı
-- [ ] Feature Introduction - Özellik tanıtımı
-- [ ] Permission Requests - İzin istekleri
-- [ ] Style Preferences - Stil tercihleri
-
-### Avatar Creation (12 ekran)
-- [ ] Photo Capture - Fotoğraf çekme
-- [ ] Face Detection - Yüz tanıma
-- [ ] Body Measurements - Vücut ölçüleri
-- [ ] Avatar Customization - Avatar özelleştirme
-
-### Ana Özellikler
-- [ ] Home Dashboard - Ana sayfa
-- [ ] Brand Selection - Marka seçimi
-- [ ] Look Detail - Görünüm detayı
-- [ ] Virtual Try-On - Sanal deneme
-- [ ] Shopping Cart - Alışveriş sepeti
-- [ ] User Profile - Kullanıcı profili
-
-## 🚀 Kurulum
-
-### Gereksinimler
-- Node.js 18+
-- npm veya yarn
-- Expo CLI
-- Supabase hesabı
-
-### Adımlar
-
-1. **Projeyi klonlayın**
-```bash
-git clone <repository-url>
-cd Aura
+```
+.
+├── src/
+│   ├── components/    # Reusable UI and feature components
+│   ├── config/        # Configuration files (e.g., Supabase)
+│   ├── constants/     # Global constants (Colors, Typography, etc.)
+│   ├── navigation/    # Navigation setup and navigators
+│   ├── screens/       # Top-level screen components
+│   ├── services/      # External service integrations (e.g., Stripe)
+│   ├── store/         # Redux Toolkit store, slices, and types
+│   └── utils/         # Utility functions and web stubs
+├── supabase/
+│   ├── functions/     # Supabase edge functions
+│   └── migrations/    # Database schema migrations
+└── App.tsx            # Main application entry point
 ```
 
-2. **Bağımlılıkları yükleyin**
-```bash
-npm install
-```
+## 🚀 Getting Started
 
-3. **Environment variables ayarlayın**
-```bash
-cp .env.example .env
-# .env dosyasını Supabase bilgilerinizle güncelleyin
-```
+Follow these instructions to get a local copy of the project up and running for development and testing.
 
-4. **Uygulamayı çalıştırın**
-```bash
-# Web için
-npm run web
+### Prerequisites
 
-# iOS için (macOS gerekli)
-npm run ios
+-   [Node.js](https://nodejs.org/) (v18 or newer)
+-   [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/)
+-   [Expo CLI](https://docs.expo.dev/get-started/installation/)
+-   A free [Supabase](https://supabase.com/) account.
 
-# Android için
-npm run android
-```
+### Installation
 
-## 🗄 Database Schema
+1.  **Clone the repository:**
+    ```bash
+    git clone <repository-url>
+    cd aura-fashion-app
+    ```
 
-### Users
-- id, email, full_name, avatar_url
-- created_at, updated_at
+2.  **Install dependencies:**
+    ```bash
+    npm install
+    ```
 
-### User Profiles
-- user_id, username, bio, style_preferences
-- body_measurements, gender, birth_date
+3.  **Set up environment variables:**
+    -   Create a `.env` file by copying the example:
+        ```bash
+        cp .env.example .env
+        ```
+    -   Log in to your Supabase account and create a new project.
+    -   Navigate to **Project Settings > API**.
+    -   Copy your **Project URL** and **`service_role` key** and add them to your `.env` file.
+    -   You will also need your Stripe publishable key and webhook secret.
 
-### Brands
-- id, name, description, logo_url
-- category, is_active
+    Your `.env` file should look like this:
+    ```
+    EXPO_PUBLIC_SUPABASE_URL="your-supabase-url"
+    EXPO_PUBLIC_SUPABASE_ANON_KEY="your-supabase-anon-key"
+    SUPABASE_SERVICE_ROLE_KEY="your-supabase-service-role-key"
 
-### Products
-- id, brand_id, name, description
-- category, price, images, colors, sizes
+    EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY="your-stripe-pk"
+    STRIPE_SECRET_KEY="your-stripe-sk"
+    STRIPE_WEBHOOK_SECRET="your-stripe-webhook-secret"
+    ```
 
-### Looks
-- id, user_id, name, description
-- products[], tags[], is_public
+### Running the Application
 
-### Avatars
-- id, user_id, model_url, texture_url
-- body_measurements, face_features
+You can run the application on a mobile simulator or on the web.
 
-## 📦 Deployment
+-   **For Web:**
+    ```bash
+    npm run web
+    ```
 
-### Web (Vercel)
-```bash
-npm run build:web
-# Vercel'e deploy edin
-```
+-   **For iOS (macOS required):**
+    ```bash
+    npm run ios
+    ```
 
-### Mobile (Expo)
-```bash
-# iOS App Store
-expo build:ios
+-   **For Android:**
+    ```bash
+    npm run android
+    ```
 
-# Google Play Store
-expo build:android
-```
+## 🗄️ Backend Setup
 
-## 🎯 Roadmap
+The Supabase backend, including the database schema, is defined in the `/supabase` directory.
 
-- [x] Proje kurulumu ve temel yapı
-- [x] Design system ve UI components
-- [x] Supabase entegrasyonu
-- [x] Redux store yapısı
-- [x] Welcome screen
-- [ ] Onboarding flow tamamlama
-- [ ] Authentication sistem
-- [ ] Avatar creation system
-- [ ] 3D try-on functionality
-- [ ] AI styling features
-- [ ] E-commerce integration
-- [ ] Social features
-- [ ] Performance optimization
-- [ ] Testing
-- [ ] App Store deployment
+1.  **Set up the Database Schema:**
+    -   In your Supabase project, navigate to the **SQL Editor**.
+    -   Open the `supabase/schema.sql` file, copy its content, and run it in the SQL Editor to create the database tables and relationships.
 
-## 🤝 Katkıda Bulunma
+2.  **Deploy Edge Functions:**
+    -   The Supabase CLI is required to deploy edge functions. Follow the official [Supabase documentation](https://supabase.com/docs/guides/functions/deploy) for instructions on deploying the functions located in the `supabase/functions` directory.
 
-1. Fork edin
-2. Feature branch oluşturun (`git checkout -b feature/amazing-feature`)
-3. Commit edin (`git commit -m 'Add amazing feature'`)
-4. Push edin (`git push origin feature/amazing-feature`)
-5. Pull Request açın
+## 📜 Available Scripts
 
-## 📄 Lisans
+-   `npm run ios`: Runs the app on the iOS simulator.
+-   `npm run android`: Runs the app on the Android emulator.
+-   `npm run web`: Runs the app in a web browser.
+-   `npm test`: (Not yet implemented) Runs the test suite.
 
-Bu proje MIT lisansı altında lisanslanmıştır.
+## 🤝 Contributing
 
-## 📞 İletişim
+Contributions are welcome! If you have a suggestion or find a bug, please open an issue to discuss it.
 
-Proje hakkında sorularınız için issue açabilirsiniz.
+1.  Fork the Project.
+2.  Create your Feature Branch (`git checkout -b feature/AmazingFeature`).
+3.  Commit your Changes (`git commit -m 'Add some AmazingFeature'`).
+4.  Push to the Branch (`git push origin feature/AmazingFeature`).
+5.  Open a Pull Request.
+
+## 📄 License
+
+This project is licensed under the MIT License. See the `LICENSE` file for more details.

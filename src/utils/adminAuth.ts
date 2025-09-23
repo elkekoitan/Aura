@@ -1,13 +1,15 @@
 /**
- * Admin Authentication Utilities
- * Provides role-based access control and permission checking for admin features
+ * @module utils/adminAuth
+ * @description Provides role-based access control (RBAC) and permission checking utilities
+ * for administrative features within the application. Includes mock data for development.
  */
-
 import { AdminPermission, AdminUser } from '../store/types/admin';
 
 /**
- * Mock admin user data for development
- * In production, this would come from the authenticated user's profile
+ * A mock admin user object for development and testing purposes.
+ * In a production environment, this data would be sourced from the
+ * authenticated user's session or profile.
+ * @type {AdminUser}
  */
 const MOCK_ADMIN_USER: AdminUser = {
   id: 'admin-001',
@@ -33,9 +35,11 @@ const MOCK_ADMIN_USER: AdminUser = {
 };
 
 /**
- * Check if current user has admin access
- * For development, always returns true
- * In production, this would check the user's role and permissions
+ * Checks if the current user has administrative access.
+ * For development, this function currently returns true for any authenticated user.
+ * In production, it should be updated to perform a proper role check.
+ * @param {any} [user] - The user object to check.
+ * @returns {boolean} True if the user has admin access, false otherwise.
  */
 export const hasAdminAccess = (user?: any): boolean => {
   // For development purposes, allow admin access for all authenticated users
@@ -45,7 +49,10 @@ export const hasAdminAccess = (user?: any): boolean => {
 };
 
 /**
- * Check if user has specific permission
+ * Checks if a given user has a specific permission.
+ * @param {AdminPermission} permission - The permission to check for.
+ * @param {AdminUser} [user] - The user whose permissions are to be checked.
+ * @returns {boolean} True if the user has the specified permission, false otherwise.
  */
 export const hasPermission = (permission: AdminPermission, user?: AdminUser): boolean => {
   if (!user) return false;
@@ -53,7 +60,10 @@ export const hasPermission = (permission: AdminPermission, user?: AdminUser): bo
 };
 
 /**
- * Check if user has any of the specified permissions
+ * Checks if a user has at least one of the specified permissions.
+ * @param {AdminPermission[]} permissions - An array of permissions to check for.
+ * @param {AdminUser} [user] - The user whose permissions are to be checked.
+ * @returns {boolean} True if the user has any of the specified permissions, false otherwise.
  */
 export const hasAnyPermission = (permissions: AdminPermission[], user?: AdminUser): boolean => {
   if (!user) return false;
@@ -61,7 +71,10 @@ export const hasAnyPermission = (permissions: AdminPermission[], user?: AdminUse
 };
 
 /**
- * Check if user has all of the specified permissions
+ * Checks if a user has all of the specified permissions.
+ * @param {AdminPermission[]} permissions - An array of permissions to check for.
+ * @param {AdminUser} [user] - The user whose permissions are to be checked.
+ * @returns {boolean} True if the user has all of the specified permissions, false otherwise.
  */
 export const hasAllPermissions = (permissions: AdminPermission[], user?: AdminUser): boolean => {
   if (!user) return false;
@@ -69,7 +82,10 @@ export const hasAllPermissions = (permissions: AdminPermission[], user?: AdminUs
 };
 
 /**
- * Get current admin user (mock for development)
+ * Retrieves the current admin user.
+ * For development, this function returns a mock admin user.
+ * In production, this should be replaced with logic to fetch the authenticated user from context.
+ * @returns {AdminUser | null} The current admin user object, or null if not available.
  */
 export const getCurrentAdminUser = (): AdminUser | null => {
   // For development, return mock admin user
@@ -78,26 +94,44 @@ export const getCurrentAdminUser = (): AdminUser | null => {
 };
 
 /**
- * Permission helper functions for common operations
+ * A helper function to check if a user has permissions to manage products.
+ * @param {AdminUser} [user] - The user to check.
+ * @returns {boolean} True if the user can manage products, false otherwise.
  */
 export const canManageProducts = (user?: AdminUser): boolean => {
   return hasAnyPermission(['products.create', 'products.update', 'products.delete'], user);
 };
 
+/**
+ * A helper function to check if a user has permissions to manage brands.
+ * @param {AdminUser} [user] - The user to check.
+ * @returns {boolean} True if the user can manage brands, false otherwise.
+ */
 export const canManageBrands = (user?: AdminUser): boolean => {
   return hasAnyPermission(['brands.create', 'brands.update', 'brands.delete'], user);
 };
 
+/**
+ * A helper function to check if a user has permissions to manage categories.
+ * @param {AdminUser} [user] - The user to check.
+ * @returns {boolean} True if the user can manage categories, false otherwise.
+ */
 export const canManageCategories = (user?: AdminUser): boolean => {
   return hasAnyPermission(['categories.create', 'categories.update', 'categories.delete'], user);
 };
 
+/**
+ * A helper function to check if a user has permissions to view analytics.
+ * @param {AdminUser} [user] - The user to check.
+ * @returns {boolean} True if the user can view analytics, false otherwise.
+ */
 export const canViewAnalytics = (user?: AdminUser): boolean => {
   return hasPermission('analytics.read', user);
 };
 
 /**
- * Admin role hierarchy
+ * An object representing the hierarchy of admin roles.
+ * @type {Readonly<{MODERATOR: string, ADMIN: string, SUPER_ADMIN: string}>}
  */
 export const ADMIN_ROLES = {
   MODERATOR: 'moderator',
@@ -106,7 +140,8 @@ export const ADMIN_ROLES = {
 } as const;
 
 /**
- * Default permissions for each role
+ * A mapping of admin roles to their default set of permissions.
+ * @type {Record<string, AdminPermission[]>}
  */
 export const ROLE_PERMISSIONS: Record<string, AdminPermission[]> = {
   [ADMIN_ROLES.MODERATOR]: [
@@ -149,14 +184,19 @@ export const ROLE_PERMISSIONS: Record<string, AdminPermission[]> = {
 };
 
 /**
- * Get permissions for a role
+ * Retrieves the array of permissions associated with a specific role.
+ * @param {string} role - The role to get permissions for.
+ * @returns {AdminPermission[]} An array of permissions for the given role, or an empty array if the role is not found.
  */
 export const getPermissionsForRole = (role: string): AdminPermission[] => {
   return ROLE_PERMISSIONS[role] || [];
 };
 
 /**
- * Check if role has higher privileges than another role
+ * Compares two roles to determine if the first has higher privileges than the second.
+ * @param {string} role1 - The first role.
+ * @param {string} role2 - The second role.
+ * @returns {boolean} True if `role1` is higher in the hierarchy than `role2`, false otherwise.
  */
 export const isHigherRole = (role1: string, role2: string): boolean => {
   const roleHierarchy = [ADMIN_ROLES.MODERATOR, ADMIN_ROLES.ADMIN, ADMIN_ROLES.SUPER_ADMIN];

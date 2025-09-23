@@ -1,7 +1,5 @@
 /**
- * AdminCard Component
- * Reusable card component for admin dashboard statistics and metrics
- * Features glassmorphism design with trend indicators and interactive elements
+ * @module components/admin/AdminCard
  */
 
 import React from 'react';
@@ -21,6 +19,20 @@ import { AdminCardProps } from '../../store/types/admin';
 const { width } = Dimensions.get('window');
 const CARD_WIDTH = (width - Spacing.component.screen.horizontal * 2 - Spacing.lg) / 2;
 
+/**
+ * A reusable card component for displaying statistics and metrics on the admin dashboard.
+ * It features a glassmorphism design, trend indicators, and can be made interactive.
+ * @param {object} props - The component props.
+ * @param {string} props.title - The main title of the card.
+ * @param {string | number} props.value - The primary value to be displayed.
+ * @param {string} [props.subtitle] - An optional subtitle for the card.
+ * @param {keyof typeof Ionicons.glyphMap} [props.icon] - The name of the icon to display.
+ * @param {object} [props.trend] - An object representing the trend data.
+ * @param {boolean} props.trend.isPositive - Whether the trend is positive or negative.
+ * @param {number} props.trend.value - The percentage value of the trend.
+ * @param {() => void} [props.onPress] - An optional function to handle press events.
+ * @returns {React.FC} A React component.
+ */
 export const AdminCard: React.FC<AdminCardProps> = ({
   title,
   value,
@@ -30,7 +42,9 @@ export const AdminCard: React.FC<AdminCardProps> = ({
   onPress,
 }) => {
   /**
-   * Format large numbers with appropriate suffixes
+   * Formats large numbers with appropriate suffixes (K for thousands, M for millions).
+   * @param {string | number} val - The value to format.
+   * @returns {string} The formatted value as a string.
    */
   const formatValue = (val: string | number): string => {
     if (typeof val === 'string') return val;
@@ -45,7 +59,8 @@ export const AdminCard: React.FC<AdminCardProps> = ({
   };
 
   /**
-   * Get trend color based on positive/negative
+   * Determines the color for the trend indicator based on whether it's positive or negative.
+   * @returns {string} The color hex code.
    */
   const getTrendColor = (): string => {
     if (!trend) return Colors.text.secondary;
@@ -53,13 +68,18 @@ export const AdminCard: React.FC<AdminCardProps> = ({
   };
 
   /**
-   * Get trend icon based on positive/negative
+   * Determines the icon for the trend indicator based on whether it's positive or negative.
+   * @returns {string} The name of the trend icon.
    */
   const getTrendIcon = (): string => {
     if (!trend) return 'remove-outline';
     return trend.isPositive ? 'trending-up' : 'trending-down';
   };
 
+  /**
+   * Renders the main content of the card.
+   * @returns {React.FC} A React component.
+   */
   const CardContent = () => (
     <GlassCard style={styles.card}>
       {/* Header with icon */}

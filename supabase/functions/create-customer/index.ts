@@ -1,3 +1,20 @@
+/**
+ * @module supabase/functions/create-customer
+ * @description This Supabase edge function handles the creation of a new Stripe customer.
+ * It receives user details, creates a corresponding customer in Stripe, and then updates
+ * the user's profile in the Supabase database with the new Stripe customer ID.
+ *
+ * @requires deno.land/std/http/server
+ * @requires @supabase/supabase-js
+ * @requires stripe
+ *
+ * @param {Request} req - The incoming HTTP request.
+ * @param {object} req.body - The request body.
+ * @param {string} req.body.email - The user's email address.
+ * @param {string} req.body.name - The user's full name.
+ *
+ * @returns {Response} A response object with the created customer's details or an error message.
+ */
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import Stripe from 'https://esm.sh/stripe@14.21.0'

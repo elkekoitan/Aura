@@ -1,9 +1,19 @@
+/**
+ * @module services/stripe
+ * @description A service class for interacting with the Stripe API and related Supabase functions.
+ * It handles payment intents, customer creation, and other Stripe-related operations.
+ */
+
 import { loadStripe } from '@stripe/stripe-js';
 import { supabase } from '../config/supabase';
 
 // Initialize Stripe
 const stripePromise = loadStripe(process.env.EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
+/**
+ * Represents the data required to create a payment intent.
+ * @interface PaymentIntentData
+ */
 export interface PaymentIntentData {
   amount: number;
   currency: string;
@@ -21,6 +31,10 @@ export interface PaymentIntentData {
   };
 }
 
+/**
+ * Represents a product in the Stripe system.
+ * @interface StripeProduct
+ */
 export interface StripeProduct {
   id: string;
   name: string;
@@ -32,6 +46,10 @@ export interface StripeProduct {
   };
 }
 
+/**
+ * Represents a price for a product in the Stripe system.
+ * @interface StripePrice
+ */
 export interface StripePrice {
   id: string;
   product: string;
@@ -43,9 +61,17 @@ export interface StripePrice {
   };
 }
 
+/**
+ * A service class for handling Stripe-related operations.
+ * @class StripeService
+ */
 class StripeService {
   private stripe: any = null;
 
+  /**
+   * Initializes the Stripe.js instance.
+   * @returns {Promise<any>} A promise that resolves with the Stripe instance.
+   */
   async initialize() {
     if (!this.stripe) {
       this.stripe = await stripePromise;
@@ -53,7 +79,11 @@ class StripeService {
     return this.stripe;
   }
 
-  // Create payment intent
+  /**
+   * Creates a payment intent by invoking a Supabase function.
+   * @param {PaymentIntentData} data - The data for the payment intent.
+   * @returns {Promise<any>} A promise that resolves with the payment intent data.
+   */
   async createPaymentIntent(data: PaymentIntentData) {
     try {
       const { data: result, error } = await supabase.functions.invoke('create-payment-intent', {
@@ -68,7 +98,12 @@ class StripeService {
     }
   }
 
-  // Confirm payment
+  /**
+   * Confirms a payment using a payment intent and payment method ID.
+   * @param {string} paymentIntentId - The ID of the payment intent.
+   * @param {string} paymentMethodId - The ID of the payment method.
+   * @returns {Promise<any>} A promise that resolves with the confirmed payment intent.
+   */
   async confirmPayment(paymentIntentId: string, paymentMethodId: string) {
     try {
       const stripe = await this.initialize();
@@ -85,7 +120,12 @@ class StripeService {
     }
   }
 
-  // Create Stripe customer
+  /**
+   * Creates a new Stripe customer.
+   * @param {string} email - The customer's email address.
+   * @param {string} [name] - The customer's name.
+   * @returns {Promise<any>} A promise that resolves with the new customer data.
+   */
   async createCustomer(email: string, name?: string) {
     try {
       const { data: result, error } = await supabase.functions.invoke('create-customer', {
@@ -100,7 +140,11 @@ class StripeService {
     }
   }
 
-  // Create product in Stripe
+  /**
+   * Creates a new product in Stripe.
+   * @param {object} product - The product data.
+   * @returns {Promise<any>} A promise that resolves with the new product data.
+   */
   async createProduct(product: {
     name: string;
     description?: string;
@@ -120,7 +164,11 @@ class StripeService {
     }
   }
 
-  // Create price for product
+  /**
+   * Creates a new price for a product in Stripe.
+   * @param {object} price - The price data.
+   * @returns {Promise<any>} A promise that resolves with the new price data.
+   */
   async createPrice(price: {
     product: string;
     unit_amount: number;
@@ -140,7 +188,11 @@ class StripeService {
     }
   }
 
-  // Get payment methods for customer
+  /**
+   * Gets the payment methods for a customer.
+   * @param {string} customerId - The ID of the customer.
+   * @returns {Promise<any>} A promise that resolves with the list of payment methods.
+   */
   async getPaymentMethods(customerId: string) {
     try {
       const { data: result, error } = await supabase.functions.invoke('get-payment-methods', {
@@ -155,7 +207,11 @@ class StripeService {
     }
   }
 
-  // Create setup intent for saving payment method
+  /**
+   * Creates a setup intent for saving a payment method.
+   * @param {string} customerId - The ID of the customer.
+   * @returns {Promise<any>} A promise that resolves with the setup intent data.
+   */
   async createSetupIntent(customerId: string) {
     try {
       const { data: result, error } = await supabase.functions.invoke('create-setup-intent', {
@@ -170,7 +226,12 @@ class StripeService {
     }
   }
 
-  // Process refund
+  /**
+   * Creates a refund for a payment.
+   * @param {string} paymentIntentId - The ID of the payment intent to refund.
+   * @param {number} [amount] - The amount to refund.
+   * @returns {Promise<any>} A promise that resolves with the refund data.
+   */
   async createRefund(paymentIntentId: string, amount?: number) {
     try {
       const { data: result, error } = await supabase.functions.invoke('create-refund', {
@@ -185,7 +246,11 @@ class StripeService {
     }
   }
 
-  // Get order status
+  /**
+   * Gets the status of an order.
+   * @param {string} orderId - The ID of the order.
+   * @returns {Promise<any>} A promise that resolves with the order data.
+   */
   async getOrderStatus(orderId: string) {
     try {
       const { data: order, error } = await supabase
@@ -208,7 +273,12 @@ class StripeService {
     }
   }
 
-  // Update order status
+  /**
+   * Updates the status of an order.
+   * @param {string} orderId - The ID of the order to update.
+   * @param {string} status - The new status for the order.
+   * @returns {Promise<any>} A promise that resolves with the updated order data.
+   */
   async updateOrderStatus(orderId: string, status: string) {
     try {
       const { data: order, error } = await supabase

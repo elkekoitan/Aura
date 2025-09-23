@@ -1,3 +1,8 @@
+/**
+ * @module screens/main/WardrobeScreen
+ * @description A screen that displays the user's digital wardrobe, including their clothing items, saved looks, and analytics.
+ */
+
 import React from 'react';
 import {
   View,
@@ -16,6 +21,10 @@ import { Colors, Typography, Spacing } from '../../constants';
 
 const { width, height } = Dimensions.get('window');
 
+/**
+ * A screen that displays the user's digital wardrobe, including their clothing items, saved looks, and analytics.
+ * @returns {React.FC} A React component.
+ */
 export default function WardrobeScreen() {
   const myLooks = [
     {
@@ -56,6 +65,12 @@ export default function WardrobeScreen() {
     { name: 'Shoes', count: 6, active: false },
   ];
 
+  /**
+   * Renders a single "look" item for the FlatList.
+   * @param {object} params - The render item parameters.
+   * @param {any} params.item - The look item to render.
+   * @returns {React.ReactElement} The rendered look item component.
+   */
   const renderLookItem = ({ item }: { item: any }) => (
     <GlassCard style={styles.lookCard}>
       <Image source={{ uri: item.image }} style={styles.lookImage} />

@@ -1,7 +1,7 @@
 /**
- * ProfileEditScreen
- * Comprehensive profile editing with personal information, avatar upload, and validation
- * Integrates with Redux profile state and image picker
+ * @module screens/profile/ProfileEditScreen
+ * @description A screen for users to edit their profile information, including personal details,
+ * avatar, contact information, and social links.
  */
 
 import React, { useState, useEffect } from 'react';
@@ -34,6 +34,11 @@ import {
 } from '../../store/slices/profileSlice';
 import { UpdateProfileParams } from '../../store/types/profile';
 
+/**
+ * A screen for users to edit their profile information, including personal details,
+ * avatar, contact information, and social links.
+ * @returns {React.FC} A React component.
+ */
 export default function ProfileEditScreen() {
   const navigation = useNavigation();
   const dispatch = useAppDispatch();
@@ -62,7 +67,7 @@ export default function ProfileEditScreen() {
   const [localAvatarUri, setLocalAvatarUri] = useState<string | null>(null);
 
   /**
-   * Initialize form data when profile loads
+   * Initializes the form data when the user's profile is loaded or updated.
    */
   useEffect(() => {
     if (profile) {
@@ -81,7 +86,7 @@ export default function ProfileEditScreen() {
   }, [profile]);
 
   /**
-   * Set editing mode on mount
+   * Sets the editing mode in the profile slice when the component mounts.
    */
   useEffect(() => {
     dispatch(setEditing(true));
@@ -91,7 +96,9 @@ export default function ProfileEditScreen() {
   }, []);
 
   /**
-   * Handle form field changes
+   * Handles changes to a form field.
+   * @param {keyof UpdateProfileParams} field - The name of the field to update.
+   * @param {any} value - The new value for the field.
    */
   const handleFieldChange = (field: keyof UpdateProfileParams, value: any) => {
     setFormData(prev => ({
@@ -106,7 +113,10 @@ export default function ProfileEditScreen() {
   };
 
   /**
-   * Handle nested field changes (location, social_links)
+   * Handles changes to nested form fields, such as location and social links.
+   * @param {'location' | 'social_links'} parentField - The parent field in the state.
+   * @param {string} field - The name of the nested field to update.
+   * @param {string} value - The new value for the nested field.
    */
   const handleNestedFieldChange = (
     parentField: 'location' | 'social_links',
@@ -123,7 +133,7 @@ export default function ProfileEditScreen() {
   };
 
   /**
-   * Handle avatar image selection
+   * Handles the selection of a new avatar image.
    */
   const handleAvatarPress = async () => {
     try {
@@ -151,7 +161,7 @@ export default function ProfileEditScreen() {
   };
 
   /**
-   * Open camera for avatar
+   * Opens the device's camera to take a new avatar photo.
    */
   const openCamera = async () => {
     try {
@@ -181,7 +191,7 @@ export default function ProfileEditScreen() {
   };
 
   /**
-   * Open image picker for avatar
+   * Opens the device's image library to select a new avatar photo.
    */
   const openImagePicker = async () => {
     try {
@@ -204,7 +214,7 @@ export default function ProfileEditScreen() {
   };
 
   /**
-   * Handle save profile
+   * Handles saving the updated profile information.
    */
   const handleSave = async () => {
     try {
@@ -218,7 +228,7 @@ export default function ProfileEditScreen() {
   };
 
   /**
-   * Handle cancel
+   * Handles canceling the profile edit, with a confirmation for unsaved changes.
    */
   const handleCancel = () => {
     if (JSON.stringify(formData) !== JSON.stringify({
@@ -246,7 +256,8 @@ export default function ProfileEditScreen() {
   };
 
   /**
-   * Get avatar source
+   * Gets the source for the avatar image, prioritizing a locally selected image.
+   * @returns {object} The source object for the Image component.
    */
   const getAvatarSource = () => {
     if (localAvatarUri) return { uri: localAvatarUri };

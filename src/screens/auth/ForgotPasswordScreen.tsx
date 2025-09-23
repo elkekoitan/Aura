@@ -1,3 +1,9 @@
+/**
+ * @module screens/auth/ForgotPasswordScreen
+ * @description A screen that allows users to request a password reset email.
+ * It includes form validation, state management for the email sent status, and integration with the authentication slice.
+ */
+
 import React, { useState } from 'react';
 import {
   View,
@@ -21,6 +27,11 @@ import { resetPassword, clearError } from '../../store/slices/authSlice';
 
 const { width, height } = Dimensions.get('window');
 
+/**
+ * A screen that allows users to request a password reset email.
+ * It includes form validation, state management for the email sent status, and integration with the authentication slice.
+ * @returns {React.FC} A React component.
+ */
 export default function ForgotPasswordScreen() {
   const navigation = useNavigation();
   const dispatch = useAppDispatch();
@@ -40,8 +51,9 @@ export default function ForgotPasswordScreen() {
   }, [dispatch]);
 
   /**
-   * Validates email format
-   * Returns error message if invalid, undefined if valid
+   * Validates the format of an email address.
+   * @param {string} emailValue - The email address to validate.
+   * @returns {string | undefined} An error message if the email is invalid, otherwise undefined.
    */
   const validateEmail = (emailValue: string): string | undefined => {
     if (!emailValue.trim()) {
@@ -54,7 +66,8 @@ export default function ForgotPasswordScreen() {
   };
 
   /**
-   * Handles email input changes with real-time validation
+   * Handles changes to the email input field and clears validation errors as the user types.
+   * @param {string} value - The new value of the email input.
    */
   const handleEmailChange = (value: string) => {
     setEmail(value);
@@ -65,9 +78,8 @@ export default function ForgotPasswordScreen() {
   };
 
   /**
-   * Handles password reset request with Supabase integration
-   * Uses Redux Toolkit async thunk for state management
-   * Implements comprehensive error handling and user feedback
+   * Handles the password reset request. It validates the email, dispatches the reset password action,
+   * and provides user feedback through alerts.
    */
   const handleResetPassword = async () => {
     // Validate email before submission
@@ -113,7 +125,7 @@ export default function ForgotPasswordScreen() {
   };
 
   /**
-   * Handles back navigation to login screen
+   * Navigates back to the login screen.
    */
   const handleBackToLogin = () => {
     navigation.navigate('Login' as never);

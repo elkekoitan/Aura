@@ -1,7 +1,7 @@
 /**
- * TryOnProcessingScreen
- * Processing interface for virtual try-on with real-time progress and result display
- * Shows processing steps and handles try-on result presentation
+ * @module screens/tryOn/TryOnProcessingScreen
+ * @description A screen that displays the real-time progress of a virtual try-on session
+ * and shows the final result once processing is complete.
  */
 
 import React, { useEffect, useState } from 'react';
@@ -44,6 +44,11 @@ const PROCESSING_STEPS: Array<{ key: ProcessingStep; label: string; icon: string
   { key: 'finalizing', label: 'Finalizing', icon: 'checkmark-circle-outline' },
 ];
 
+/**
+ * A screen that displays the real-time progress of a virtual try-on session
+ * and shows the final result once processing is complete.
+ * @returns {React.FC} A React component.
+ */
 export default function TryOnProcessingScreen() {
   const navigation = useNavigation();
   const route = useRoute<TryOnProcessingRouteProp>();
@@ -68,7 +73,7 @@ export default function TryOnProcessingScreen() {
   const [pulseAnim] = useState(new Animated.Value(1));
 
   /**
-   * Start processing on mount
+   * Starts the try-on processing when the component mounts.
    */
   useEffect(() => {
     if (currentSession && processedPhoto && !isProcessing && !tryOnResult) {
@@ -77,7 +82,7 @@ export default function TryOnProcessingScreen() {
   }, [currentSession, processedPhoto]);
 
   /**
-   * Animate progress
+   * Animates the progress bar as the processing progress updates.
    */
   useEffect(() => {
     Animated.timing(progressAnim, {
@@ -88,7 +93,7 @@ export default function TryOnProcessingScreen() {
   }, [processingProgress]);
 
   /**
-   * Pulse animation for processing
+   * Creates a pulsing animation effect while processing is active.
    */
   useEffect(() => {
     if (isProcessing) {
@@ -113,7 +118,7 @@ export default function TryOnProcessingScreen() {
   }, [isProcessing]);
 
   /**
-   * Start try-on processing
+   * Starts the try-on processing by dispatching the processTryOn action.
    */
   const startProcessing = async () => {
     if (!currentSession || !processedPhoto) return;
@@ -137,7 +142,7 @@ export default function TryOnProcessingScreen() {
   };
 
   /**
-   * Handle save result
+   * Handles saving the try-on result.
    */
   const handleSaveResult = async () => {
     if (!currentSession || !tryOnResult) return;
@@ -159,7 +164,8 @@ export default function TryOnProcessingScreen() {
   };
 
   /**
-   * Handle share result
+   * Handles sharing the try-on result.
+   * @todo Implement sharing functionality.
    */
   const handleShareResult = () => {
     // TODO: Implement sharing functionality
@@ -167,7 +173,7 @@ export default function TryOnProcessingScreen() {
   };
 
   /**
-   * Handle try again
+   * Handles retrying the try-on session.
    */
   const handleTryAgain = () => {
     dispatch(clearCurrentSession());
@@ -175,7 +181,7 @@ export default function TryOnProcessingScreen() {
   };
 
   /**
-   * Handle done
+   * Handles finishing the try-on process and navigating away.
    */
   const handleDone = () => {
     dispatch(clearCurrentSession());
@@ -183,14 +189,16 @@ export default function TryOnProcessingScreen() {
   };
 
   /**
-   * Get current step index
+   * Gets the index of the current processing step.
+   * @returns {number} The index of the current step.
    */
   const getCurrentStepIndex = (): number => {
     return PROCESSING_STEPS.findIndex(step => step.key === processingStep);
   };
 
   /**
-   * Render processing steps
+   * Renders the list of processing steps with their current status.
+   * @returns {React.ReactElement} The processing steps component.
    */
   const renderProcessingSteps = () => {
     const currentStepIndex = getCurrentStepIndex();
@@ -235,7 +243,8 @@ export default function TryOnProcessingScreen() {
   };
 
   /**
-   * Render progress bar
+   * Renders the progress bar for the processing steps.
+   * @returns {React.ReactElement} The progress bar component.
    */
   const renderProgressBar = () => (
     <View style={styles.progressContainer}>
@@ -259,7 +268,8 @@ export default function TryOnProcessingScreen() {
   );
 
   /**
-   * Render processing view
+   * Renders the view displayed during the processing phase.
+   * @returns {React.ReactElement} The processing view component.
    */
   const renderProcessingView = () => (
     <View style={styles.processingContainer}>
@@ -297,7 +307,8 @@ export default function TryOnProcessingScreen() {
   );
 
   /**
-   * Render result view
+   * Renders the view displayed when the try-on result is ready.
+   * @returns {React.ReactElement} The result view component.
    */
   const renderResultView = () => (
     <View style={styles.resultContainer}>

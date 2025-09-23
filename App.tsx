@@ -1,3 +1,9 @@
+/**
+ * @module App
+ * @description The main entry point for the Aura fashion application.
+ * This file sets up the Redux store, Stripe provider, navigation, and handles
+ * initial data loading and authentication state management.
+ */
 import React, { useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View, Text, ActivityIndicator, Platform } from 'react-native';
@@ -28,7 +34,10 @@ import {
 import { Colors, Typography } from './src/constants';
 import AppNavigator from './src/navigation/AppNavigator';
 
-// Loading Screen Component
+/**
+ * A loading screen component displayed during app initialization.
+ * @returns {React.Component} A full-screen loading indicator with the app's branding.
+ */
 function LoadingScreen() {
   return (
     <View style={styles.loadingContainer}>
@@ -51,7 +60,11 @@ function LoadingScreen() {
   );
 }
 
-// Main App Component
+/**
+ * The main content component of the app. It handles the initialization logic,
+ * such as fetching the user session and data, and then renders the AppNavigator.
+ * @returns {React.Component} The `AppNavigator` or the `LoadingScreen`.
+ */
 function AppContent() {
   const [isLoading, setIsLoading] = useState(true);
 
@@ -101,6 +114,11 @@ function AppContent() {
   return <AppNavigator />;
 }
 
+/**
+ * The root component of the application. It wraps the entire app with necessary providers
+ * such as Redux's `Provider`, `StripeProvider`, `GestureHandlerRootView`, and `SafeAreaProvider`.
+ * @returns {React.Component} The root of the application with all providers.
+ */
 export default function App() {
   return (
     <Provider store={store}>

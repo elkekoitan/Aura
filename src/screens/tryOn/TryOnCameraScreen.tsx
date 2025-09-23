@@ -1,7 +1,7 @@
 /**
- * TryOnCameraScreen
- * Camera interface for virtual try-on with photo capture and processing
- * Integrates with Expo Camera and image processing pipeline
+ * @module screens/tryOn/TryOnCameraScreen
+ * @description A screen that provides a camera interface for the virtual try-on feature.
+ * It handles camera permissions, photo capture, and integration with the try-on processing pipeline.
  */
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -40,6 +40,11 @@ type TryOnCameraRouteProp = RouteProp<{
   TryOnCamera: { productId: string; product: any };
 }, 'TryOnCamera'>;
 
+/**
+ * A screen that provides a camera interface for the virtual try-on feature.
+ * It handles camera permissions, photo capture, and integration with the try-on processing pipeline.
+ * @returns {React.FC} A React component.
+ */
 export default function TryOnCameraScreen() {
   const navigation = useNavigation();
   const route = useRoute<TryOnCameraRouteProp>();
@@ -65,7 +70,7 @@ export default function TryOnCameraScreen() {
   const [showPreview, setShowPreview] = useState(false);
 
   /**
-   * Initialize camera and session
+   * Initializes the camera and try-on session when the component mounts.
    */
   useEffect(() => {
     initializeCamera();
@@ -77,7 +82,7 @@ export default function TryOnCameraScreen() {
   }, []);
 
   /**
-   * Initialize camera permissions
+   * Requests camera permissions from the user.
    */
   const initializeCamera = async () => {
     try {
@@ -101,7 +106,7 @@ export default function TryOnCameraScreen() {
   };
 
   /**
-   * Initialize try-on session
+   * Starts a new try-on session if one is not already active.
    */
   const initializeTryOnSession = async () => {
     if (!currentSession) {
@@ -117,7 +122,7 @@ export default function TryOnCameraScreen() {
   };
 
   /**
-   * Handle camera ready
+   * Handles the camera ready event.
    */
   const handleCameraReady = () => {
     setIsReady(true);
@@ -125,7 +130,7 @@ export default function TryOnCameraScreen() {
   };
 
   /**
-   * Capture photo
+   * Captures a photo using the device's camera.
    */
   const capturePhoto = async () => {
     if (!cameraRef.current || !isReady) return;
@@ -153,7 +158,7 @@ export default function TryOnCameraScreen() {
   };
 
   /**
-   * Use photo from gallery
+   * Allows the user to select a photo from their device's gallery.
    */
   const useGalleryPhoto = async () => {
     try {
@@ -190,7 +195,7 @@ export default function TryOnCameraScreen() {
   };
 
   /**
-   * Confirm photo and proceed
+   * Confirms the selected photo and proceeds to the processing screen.
    */
   const confirmPhoto = async () => {
     if (!userPhoto || !currentSession) return;
@@ -214,7 +219,7 @@ export default function TryOnCameraScreen() {
   };
 
   /**
-   * Retake photo
+   * Discards the current photo preview and returns to the camera view.
    */
   const retakePhoto = () => {
     dispatch(setUserPhoto(null));
@@ -222,7 +227,7 @@ export default function TryOnCameraScreen() {
   };
 
   /**
-   * Toggle camera type
+   * Toggles between the front and back cameras.
    */
   const toggleCameraType = () => {
     setCameraType(current => 
@@ -231,7 +236,7 @@ export default function TryOnCameraScreen() {
   };
 
   /**
-   * Toggle flash
+   * Toggles the camera flash on and off.
    */
   const toggleFlash = () => {
     setFlashMode(current => 
@@ -240,7 +245,8 @@ export default function TryOnCameraScreen() {
   };
 
   /**
-   * Render camera controls
+   * Renders the camera controls, including capture, gallery, and flip buttons.
+   * @returns {React.ReactElement} The camera controls component.
    */
   const renderCameraControls = () => (
     <View style={styles.controlsContainer}>
@@ -332,7 +338,8 @@ export default function TryOnCameraScreen() {
   );
 
   /**
-   * Render photo preview
+   * Renders the photo preview with options to retake or confirm the photo.
+   * @returns {React.ReactElement} The photo preview component.
    */
   const renderPhotoPreview = () => (
     <View style={styles.previewContainer}>
@@ -375,7 +382,8 @@ export default function TryOnCameraScreen() {
   );
 
   /**
-   * Render camera guidelines
+   * Renders the camera guidelines overlay.
+   * @returns {React.ReactElement} The guidelines component.
    */
   const renderGuidelines = () => (
     <View style={styles.guidelinesContainer}>

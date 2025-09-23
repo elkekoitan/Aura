@@ -1,7 +1,7 @@
 /**
- * StylePreferencesScreen
- * Comprehensive style preferences management with visual selection
- * Allows users to set style categories, colors, brands, and shopping preferences
+ * @module screens/profile/StylePreferencesScreen
+ * @description A screen for users to set their style preferences, including categories, colors, brands, and more,
+ * to receive personalized recommendations.
  */
 
 import React, { useState, useEffect } from 'react';
@@ -78,6 +78,11 @@ const COLOR_PALETTE = [
   '#FF69B4', '#DC143C', '#4B0082', '#FF1493', '#00CED1',
 ];
 
+/**
+ * A screen for users to set their style preferences, including categories, colors, brands, and more,
+ * to receive personalized recommendations.
+ * @returns {React.FC} A React component.
+ */
 export default function StylePreferencesScreen() {
   const navigation = useNavigation();
   const dispatch = useAppDispatch();
@@ -104,7 +109,7 @@ export default function StylePreferencesScreen() {
   });
 
   /**
-   * Set editing section on mount
+   * Sets the editing section in the profile slice when the component mounts.
    */
   useEffect(() => {
     dispatch(setEditingSection('style'));
@@ -114,7 +119,9 @@ export default function StylePreferencesScreen() {
   }, []);
 
   /**
-   * Handle multi-select toggle
+   * Toggles the selection of an item in a multi-select field.
+   * @param {keyof UpdateStylePreferencesParams} field - The name of the preference field to update.
+   * @param {T} value - The value to toggle.
    */
   const handleMultiSelectToggle = <T extends string>(
     field: keyof UpdateStylePreferencesParams,
@@ -132,7 +139,8 @@ export default function StylePreferencesScreen() {
   };
 
   /**
-   * Handle color selection
+   * Toggles the selection of a color in the favorite colors list.
+   * @param {string} color - The color to toggle.
    */
   const handleColorToggle = (color: string) => {
     const currentColors = preferences.favorite_colors || [];
@@ -147,7 +155,9 @@ export default function StylePreferencesScreen() {
   };
 
   /**
-   * Handle price range change
+   * Handles changes to the price range preference.
+   * @param {'min' | 'max'} type - The type of price range value to change (min or max).
+   * @param {number} value - The new value.
    */
   const handlePriceRangeChange = (type: 'min' | 'max', value: number) => {
     setPreferences(prev => ({
@@ -160,7 +170,7 @@ export default function StylePreferencesScreen() {
   };
 
   /**
-   * Handle save preferences
+   * Handles saving the user's style preferences.
    */
   const handleSave = async () => {
     try {
@@ -174,7 +184,12 @@ export default function StylePreferencesScreen() {
   };
 
   /**
-   * Render multi-select section
+   * Renders a section with multi-selectable options.
+   * @param {string} title - The title of the section.
+   * @param {keyof UpdateStylePreferencesParams} field - The name of the preference field.
+   * @param {Array<{ key: T; label: string; icon?: string }>} options - The list of options to render.
+   * @param {number} [maxColumns=2] - The maximum number of columns for the options grid.
+   * @returns {React.ReactElement} The rendered multi-select section component.
    */
   const renderMultiSelectSection = <T extends string>(
     title: string,
@@ -227,7 +242,8 @@ export default function StylePreferencesScreen() {
   );
 
   /**
-   * Render color palette
+   * Renders the favorite color palette selector.
+   * @returns {React.ReactElement} The color palette component.
    */
   const renderColorPalette = () => (
     <GlassCard style={styles.sectionCard}>
@@ -263,7 +279,8 @@ export default function StylePreferencesScreen() {
   );
 
   /**
-   * Render price range
+   * Renders the price range selector.
+   * @returns {React.ReactElement} The price range component.
    */
   const renderPriceRange = () => (
     <GlassCard style={styles.sectionCard}>

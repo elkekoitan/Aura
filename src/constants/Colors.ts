@@ -1,6 +1,13 @@
-// Aura App - Turquoise & Glassmorphism Color Palette
+/**
+ * @module constants/Colors
+ * @description Defines the color palette for the Aura Fashion app.
+ * This includes primary, holographic, glassmorphism, semantic, text, background, border, and shadow colors.
+ */
+
 export const Colors = {
-  // Primary Turquoise Palette
+  /**
+   * The primary turquoise color palette, ranging from light to dark shades.
+   */
   primary: {
     50: '#E6FFFA',
     100: '#B2F5EA',
@@ -14,7 +21,9 @@ export const Colors = {
     900: '#1D4044',
   },
 
-  // Holographic Accents
+  /**
+   * A set of vibrant, holographic-style accent colors.
+   */
   holographic: {
     pink: '#FF6B9D',
     purple: '#A855F7',
@@ -24,7 +33,9 @@ export const Colors = {
     yellow: '#F59E0B',
   },
 
-  // Glassmorphism Colors
+  /**
+   * Colors used for creating glassmorphism effects, with varying transparency.
+   */
   glass: {
     white: 'rgba(255, 255, 255, 0.25)',
     whiteStrong: 'rgba(255, 255, 255, 0.4)',
@@ -34,7 +45,9 @@ export const Colors = {
     turquoiseStrong: 'rgba(49, 151, 149, 0.4)',
   },
 
-  // Background Gradients
+  /**
+   * Pre-defined color stops for background gradients.
+   */
   gradients: {
     primary: ['#319795', '#38B2AC', '#4FD1C7'] as const,
     holographic: ['#FF6B9D', '#A855F7', '#3B82F6', '#06B6D4'] as const,
@@ -42,7 +55,9 @@ export const Colors = {
     light: ['#E6FFFA', '#B2F5EA', '#81E6D9'] as const,
   },
 
-  // Semantic Colors
+  /**
+   * Colors used for semantic purposes, such as indicating success, warning, error, or info.
+   */
   semantic: {
     success: '#10B981',
     warning: '#F59E0B',
@@ -51,7 +66,9 @@ export const Colors = {
     errorBackground: 'rgba(239, 68, 68, 0.1)', // Light red background for error messages
   },
 
-  // Text Colors
+  /**
+   * Colors used for text elements.
+   */
   text: {
     primary: '#1D4044',
     secondary: '#285E61',
@@ -61,7 +78,9 @@ export const Colors = {
     muted: '#9CA3AF',
   },
 
-  // Background Colors
+  /**
+   * Colors used for backgrounds.
+   */
   background: {
     primary: '#FFFFFF',
     secondary: '#F8FAFC',
@@ -70,14 +89,18 @@ export const Colors = {
     overlay: 'rgba(0, 0, 0, 0.5)',
   },
 
-  // Border Colors
+  /**
+   * Colors used for borders.
+   */
   border: {
     light: 'rgba(255, 255, 255, 0.2)',
     dark: 'rgba(0, 0, 0, 0.1)',
     primary: 'rgba(49, 151, 149, 0.3)',
   },
 
-  // Shadow Colors
+  /**
+   * Colors used for shadows.
+   */
   shadow: {
     light: 'rgba(0, 0, 0, 0.1)',
     medium: 'rgba(0, 0, 0, 0.2)',

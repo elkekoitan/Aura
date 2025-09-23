@@ -1,3 +1,9 @@
+/**
+ * @module screens/main/TryOnScreen
+ * @description A screen that serves as a hub for the virtual try-on features of the application.
+ * It provides access to 3D avatar creation, AI body scanning, and a style mixer.
+ */
+
 import React from 'react';
 import {
   View,
@@ -14,6 +20,11 @@ import { Colors, Typography, Spacing } from '../../constants';
 
 const { width, height } = Dimensions.get('window');
 
+/**
+ * A screen that serves as a hub for the virtual try-on features of the application.
+ * It provides access to 3D avatar creation, AI body scanning, and a style mixer.
+ * @returns {React.FC} A React component.
+ */
 export default function TryOnScreen() {
   return (
     <SafeAreaView style={styles.container}>

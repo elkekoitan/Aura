@@ -1,9 +1,9 @@
 /**
- * Cart Redux Slice
- * Manages shopping cart state, operations, and checkout functionality
- * Integrates with local storage for persistence
+ * @module store/slices/cartSlice
+ * @description A Redux slice for managing the user's shopping cart, including adding,
+ * updating, and removing items, as well as handling the checkout process.
+ * It persists the cart state to AsyncStorage.
  */
-
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { 
@@ -24,7 +24,10 @@ const TAX_RATE = 0.08; // 8% tax rate
 const FREE_SHIPPING_THRESHOLD = 100; // Free shipping over $100
 const STANDARD_SHIPPING_COST = 9.99;
 
-// Initial state
+/**
+ * The initial state of the cart slice.
+ * @type {CartState}
+ */
 const initialState: CartState = {
   items: [],
   summary: {
@@ -51,7 +54,9 @@ const initialState: CartState = {
 };
 
 /**
- * Calculate cart summary
+ * Calculates the cart summary, including subtotal, tax, shipping, and total.
+ * @param {CartItem[]} items - The items in the cart.
+ * @returns {CartSummary} The calculated cart summary.
  */
 const calculateSummary = (items: CartItem[]): CartSummary => {
   const subtotal = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
@@ -72,7 +77,8 @@ const calculateSummary = (items: CartItem[]): CartSummary => {
 };
 
 /**
- * Load cart from storage
+ * An async thunk to load the cart from AsyncStorage.
+ * @returns {Promise<CartItem[]>} A promise that resolves with the cart items from storage.
  */
 export const loadCartFromStorage = createAsyncThunk(
   'cart/loadFromStorage',
@@ -92,7 +98,9 @@ export const loadCartFromStorage = createAsyncThunk(
 );
 
 /**
- * Save cart to storage
+ * An async thunk to save the cart to AsyncStorage.
+ * @param {CartItem[]} items - The cart items to save.
+ * @returns {Promise<CartItem[]>} A promise that resolves with the saved cart items.
  */
 export const saveCartToStorage = createAsyncThunk(
   'cart/saveToStorage',
@@ -108,7 +116,10 @@ export const saveCartToStorage = createAsyncThunk(
 );
 
 /**
- * Add item to cart
+ * An async thunk to add an item to the cart.
+ * If the item already exists, its quantity is updated.
+ * @param {AddToCartParams} params - The parameters for adding the item.
+ * @returns {Promise<CartItem[]>} A promise that resolves with the updated list of cart items.
  */
 export const addToCart = createAsyncThunk(
   'cart/addItem',
@@ -154,7 +165,9 @@ export const addToCart = createAsyncThunk(
 );
 
 /**
- * Update cart item quantity
+ * An async thunk to update the quantity of an item in the cart.
+ * @param {UpdateCartItemParams} params - The parameters for updating the item quantity.
+ * @returns {Promise<CartItem[]>} A promise that resolves with the updated list of cart items.
  */
 export const updateCartItemQuantity = createAsyncThunk(
   'cart/updateQuantity',
@@ -174,7 +187,9 @@ export const updateCartItemQuantity = createAsyncThunk(
 );
 
 /**
- * Remove item from cart
+ * An async thunk to remove an item from the cart.
+ * @param {RemoveFromCartParams} params - The parameters for removing the item.
+ * @returns {Promise<CartItem[]>} A promise that resolves with the updated list of cart items.
  */
 export const removeFromCart = createAsyncThunk(
   'cart/removeItem',
@@ -192,7 +207,8 @@ export const removeFromCart = createAsyncThunk(
 );
 
 /**
- * Clear entire cart
+ * An async thunk to clear the entire cart.
+ * @returns {Promise<CartItem[]>} A promise that resolves with an empty array.
  */
 export const clearCart = createAsyncThunk(
   'cart/clear',
@@ -203,7 +219,10 @@ export const clearCart = createAsyncThunk(
 );
 
 /**
- * Process checkout
+ * An async thunk to process the checkout.
+ * This is a mock implementation.
+ * @param {CheckoutData} checkoutData - The data required for checkout.
+ * @returns {Promise<Order>} A promise that resolves with the created order.
  */
 export const processCheckout = createAsyncThunk(
   'cart/processCheckout',
@@ -233,21 +252,34 @@ export const processCheckout = createAsyncThunk(
   }
 );
 
-// Cart slice
+/**
+ * The Redux slice for managing the cart.
+ */
 const cartSlice = createSlice({
   name: 'cart',
   initialState,
   reducers: {
-    // Clear errors
+    /**
+     * Clears the main error state.
+     * @param {CartState} state - The current state.
+     */
     clearError: (state) => {
       state.error = null;
     },
     
+    /**
+     * Clears the checkout error state.
+     * @param {CartState} state - The current state.
+     */
     clearCheckoutError: (state) => {
       state.checkoutError = null;
     },
     
-    // Reset cart state
+    /**
+     * Resets the cart state to its initial values.
+     * @param {CartState} state - The current state.
+     * @returns {CartState} The initial state.
+     */
     resetCartState: (state) => {
       return { ...initialState };
     },

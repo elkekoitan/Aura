@@ -1,7 +1,7 @@
 /**
- * BrandListScreen
- * Complete brand discovery interface with search, filtering, and sorting
- * Integrates with Redux state management and Supabase backend
+ * @module screens/brand/BrandListScreen
+ * @description A screen for discovering and browsing brands.
+ * It features search, filtering, sorting, and a tabbed view for "All" and "Featured" brands.
  */
 
 import React, { useState, useEffect, useCallback } from 'react';
@@ -34,6 +34,11 @@ import {
 } from '../../store/slices/brandSlice';
 import { Brand, BrandFilters, BrandSortOption } from '../../store/types/brand';
 
+/**
+ * A screen for discovering and browsing brands.
+ * It features search, filtering, sorting, and a tabbed view for "All" and "Featured" brands.
+ * @returns {React.FC} A React component.
+ */
 export default function BrandListScreen() {
   // Redux state
   const dispatch = useAppDispatch();
@@ -58,7 +63,7 @@ export default function BrandListScreen() {
   const [followingBrands, setFollowingBrands] = useState<string[]>([]);
 
   /**
-   * Initialize data on screen focus
+   * Initializes the screen by loading the initial data when the screen comes into focus.
    */
   useFocusEffect(
     useCallback(() => {
@@ -67,7 +72,7 @@ export default function BrandListScreen() {
   );
 
   /**
-   * Load initial data for the screen
+   * Fetches the initial data for the screen, including the list of brands and featured brands.
    */
   const loadInitialData = async () => {
     try {
@@ -81,7 +86,7 @@ export default function BrandListScreen() {
   };
 
   /**
-   * Handle refresh
+   * Handles the pull-to-refresh action to reload the initial data.
    */
   const handleRefresh = async () => {
     setRefreshing(true);
@@ -93,7 +98,8 @@ export default function BrandListScreen() {
   };
 
   /**
-   * Handle search query change
+   * Handles changes to the search input, updating the search query and suggestions.
+   * @param {string} query - The new search query.
    */
   const handleSearchChange = (query: string) => {
     dispatch(setSearchQuery(query));
@@ -113,7 +119,8 @@ export default function BrandListScreen() {
   };
 
   /**
-   * Handle search execution
+   * Executes a search for brands based on the provided query.
+   * @param {string} query - The search query to execute.
    */
   const handleSearch = (query: string) => {
     if (query.trim()) {
@@ -125,7 +132,9 @@ export default function BrandListScreen() {
   };
 
   /**
-   * Handle brand press
+   * Handles the press event on a brand card.
+   * @param {Brand} brand - The brand that was pressed.
+   * @todo Navigate to the brand detail screen.
    */
   const handleBrandPress = (brand: Brand) => {
     // Navigate to brand detail screen
@@ -133,7 +142,9 @@ export default function BrandListScreen() {
   };
 
   /**
-   * Handle follow brand
+   * Toggles the follow state for a brand.
+   * @param {Brand} brand - The brand to follow or unfollow.
+   * @todo Implement the actual follow functionality with the backend.
    */
   const handleFollowBrand = (brand: Brand) => {
     const isFollowing = followingBrands.includes(brand.id);
@@ -147,7 +158,8 @@ export default function BrandListScreen() {
   };
 
   /**
-   * Handle sort change
+   * Handles changing the sort option for the brand list.
+   * @param {BrandSortOption} sortOption - The new sort option.
    */
   const handleSortChange = (sortOption: BrandSortOption) => {
     dispatch(setSortBy(sortOption));
@@ -162,7 +174,9 @@ export default function BrandListScreen() {
   };
 
   /**
-   * Handle filter change
+   * Handles changing a filter for the brand list.
+   * @param {keyof BrandFilters} filterType - The type of filter to change.
+   * @param {any} value - The new value for the filter.
    */
   const handleFilterChange = (filterType: keyof BrandFilters, value: any) => {
     const newFilters: BrandFilters = {
@@ -181,7 +195,7 @@ export default function BrandListScreen() {
   };
 
   /**
-   * Handle clear filters
+   * Clears all active filters and the search query, and reloads the initial brand list.
    */
   const handleClearFilters = () => {
     dispatch(clearFilters());
@@ -191,7 +205,7 @@ export default function BrandListScreen() {
   };
 
   /**
-   * Handle load more brands
+   * Handles loading more brands when the user reaches the end of the list.
    */
   const handleLoadMore = () => {
     if (hasMore && !loading) {
@@ -207,7 +221,8 @@ export default function BrandListScreen() {
   };
 
   /**
-   * Get current brands to display based on active tab
+   * Gets the list of brands to display based on the currently active tab.
+   * @returns {Brand[]} The list of brands to display.
    */
   const getCurrentBrands = () => {
     switch (activeTab) {

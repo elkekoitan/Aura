@@ -1,9 +1,8 @@
 /**
- * Profile Redux Slice
- * Manages user profile state, style preferences, body measurements, and avatar
- * Integrates with Supabase for profile data persistence
+ * @module store/slices/profileSlice
+ * @description A Redux slice for managing the user's profile, including personal details,
+ * style preferences, body measurements, and avatar. It uses mock async thunks for data operations.
  */
-
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { 
   ProfileState,
@@ -19,7 +18,10 @@ import {
   ProfileValidation
 } from '../types/profile';
 
-// Initial state
+/**
+ * The initial state of the profile slice.
+ * @type {ProfileState}
+ */
 const initialState: ProfileState = {
   // Profile data
   profile: null,
@@ -43,7 +45,10 @@ const initialState: ProfileState = {
 };
 
 /**
- * Fetch user profile
+ * An async thunk to fetch the user's profile.
+ * This is a mock implementation.
+ * @param {string} userId - The ID of the user.
+ * @returns {Promise<UserProfile>} A promise that resolves with the user's profile data.
  */
 export const fetchUserProfile = createAsyncThunk(
   'profile/fetchUserProfile',
@@ -82,7 +87,10 @@ export const fetchUserProfile = createAsyncThunk(
 );
 
 /**
- * Fetch style preferences
+ * An async thunk to fetch the user's style preferences.
+ * This is a mock implementation.
+ * @param {string} userId - The ID of the user.
+ * @returns {Promise<StylePreferences>} A promise that resolves with the user's style preferences.
  */
 export const fetchStylePreferences = createAsyncThunk(
   'profile/fetchStylePreferences',
@@ -116,7 +124,10 @@ export const fetchStylePreferences = createAsyncThunk(
 );
 
 /**
- * Fetch body measurements
+ * An async thunk to fetch the user's body measurements.
+ * This is a mock implementation.
+ * @param {string} userId - The ID of the user.
+ * @returns {Promise<BodyMeasurements>} A promise that resolves with the user's body measurements.
  */
 export const fetchBodyMeasurements = createAsyncThunk(
   'profile/fetchBodyMeasurements',
@@ -156,7 +167,10 @@ export const fetchBodyMeasurements = createAsyncThunk(
 );
 
 /**
- * Update user profile
+ * An async thunk to update the user's profile.
+ * This is a mock implementation.
+ * @param {UpdateProfileParams} params - The profile data to update.
+ * @returns {Promise<UpdateProfileParams>} A promise that resolves with the updated data.
  */
 export const updateUserProfile = createAsyncThunk(
   'profile/updateUserProfile',
@@ -169,7 +183,10 @@ export const updateUserProfile = createAsyncThunk(
 );
 
 /**
- * Update style preferences
+ * An async thunk to update the user's style preferences.
+ * This is a mock implementation.
+ * @param {UpdateStylePreferencesParams} params - The style preference data to update.
+ * @returns {Promise<UpdateStylePreferencesParams>} A promise that resolves with the updated data.
  */
 export const updateStylePreferences = createAsyncThunk(
   'profile/updateStylePreferences',
@@ -182,7 +199,10 @@ export const updateStylePreferences = createAsyncThunk(
 );
 
 /**
- * Update body measurements
+ * An async thunk to update the user's body measurements.
+ * This is a mock implementation.
+ * @param {UpdateBodyMeasurementsParams} params - The body measurement data to update.
+ * @returns {Promise<UpdateBodyMeasurementsParams>} A promise that resolves with the updated data.
  */
 export const updateBodyMeasurements = createAsyncThunk(
   'profile/updateBodyMeasurements',
@@ -195,7 +215,10 @@ export const updateBodyMeasurements = createAsyncThunk(
 );
 
 /**
- * Upload avatar image
+ * An async thunk to upload a new avatar image for the user.
+ * This is a mock implementation.
+ * @param {string} imageUri - The local URI of the image to upload.
+ * @returns {Promise<string>} A promise that resolves with the URL of the uploaded image.
  */
 export const uploadAvatarImage = createAsyncThunk(
   'profile/uploadAvatarImage',
@@ -209,7 +232,9 @@ export const uploadAvatarImage = createAsyncThunk(
 );
 
 /**
- * Validate profile data
+ * Validates the user's profile data.
+ * @param {Partial<UserProfile>} profile - The profile data to validate.
+ * @returns {ProfileValidation} An object containing the validation result and any errors.
  */
 const validateProfile = (profile: Partial<UserProfile>): ProfileValidation => {
   const errors: Record<string, string> = {};
@@ -236,12 +261,18 @@ const validateProfile = (profile: Partial<UserProfile>): ProfileValidation => {
   };
 };
 
-// Profile slice
+/**
+ * The Redux slice for managing the user profile.
+ */
 const profileSlice = createSlice({
   name: 'profile',
   initialState,
   reducers: {
-    // Editing state management
+    /**
+     * Sets the editing mode for the profile.
+     * @param {ProfileState} state - The current state.
+     * @param {PayloadAction<boolean>} action - The action to set the editing mode.
+     */
     setEditing: (state, action: PayloadAction<boolean>) => {
       state.isEditing = action.payload;
       if (!action.payload) {
@@ -249,25 +280,46 @@ const profileSlice = createSlice({
       }
     },
     
+    /**
+     * Sets the section of the profile that is being edited.
+     * @param {ProfileState} state - The current state.
+     * @param {PayloadAction<ProfileState['editingSection']>} action - The action to set the editing section.
+     */
     setEditingSection: (state, action: PayloadAction<ProfileState['editingSection']>) => {
       state.editingSection = action.payload;
       state.isEditing = action.payload !== null;
     },
     
-    // Error management
+    /**
+     * Clears the main error state.
+     * @param {ProfileState} state - The current state.
+     */
     clearError: (state) => {
       state.error = null;
     },
     
+    /**
+     * Clears all validation errors.
+     * @param {ProfileState} state - The current state.
+     */
     clearValidationErrors: (state) => {
       state.validationErrors = {};
     },
     
+    /**
+     * Sets validation errors.
+     * @param {ProfileState} state - The current state.
+     * @param {PayloadAction<Record<string, string>>} action - The action containing the validation errors.
+     */
     setValidationErrors: (state, action: PayloadAction<Record<string, string>>) => {
       state.validationErrors = action.payload;
     },
     
-    // Reset state
+    /**
+     * Resets the profile state to its initial values.
+     * @param {ProfileState} state - The current state.
+     * @returns {ProfileState} The initial state.
+     */
     resetProfileState: (state) => {
       return { ...initialState };
     },

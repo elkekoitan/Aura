@@ -1,7 +1,5 @@
 /**
- * ProductGrid Component
- * Responsive grid layout for displaying products
- * Supports infinite scrolling, loading states, and empty states
+ * @module components/product/ProductGrid
  */
 
 import React from 'react';
@@ -39,6 +37,27 @@ interface ProductGridProps {
   compact?: boolean;
 }
 
+/**
+ * A responsive grid layout for displaying a list of products.
+ * It supports infinite scrolling, loading states, empty states, and pull-to-refresh.
+ * @param {object} props - The component props.
+ * @param {Product[]} props.products - An array of product objects to display.
+ * @param {(product: Product) => void} [props.onProductPress] - Function to call when a product card is pressed.
+ * @param {(product: Product) => void} [props.onAddToCart] - Function to call when a product's "Add to Cart" button is pressed.
+ * @param {(product: Product) => void} [props.onToggleFavorite] - Function to call when a product's favorite button is toggled.
+ * @param {boolean} [props.loading=false] - Whether the initial data is loading.
+ * @param {boolean} [props.refreshing=false] - Whether the grid is currently being refreshed.
+ * @param {() => void} [props.onRefresh] - Function to call when the user pulls to refresh.
+ * @param {number} [props.numColumns=2] - The number of columns in the grid.
+ * @param {boolean} [props.showLoadMore=false] - Whether to show the "Load More" button.
+ * @param {() => void} [props.onLoadMore] - Function to call when the user reaches the end of the list.
+ * @param {boolean} [props.loadingMore=false] - Whether more data is being loaded.
+ * @param {string} [props.emptyTitle="No Products Found"] - The title for the empty state.
+ * @param {string} [props.emptyMessage="Try adjusting your search or filters to find what you're looking for."] - The message for the empty state.
+ * @param {string[]} [props.favoriteProductIds=[]] - An array of product IDs that the user has favorited.
+ * @param {boolean} [props.compact=false] - Whether to render the product cards in a compact style.
+ * @returns {React.FC} A React component.
+ */
 export const ProductGrid: React.FC<ProductGridProps> = ({
   products,
   onProductPress,
@@ -57,7 +76,10 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
   compact = false,
 }) => {
   /**
-   * Render individual product item
+   * Renders a single product card item for the FlatList.
+   * @param {object} params - The render item parameters.
+   * @param {Product} params.item - The product item to render.
+   * @returns {React.ReactElement} The rendered ProductCard component.
    */
   const renderProduct = ({ item }: { item: Product }) => (
     <ProductCard
@@ -71,7 +93,8 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
   );
 
   /**
-   * Render loading skeleton
+   * Renders a loading skeleton placeholder while the initial data is being fetched.
+   * @returns {React.ReactElement} The loading skeleton view.
    */
   const renderLoadingSkeleton = () => (
     <View style={styles.skeletonContainer}>
@@ -91,7 +114,8 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
   );
 
   /**
-   * Render empty state
+   * Renders a view to display when there are no products to show.
+   * @returns {React.ReactElement} The empty state view.
    */
   const renderEmptyState = () => (
     <View style={styles.emptyContainer}>
@@ -114,7 +138,8 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
   );
 
   /**
-   * Render load more footer
+   * Renders the footer component for the FlatList, showing a "Load More" button or an activity indicator.
+   * @returns {React.ReactElement | null} The footer component, or null.
    */
   const renderFooter = () => {
     if (!showLoadMore) return null;
@@ -147,7 +172,10 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
   };
 
   /**
-   * Calculate item layout for grid
+   * Calculates the layout of an item in the list for performance optimization.
+   * @param {any} data - The list data.
+   * @param {number} index - The index of the item.
+   * @returns {{length: number, offset: number, index: number}} The layout object.
    */
   const getItemLayout = (data: any, index: number) => {
     const itemHeight = compact ? 100 : (width - Spacing.component.screen.horizontal * 2 - Spacing.lg) / 2 * 1.6;

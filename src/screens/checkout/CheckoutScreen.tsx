@@ -1,7 +1,7 @@
 /**
- * CheckoutScreen
- * Complete checkout flow with shipping, payment, and order confirmation
- * Integrates with Stripe for payment processing and order management
+ * @module screens/checkout/CheckoutScreen
+ * @description A multi-step screen that guides the user through the checkout process,
+ * including shipping, payment, and order review.
  */
 
 import React, { useState, useEffect } from 'react';
@@ -50,6 +50,11 @@ const SHIPPING_METHODS: ShippingMethod[] = [
   },
 ];
 
+/**
+ * A multi-step screen that guides the user through the checkout process,
+ * including shipping, payment, and order review.
+ * @returns {React.FC} A React component.
+ */
 export default function CheckoutScreen() {
   const navigation = useNavigation();
   const dispatch = useAppDispatch();
@@ -78,14 +83,16 @@ export default function CheckoutScreen() {
   });
 
   /**
-   * Calculate total with shipping
+   * Calculates the total order amount including shipping.
+   * @returns {number} The total order amount.
    */
   const calculateTotal = () => {
     return summary.subtotal + summary.tax + selectedShippingMethod.price - summary.discount;
   };
 
   /**
-   * Validate shipping address
+   * Validates the shipping address form.
+   * @returns {boolean} True if the address is valid, false otherwise.
    */
   const validateShippingAddress = (): boolean => {
     const required = ['firstName', 'lastName', 'address1', 'city', 'state', 'zipCode'];
@@ -93,7 +100,7 @@ export default function CheckoutScreen() {
   };
 
   /**
-   * Handle step navigation
+   * Handles navigation to the next step in the checkout process.
    */
   const handleNextStep = () => {
     switch (currentStep) {
@@ -113,6 +120,9 @@ export default function CheckoutScreen() {
     }
   };
 
+  /**
+   * Handles navigation to the previous step in the checkout process.
+   */
   const handlePreviousStep = () => {
     switch (currentStep) {
       case 'payment':
@@ -125,7 +135,7 @@ export default function CheckoutScreen() {
   };
 
   /**
-   * Handle order placement
+   * Handles the final order placement by dispatching the processCheckout action.
    */
   const handlePlaceOrder = async () => {
     try {
@@ -146,7 +156,8 @@ export default function CheckoutScreen() {
   };
 
   /**
-   * Render shipping form
+   * Renders the shipping address and shipping method form.
+   * @returns {React.ReactElement} The shipping form component.
    */
   const renderShippingForm = () => (
     <GlassCard style={styles.sectionCard}>
@@ -269,7 +280,8 @@ export default function CheckoutScreen() {
   );
 
   /**
-   * Render payment form
+   * Renders the payment method form.
+   * @returns {React.ReactElement} The payment form component.
    */
   const renderPaymentForm = () => (
     <GlassCard style={styles.sectionCard}>
@@ -307,7 +319,8 @@ export default function CheckoutScreen() {
   );
 
   /**
-   * Render order review
+   * Renders the order review, summarizing the items and total cost.
+   * @returns {React.ReactElement} The order review component.
    */
   const renderOrderReview = () => (
     <GlassCard style={styles.sectionCard}>
@@ -354,7 +367,8 @@ export default function CheckoutScreen() {
   );
 
   /**
-   * Get step content
+   * Gets the content component for the current checkout step.
+   * @returns {React.ReactElement} The component for the current step.
    */
   const getStepContent = () => {
     switch (currentStep) {
@@ -368,7 +382,8 @@ export default function CheckoutScreen() {
   };
 
   /**
-   * Get step title
+   * Gets the title for the current checkout step.
+   * @returns {string} The title of the current step.
    */
   const getStepTitle = () => {
     switch (currentStep) {
@@ -382,7 +397,8 @@ export default function CheckoutScreen() {
   };
 
   /**
-   * Get button title
+   * Gets the title for the main action button based on the current step.
+   * @returns {string} The title for the action button.
    */
   const getButtonTitle = () => {
     switch (currentStep) {

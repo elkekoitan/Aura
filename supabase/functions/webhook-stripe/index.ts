@@ -1,3 +1,18 @@
+/**
+ * @module supabase/functions/webhook-stripe
+ * @description This Supabase edge function acts as a webhook handler for Stripe events.
+ * It securely verifies incoming webhook requests from Stripe and processes them.
+ * Specifically, it handles payment intent successes and failures to update order statuses
+ * in the Supabase database.
+ *
+ * @requires deno.land/std/http/server
+ * @requires @supabase/supabase-js
+ * @requires stripe
+ *
+ * @param {Request} req - The incoming HTTP request from Stripe, containing the event payload and signature.
+ *
+ * @returns {Response} A response object indicating the result of the webhook processing.
+ */
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import Stripe from 'https://esm.sh/stripe@14.21.0'

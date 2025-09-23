@@ -1,7 +1,7 @@
 /**
- * AdminDashboard Screen
- * Main admin interface with statistics, quick actions, and recent activity
- * Provides overview of all admin operations and system health
+ * @module screens/admin/AdminDashboard
+ * @description The main dashboard screen for administrators.
+ * It provides an overview of key metrics, quick actions, and recent activity in the system.
  */
 
 import React, { useEffect, useState } from 'react';
@@ -29,6 +29,11 @@ import {
 } from '../../store/slices/adminSlice';
 import { AdminActivity } from '../../store/types/admin';
 
+/**
+ * The main dashboard screen for administrators.
+ * It provides an overview of key metrics, quick actions, and recent activity in the system.
+ * @returns {React.FC} A React component.
+ */
 export default function AdminDashboard() {
   const navigation = useNavigation();
   const dispatch = useAppDispatch();
@@ -44,14 +49,14 @@ export default function AdminDashboard() {
   const [refreshing, setRefreshing] = useState(false);
 
   /**
-   * Load dashboard data on mount
+   * Loads the initial dashboard data when the component mounts.
    */
   useEffect(() => {
     loadDashboardData();
   }, []);
 
   /**
-   * Load all dashboard data
+   * Fetches all necessary data for the dashboard from the store.
    */
   const loadDashboardData = async () => {
     try {
@@ -65,7 +70,7 @@ export default function AdminDashboard() {
   };
 
   /**
-   * Handle refresh
+   * Handles the pull-to-refresh action to reload dashboard data.
    */
   const handleRefresh = async () => {
     setRefreshing(true);
@@ -77,7 +82,8 @@ export default function AdminDashboard() {
   };
 
   /**
-   * Navigate to specific admin section
+   * Navigates to a specific admin management section.
+   * @param {string} section - The name of the section to navigate to.
    */
   const navigateToSection = (section: string) => {
     switch (section) {
@@ -100,7 +106,9 @@ export default function AdminDashboard() {
   };
 
   /**
-   * Format activity timestamp
+   * Formats a timestamp into a relative time string (e.g., "5m ago").
+   * @param {string} timestamp - The ISO date string to format.
+   * @returns {string} The formatted relative time string.
    */
   const formatActivityTime = (timestamp: string): string => {
     const date = new Date(timestamp);
@@ -120,7 +128,9 @@ export default function AdminDashboard() {
   };
 
   /**
-   * Get activity icon based on type
+   * Gets the appropriate icon name for a given activity type.
+   * @param {string} type - The type of the admin activity.
+   * @returns {string} The name of the Ionicons icon.
    */
   const getActivityIcon = (type: string): string => {
     switch (type) {
@@ -140,7 +150,10 @@ export default function AdminDashboard() {
   };
 
   /**
-   * Render activity item
+   * Renders a single item for the recent activity list.
+   * @param {object} params - The render item parameters.
+   * @param {AdminActivity} params.item - The activity item to render.
+   * @returns {React.ReactElement} The rendered activity item component.
    */
   const renderActivityItem = ({ item }: { item: AdminActivity }) => (
     <View style={styles.activityItem}>
@@ -159,7 +172,8 @@ export default function AdminDashboard() {
   );
 
   /**
-   * Render quick actions
+   * Renders the "Quick Actions" section of the dashboard.
+   * @returns {React.ReactElement} The quick actions component.
    */
   const renderQuickActions = () => (
     <View style={styles.quickActions}>

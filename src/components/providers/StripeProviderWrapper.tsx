@@ -1,3 +1,7 @@
+/**
+ * @module components/providers/StripeProviderWrapper
+ */
+
 import React from 'react';
 import { Platform } from 'react-native';
 
@@ -8,11 +12,15 @@ interface StripeProviderWrapperProps {
 }
 
 /**
- * Platform-specific Stripe Provider wrapper
- * Handles the incompatibility between Stripe React Native and web builds
- * 
- * For web builds: Returns children without Stripe provider (Stripe web will be handled separately)
- * For mobile builds: Uses Stripe React Native provider
+ * A platform-specific wrapper for the Stripe Provider.
+ * This component handles the incompatibility between the Stripe React Native SDK and web builds.
+ * For web builds, it returns the children directly, as Stripe.js is handled differently.
+ * For mobile builds (iOS/Android), it wraps the children in the official StripeProvider component.
+ * @param {object} props - The component props.
+ * @param {React.ReactNode} props.children - The child components to render within the provider.
+ * @param {string} props.publishableKey - The Stripe publishable key.
+ * @param {string} props.merchantIdentifier - The merchant identifier for Apple Pay.
+ * @returns {React.FC} A React component.
  */
 export const StripeProviderWrapper: React.FC<StripeProviderWrapperProps> = ({
   children,

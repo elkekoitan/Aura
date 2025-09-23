@@ -1,9 +1,8 @@
 /**
- * Try-On Redux Slice
- * Manages virtual try-on state, camera operations, and image processing
- * Integrates with camera API and image processing services
+ * @module store/slices/tryOnSlice
+ * @description A Redux slice for managing the virtual try-on feature, including camera state,
+ * photo capture, image processing, and session history. It uses mock async thunks for its operations.
  */
-
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { 
   TryOnState,
@@ -21,7 +20,10 @@ import {
   TryOnStatus
 } from '../types/tryOn';
 
-// Initial state
+/**
+ * The initial state of the try-on slice.
+ * @type {TryOnState}
+ */
 const initialState: TryOnState = {
   // Current session
   currentSession: null,
@@ -73,7 +75,10 @@ const initialState: TryOnState = {
 };
 
 /**
- * Start new try-on session
+ * An async thunk to start a new try-on session.
+ * This is a mock implementation.
+ * @param {StartTryOnParams} params - The parameters to start the session.
+ * @returns {Promise<TryOnSession>} A promise that resolves with the new session object.
  */
 export const startTryOnSession = createAsyncThunk(
   'tryOn/startSession',
@@ -101,7 +106,10 @@ export const startTryOnSession = createAsyncThunk(
 );
 
 /**
- * Capture and upload user photo
+ * An async thunk to capture and upload a user's photo for the try-on.
+ * This is a mock implementation.
+ * @param {CapturePhotoParams} params - The parameters for capturing the photo.
+ * @returns {Promise<UserPhoto>} A promise that resolves with the processed photo data.
  */
 export const captureUserPhoto = createAsyncThunk(
   'tryOn/capturePhoto',
@@ -138,7 +146,10 @@ export const captureUserPhoto = createAsyncThunk(
 );
 
 /**
- * Process try-on with overlay
+ * An async thunk to process the try-on by overlaying the garment on the user's photo.
+ * This is a mock implementation that simulates processing steps.
+ * @param {ProcessTryOnParams} params - The parameters for processing the try-on.
+ * @returns {Promise<TryOnResult>} A promise that resolves with the try-on result.
  */
 export const processTryOn = createAsyncThunk(
   'tryOn/process',
@@ -191,7 +202,10 @@ export const processTryOn = createAsyncThunk(
 );
 
 /**
- * Save try-on session
+ * An async thunk to save the results of a try-on session.
+ * This is a mock implementation.
+ * @param {SaveTryOnParams} params - The parameters for saving the session.
+ * @returns {Promise<SaveTryOnParams>} A promise that resolves with the saved parameters.
  */
 export const saveTryOnSession = createAsyncThunk(
   'tryOn/saveSession',
@@ -204,7 +218,10 @@ export const saveTryOnSession = createAsyncThunk(
 );
 
 /**
- * Fetch try-on history
+ * An async thunk to fetch the user's try-on history.
+ * This is a mock implementation.
+ * @param {string} userId - The ID of the user.
+ * @returns {Promise<{sessions: TryOnSession[], results: TryOnResult[]}>} A promise that resolves with the user's session history and results.
  */
 export const fetchTryOnHistory = createAsyncThunk(
   'tryOn/fetchHistory',
@@ -260,53 +277,98 @@ export const fetchTryOnHistory = createAsyncThunk(
   }
 );
 
-// Try-on slice
+/**
+ * The Redux slice for managing the virtual try-on feature.
+ */
 const tryOnSlice = createSlice({
   name: 'tryOn',
   initialState,
   reducers: {
-    // Camera management
+    /**
+     * Sets the camera permission status.
+     * @param {TryOnState} state - The current state.
+     * @param {PayloadAction<boolean>} action - The action containing the permission status.
+     */
     setCameraPermission: (state, action: PayloadAction<boolean>) => {
       state.cameraPermission = action.payload;
     },
     
+    /**
+     * Sets the camera ready status.
+     * @param {TryOnState} state - The current state.
+     * @param {PayloadAction<boolean>} action - The action containing the ready status.
+     */
     setCameraReady: (state, action: PayloadAction<boolean>) => {
       state.cameraReady = action.payload;
     },
     
+    /**
+     * Updates the camera settings.
+     * @param {TryOnState} state - The current state.
+     * @param {PayloadAction<Partial<CameraSettings>>} action - The action containing the partial camera settings.
+     */
     updateCameraSettings: (state, action: PayloadAction<Partial<CameraSettings>>) => {
       state.cameraSettings = { ...state.cameraSettings, ...action.payload };
     },
     
-    // Photo management
+    /**
+     * Sets the captured user photo.
+     * @param {TryOnState} state - The current state.
+     * @param {PayloadAction<PhotoCapture | null>} action - The action containing the captured photo.
+     */
     setUserPhoto: (state, action: PayloadAction<PhotoCapture | null>) => {
       state.userPhoto = action.payload;
     },
     
+    /**
+     * Clears the user photo.
+     * @param {TryOnState} state - The current state.
+     */
     clearUserPhoto: (state) => {
       state.userPhoto = null;
       state.processedPhoto = null;
     },
     
-    // Processing management
+    /**
+     * Sets the current processing step.
+     * @param {TryOnState} state - The current state.
+     * @param {PayloadAction<ProcessingStep>} action - The action containing the processing step.
+     */
     setProcessingStep: (state, action: PayloadAction<ProcessingStep>) => {
       state.processingStep = action.payload;
     },
     
+    /**
+     * Sets the processing progress percentage.
+     * @param {TryOnState} state - The current state.
+     * @param {PayloadAction<number>} action - The action containing the progress percentage.
+     */
     setProcessingProgress: (state, action: PayloadAction<number>) => {
       state.processingProgress = action.payload;
     },
     
-    // Overlay settings
+    /**
+     * Updates the overlay settings for the try-on.
+     * @param {TryOnState} state - The current state.
+     * @param {PayloadAction<Partial<OverlaySettings>>} action - The action containing the partial overlay settings.
+     */
     updateOverlaySettings: (state, action: PayloadAction<Partial<OverlaySettings>>) => {
       state.overlaySettings = { ...state.overlaySettings, ...action.payload };
     },
     
+    /**
+     * Resets the overlay settings to their initial values.
+     * @param {TryOnState} state - The current state.
+     */
     resetOverlaySettings: (state) => {
       state.overlaySettings = initialState.overlaySettings;
     },
     
-    // Session management
+    /**
+     * Updates the status of the current try-on session.
+     * @param {TryOnState} state - The current state.
+     * @param {PayloadAction<TryOnStatus>} action - The action containing the new status.
+     */
     updateSessionStatus: (state, action: PayloadAction<TryOnStatus>) => {
       if (state.currentSession) {
         state.currentSession.status = action.payload;
@@ -314,6 +376,10 @@ const tryOnSlice = createSlice({
       }
     },
     
+    /**
+     * Clears the current try-on session and related data.
+     * @param {TryOnState} state - The current state.
+     */
     clearCurrentSession: (state) => {
       state.currentSession = null;
       state.userPhoto = null;
@@ -323,26 +389,47 @@ const tryOnSlice = createSlice({
       state.processingProgress = 0;
     },
     
-    // Error management
+    /**
+     * Sets the camera error message.
+     * @param {TryOnState} state - The current state.
+     * @param {PayloadAction<string | null>} action - The action containing the error message.
+     */
     setCameraError: (state, action: PayloadAction<string | null>) => {
       state.cameraError = action.payload;
     },
     
+    /**
+     * Sets the processing error message.
+     * @param {TryOnState} state - The current state.
+     * @param {PayloadAction<string | null>} action - The action containing the error message.
+     */
     setProcessingError: (state, action: PayloadAction<string | null>) => {
       state.processingError = action.payload;
     },
     
+    /**
+     * Clears the main error state.
+     * @param {TryOnState} state - The current state.
+     */
     clearError: (state) => {
       state.error = null;
     },
     
+    /**
+     * Clears all error states.
+     * @param {TryOnState} state - The current state.
+     */
     clearAllErrors: (state) => {
       state.error = null;
       state.cameraError = null;
       state.processingError = null;
     },
     
-    // Reset state
+    /**
+     * Resets the try-on state to its initial values.
+     * @param {TryOnState} state - The current state.
+     * @returns {TryOnState} The initial state.
+     */
     resetTryOnState: (state) => {
       return { ...initialState };
     },

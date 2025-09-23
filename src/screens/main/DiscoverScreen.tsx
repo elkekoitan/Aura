@@ -1,7 +1,7 @@
 /**
- * Enhanced DiscoverScreen
- * Complete product discovery interface with search, filtering, and real-time data
- * Integrates with Redux state management and Supabase backend
+ * @module screens/main/DiscoverScreen
+ * @description A comprehensive discovery screen for users to find products, brands, and categories.
+ * It features search, filtering, sorting, and various sections for featured content.
  */
 
 import React, { useState, useEffect, useCallback } from 'react';
@@ -39,6 +39,11 @@ import { Product, ProductFilters, ProductSortOption } from '../../store/types/pr
 
 const { width, height } = Dimensions.get('window');
 
+/**
+ * A comprehensive discovery screen for users to find products, brands, and categories.
+ * It features search, filtering, sorting, and various sections for featured content.
+ * @returns {React.FC} A React component.
+ */
 export default function DiscoverScreen() {
   // Navigation
   const navigation = useNavigation();
@@ -69,7 +74,7 @@ export default function DiscoverScreen() {
   const [searchSuggestions, setSearchSuggestions] = useState<string[]>([]);
 
   /**
-   * Initialize data on screen focus
+   * Initializes data on screen focus.
    */
   useFocusEffect(
     useCallback(() => {
@@ -78,7 +83,7 @@ export default function DiscoverScreen() {
   );
 
   /**
-   * Load initial data for the screen
+   * Loads the initial data for the screen, including products, brands, and categories.
    */
   const loadInitialData = async () => {
     try {
@@ -94,7 +99,7 @@ export default function DiscoverScreen() {
   };
 
   /**
-   * Handle refresh
+   * Handles the pull-to-refresh action.
    */
   const handleRefresh = async () => {
     setRefreshing(true);
@@ -106,7 +111,8 @@ export default function DiscoverScreen() {
   };
 
   /**
-   * Handle search query change
+   * Handles changes to the search query input.
+   * @param {string} query - The current search query.
    */
   const handleSearchChange = (query: string) => {
     dispatch(setSearchQuery(query));
@@ -126,7 +132,8 @@ export default function DiscoverScreen() {
   };
 
   /**
-   * Handle search execution
+   * Executes a search based on the current query.
+   * @param {string} query - The search query.
    */
   const handleSearch = (query: string) => {
     if (query.trim()) {
@@ -138,14 +145,17 @@ export default function DiscoverScreen() {
   };
 
   /**
-   * Handle product press
+   * Handles pressing a product card.
+   * @param {Product} product - The pressed product.
    */
   const handleProductPress = (product: Product) => {
     navigation.navigate('ProductDetail', { productId: product.id, product });
   };
 
   /**
-   * Handle add to cart
+   * Handles adding a product to the cart.
+   * @param {Product} product - The product to add.
+   * @todo Implement cart functionality.
    */
   const handleAddToCart = (product: Product) => {
     console.log('Add to cart:', product.id);
@@ -153,7 +163,9 @@ export default function DiscoverScreen() {
   };
 
   /**
-   * Handle toggle favorite
+   * Handles toggling a product as a favorite.
+   * @param {Product} product - The product to toggle.
+   * @todo Implement favorites functionality.
    */
   const handleToggleFavorite = (product: Product) => {
     console.log('Toggle favorite:', product.id);
@@ -161,7 +173,8 @@ export default function DiscoverScreen() {
   };
 
   /**
-   * Handle category filter
+   * Applies a category filter to the product list.
+   * @param {string} categoryId - The ID of the category to filter by.
    */
   const handleCategoryFilter = (categoryId: string) => {
     const newFilters: ProductFilters = {
@@ -174,7 +187,8 @@ export default function DiscoverScreen() {
   };
 
   /**
-   * Handle brand filter
+   * Applies a brand filter to the product list.
+   * @param {string} brandId - The ID of the brand to filter by.
    */
   const handleBrandFilter = (brandId: string) => {
     const newFilters: ProductFilters = {
@@ -187,14 +201,16 @@ export default function DiscoverScreen() {
   };
 
   /**
-   * Handle brand press - navigate to brand detail
+   * Handles pressing a brand chip to navigate to the brand detail screen.
+   * @param {any} brand - The pressed brand.
    */
   const handleBrandPress = (brand: any) => {
     navigation.navigate('BrandDetail', { brandId: brand.id, brand });
   };
 
   /**
-   * Handle sort change
+   * Handles changing the sort order of the product list.
+   * @param {ProductSortOption} sortOption - The selected sort option.
    */
   const handleSortChange = (sortOption: ProductSortOption) => {
     dispatch(setSortBy(sortOption));
@@ -209,7 +225,7 @@ export default function DiscoverScreen() {
   };
 
   /**
-   * Handle clear filters
+   * Clears all active filters and the search query.
    */
   const handleClearFilters = () => {
     dispatch(clearFilters());
@@ -219,7 +235,7 @@ export default function DiscoverScreen() {
   };
 
   /**
-   * Handle load more products
+   * Loads more products when the user reaches the end of the list.
    */
   const handleLoadMore = () => {
     if (hasMore && !loading) {
@@ -235,7 +251,8 @@ export default function DiscoverScreen() {
   };
 
   /**
-   * Get current products to display based on active tab
+   * Gets the list of products to display based on the active tab.
+   * @returns {Product[]} The list of products to display.
    */
   const getCurrentProducts = () => {
     switch (activeTab) {
@@ -249,7 +266,8 @@ export default function DiscoverScreen() {
   };
 
   /**
-   * Render category chips
+   * Renders the category filter chips.
+   * @returns {React.ReactElement} The category chips component.
    */
   const renderCategoryChips = () => (
     <ScrollView
@@ -273,7 +291,8 @@ export default function DiscoverScreen() {
   );
 
   /**
-   * Render brand chips
+   * Renders the featured brand chips.
+   * @returns {React.ReactElement} The brand chips component.
    */
   const renderBrandChips = () => (
     <ScrollView

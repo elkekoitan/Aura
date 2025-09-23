@@ -1,3 +1,8 @@
+/**
+ * @module navigation/AppNavigator
+ * @description The main navigator for the application. It handles the onboarding, authentication, and main application flows.
+ */
+
 import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -29,6 +34,12 @@ import TryOnHistoryScreen from '../screens/tryOn/TryOnHistoryScreen';
 
 const Stack = createStackNavigator();
 
+/**
+ * The root navigator for the application.
+ * It determines which navigation flow to display based on the user's authentication state
+ * and whether they have completed the onboarding process.
+ * @returns {React.FC} A React component.
+ */
 export default function AppNavigator() {
   const { isAuthenticated } = useAppSelector((state) => state.auth);
   const [showOnboarding, setShowOnboarding] = useState(true);
@@ -38,6 +49,10 @@ export default function AppNavigator() {
     checkFirstLaunch();
   }, []);
 
+  /**
+   * Checks if this is the first time the user has launched the app.
+   * If not, it skips the onboarding flow.
+   */
   const checkFirstLaunch = async () => {
     try {
       const hasLaunched = await AsyncStorage.getItem('hasLaunched');
@@ -50,6 +65,9 @@ export default function AppNavigator() {
     }
   };
 
+  /**
+   * Marks the onboarding process as complete and hides the onboarding screens.
+   */
   const handleCompleteOnboarding = async () => {
     try {
       await AsyncStorage.setItem('hasLaunched', 'true');

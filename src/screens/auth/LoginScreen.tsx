@@ -1,3 +1,9 @@
+/**
+ * @module screens/auth/LoginScreen
+ * @description A screen for users to sign in to their accounts.
+ * It provides fields for email and password, and handles the sign-in logic using the authentication slice.
+ */
+
 import React, { useState } from 'react';
 import {
   View,
@@ -20,6 +26,11 @@ import { signIn, clearError } from '../../store/slices/authSlice';
 
 const { width, height } = Dimensions.get('window');
 
+/**
+ * A screen for users to sign in to their accounts.
+ * It provides fields for email and password, and handles the sign-in logic using the authentication slice.
+ * @returns {React.FC} A React component.
+ */
 export default function LoginScreen() {
   const navigation = useNavigation();
   const dispatch = useAppDispatch();
@@ -33,6 +44,10 @@ export default function LoginScreen() {
     dispatch(clearError());
   }, [dispatch]);
 
+  /**
+   * Handles the user login process. It validates the input fields, dispatches the signIn action,
+   * and provides feedback to the user upon success or failure.
+   */
   const handleLogin = async () => {
     if (!email || !password) {
       Alert.alert('Error', 'Please fill in all fields');

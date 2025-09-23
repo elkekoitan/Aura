@@ -1,3 +1,8 @@
+/**
+ * @module navigation/MainTabNavigator
+ * @description The main bottom tab navigator for the application. It contains the primary screens accessible to authenticated users.
+ */
+
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
@@ -11,6 +16,11 @@ import CartScreen from '../screens/cart/CartScreen';
 
 const Tab = createBottomTabNavigator();
 
+/**
+ * The main bottom tab navigator for the authenticated part of the app.
+ * It includes tabs for Home, Discover, Try On, Cart, Wardrobe, and Profile.
+ * @returns {React.FC} A React component.
+ */
 export default function MainTabNavigator() {
   return (
     <Tab.Navigator
