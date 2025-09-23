@@ -29,7 +29,7 @@ class AuraWebTester {
 
   async init() {
     this.browser = await puppeteer.launch({
-      headless: false, // Set to true for CI/CD
+      headless: true, // Set to true for CI/CD
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
     });
     this.page = await this.browser.newPage();
@@ -105,8 +105,8 @@ class AuraWebTester {
 
   async testAuthentication() {
     // Test login form presence
-    const loginButton = await this.page.$('[data-testid="login-button"], button:contains("Login"), button:contains("Sign In")');
-    if (!loginButton) {
+    const loginButton = await this.page.$x("//button[contains(., 'Login') or contains(., 'Sign In')]");
+    if (loginButton.length === 0) {
       throw new Error('Login button not found');
     }
     
