@@ -1,0 +1,105 @@
+{
+  "timestamp": "2025-09-23T18:29:21.545Z",
+  "baseUrl": "http://localhost:19006",
+  "tests": [
+    {
+      "name": "Page Load Performance",
+      "status": "failed",
+      "duration": 29,
+      "error": "net::ERR_CONNECTION_REFUSED at http://localhost:19006"
+    },
+    {
+      "name": "Authentication System",
+      "status": "failed",
+      "duration": 89,
+      "error": "Failed to execute 'querySelectorAll' on 'Document': '[data-testid=\"login-button\"], button:contains(\"Login\"), button:contains(\"Sign In\")' is not a valid selector.\nre (pptr:internal:3:12826)\nIe (pptr:internal:3:13100)\npptr:evaluateHandle;PQueryHandler.queryOne%20(%2Fapp%2Fnode_modules%2Fpuppeteer%2Fnode_modules%2Fpuppeteer-core%2Flib%2Fcjs%2Fpuppeteer%2Fcommon%2FQueryHandler.js%3A130%3A73):2:16"
+    },
+    {
+      "name": "Product Catalog",
+      "status": "failed",
+      "duration": 16,
+      "error": "net::ERR_CONNECTION_REFUSED at http://localhost:19006/discover"
+    },
+    {
+      "name": "Shopping Cart",
+      "status": "failed",
+      "duration": 6,
+      "error": "Execution context was destroyed, most likely because of a navigation."
+    },
+    {
+      "name": "Responsive Design",
+      "status": "passed",
+      "duration": 4866,
+      "result": {
+        "Mobile": {
+          "width": 375,
+          "height": 667,
+          "bodyHeight": 667,
+          "rendered": true
+        },
+        "Tablet": {
+          "width": 768,
+          "height": 1024,
+          "bodyHeight": 1024,
+          "rendered": true
+        },
+        "Desktop": {
+          "width": 1280,
+          "height": 720,
+          "bodyHeight": 720,
+          "rendered": true
+        }
+      }
+    },
+    {
+      "name": "Glassmorphism UI",
+      "status": "failed",
+      "duration": 27,
+      "error": "No glassmorphism elements with backdrop-filter found"
+    },
+    {
+      "name": "GlassCard Component",
+      "status": "failed",
+      "duration": 10,
+      "error": "net::ERR_CONNECTION_REFUSED at http://localhost:19006"
+    },
+    {
+      "name": "Performance Metrics",
+      "status": "passed",
+      "duration": 7,
+      "result": {
+        "domContentLoaded": 0.09999999997671694,
+        "firstPaint": 0,
+        "jsHeapUsedSize": 2472840,
+        "jsHeapTotalSize": 4104192
+      }
+    },
+    {
+      "name": "Browser Compatibility",
+      "status": "passed",
+      "duration": 3,
+      "result": {
+        "webgl": true,
+        "webrtc": false,
+        "serviceWorker": false,
+        "localStorage": true,
+        "webAssembly": true
+      }
+    }
+  ],
+  "performance": {
+    "domContentLoaded": 0.09999999997671694,
+    "firstPaint": 0,
+    "jsHeapUsedSize": 2472840,
+    "jsHeapTotalSize": 4104192
+  },
+  "errors": [],
+  "summary": {
+    "total": 9,
+    "passed": 3,
+    "failed": 6,
+    "warnings": 0
+  },
+  "passRate": 33.33333333333333,
+  "recommendation": "REJECTED: Major issues must be resolved before deployment"
+}

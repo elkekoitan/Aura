@@ -15,6 +15,7 @@ import { Colors, Typography, Spacing } from '../../constants';
 interface GlassButtonProps {
   title: string;
   onPress: () => void;
+  testID?: string;
   variant?: 'primary' | 'secondary' | 'outline' | 'ghost';
   size?: 'small' | 'medium' | 'large';
   disabled?: boolean;
@@ -31,6 +32,7 @@ interface GlassButtonProps {
 export const GlassButton: React.FC<GlassButtonProps> = ({
   title,
   onPress,
+  testID,
   variant = 'primary',
   size = 'medium',
   disabled = false,
@@ -167,6 +169,7 @@ export const GlassButton: React.FC<GlassButtonProps> = ({
     return (
       <Animated.View style={{ transform: [{ scale: scaleValue }] }}>
         <TouchableOpacity
+          testID={testID}
           style={getButtonStyle()}
           onPress={onPress}
           onPressIn={handlePressIn}
@@ -197,6 +200,7 @@ export const GlassButton: React.FC<GlassButtonProps> = ({
   return (
     <Animated.View style={{ transform: [{ scale: scaleValue }] }}>
       <TouchableOpacity
+        testID={testID}
         style={getButtonStyle()}
         onPress={onPress}
         onPressIn={handlePressIn}

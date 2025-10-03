@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, ViewStyle, StyleSheet } from 'react-native';
+import { View, ViewStyle, StyleSheet, Platform } from 'react-native';
 import { BlurView } from 'expo-blur';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Colors, Spacing } from '../../constants';
@@ -52,6 +52,25 @@ export const GlassCard: React.FC<GlassCardProps> = ({
     cardStyle.elevation = 8;
   }
 
+  const WebGlassView = (props: any) => (
+    <View
+      style={[
+        props.style,
+        // @ts-ignore
+        Platform.OS === 'web' && {
+          // @ts-ignore
+          backdropFilter: `blur(${intensity}px)`,
+          // @ts-ignore
+          WebkitBackdropFilter: `blur(${intensity}px)`, // For Safari
+        },
+      ]}
+    >
+      {props.children}
+    </View>
+  );
+
+  const GlassContainer = Platform.OS === 'web' ? WebGlassView : BlurView;
+
   if (gradient) {
     return (
       <View style={cardStyle}>
@@ -61,18 +80,18 @@ export const GlassCard: React.FC<GlassCardProps> = ({
           end={{ x: 1, y: 1 }}
           style={StyleSheet.absoluteFillObject}
         />
-        <BlurView intensity={intensity} tint={tint} style={contentStyle}>
+        <GlassContainer intensity={intensity} tint={tint} style={contentStyle}>
           {children}
-        </BlurView>
+        </GlassContainer>
       </View>
     );
   }
 
   return (
     <View style={cardStyle}>
-      <BlurView intensity={intensity} tint={tint} style={contentStyle}>
+      <GlassContainer intensity={intensity} tint={tint} style={contentStyle}>
         {children}
-      </BlurView>
+      </GlassContainer>
     </View>
   );
 };

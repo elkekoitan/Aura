@@ -1,0 +1,105 @@
+{
+  "timestamp": "2025-09-23T18:32:47.975Z",
+  "baseUrl": "http://localhost:19006",
+  "tests": [
+    {
+      "name": "Page Load Performance",
+      "status": "failed",
+      "duration": 29,
+      "error": "net::ERR_CONNECTION_REFUSED at http://localhost:19006"
+    },
+    {
+      "name": "Authentication System",
+      "status": "failed",
+      "duration": 30003,
+      "error": "Waiting for selector `[data-testid=\"login-button\"]` failed: Waiting failed: 30000ms exceeded"
+    },
+    {
+      "name": "Product Catalog",
+      "status": "failed",
+      "duration": 13,
+      "error": "net::ERR_CONNECTION_REFUSED at http://localhost:19006/discover"
+    },
+    {
+      "name": "Shopping Cart",
+      "status": "failed",
+      "duration": 4,
+      "error": "Execution context was destroyed, most likely because of a navigation."
+    },
+    {
+      "name": "Responsive Design",
+      "status": "passed",
+      "duration": 4991,
+      "result": {
+        "Mobile": {
+          "width": 375,
+          "height": 667,
+          "bodyHeight": 667,
+          "rendered": true
+        },
+        "Tablet": {
+          "width": 768,
+          "height": 1024,
+          "bodyHeight": 1024,
+          "rendered": true
+        },
+        "Desktop": {
+          "width": 1280,
+          "height": 720,
+          "bodyHeight": 720,
+          "rendered": true
+        }
+      }
+    },
+    {
+      "name": "Glassmorphism UI",
+      "status": "failed",
+      "duration": 35,
+      "error": "No glassmorphism elements with backdrop-filter found"
+    },
+    {
+      "name": "GlassCard Component",
+      "status": "failed",
+      "duration": 8,
+      "error": "net::ERR_CONNECTION_REFUSED at http://localhost:19006"
+    },
+    {
+      "name": "Performance Metrics",
+      "status": "passed",
+      "duration": 6,
+      "result": {
+        "domContentLoaded": 0,
+        "firstPaint": 0,
+        "jsHeapUsedSize": 2465300,
+        "jsHeapTotalSize": 3842048
+      }
+    },
+    {
+      "name": "Browser Compatibility",
+      "status": "passed",
+      "duration": 2,
+      "result": {
+        "webgl": true,
+        "webrtc": false,
+        "serviceWorker": false,
+        "localStorage": true,
+        "webAssembly": true
+      }
+    }
+  ],
+  "performance": {
+    "domContentLoaded": 0,
+    "firstPaint": 0,
+    "jsHeapUsedSize": 2465300,
+    "jsHeapTotalSize": 3842048
+  },
+  "errors": [],
+  "summary": {
+    "total": 9,
+    "passed": 3,
+    "failed": 6,
+    "warnings": 0
+  },
+  "passRate": 33.33333333333333,
+  "recommendation": "REJECTED: Major issues must be resolved before deployment"
+}

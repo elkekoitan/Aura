@@ -1,0 +1,91 @@
+{
+  "timestamp": "2025-09-23T18:48:26.513Z",
+  "baseUrl": "http://localhost:3000",
+  "tests": [
+    {
+      "name": "Page Load Performance",
+      "status": "passed",
+      "duration": 1158,
+      "result": {
+        "loadTime": 1157
+      }
+    },
+    {
+      "name": "Responsive Design",
+      "status": "passed",
+      "duration": 1851,
+      "result": {
+        "Mobile": {
+          "width": 375,
+          "height": 667,
+          "bodyHeight": 5044,
+          "rendered": true
+        },
+        "Tablet": {
+          "width": 768,
+          "height": 1024,
+          "bodyHeight": 3695,
+          "rendered": true
+        },
+        "Desktop": {
+          "width": 1280,
+          "height": 720,
+          "bodyHeight": 2810,
+          "rendered": true
+        }
+      }
+    },
+    {
+      "name": "Glassmorphism UI",
+      "status": "failed",
+      "duration": 37,
+      "error": "No glassmorphism elements with backdrop-filter found"
+    },
+    {
+      "name": "GlassCard Component",
+      "status": "failed",
+      "duration": 5615,
+      "error": "Waiting for selector `[style*=\"backdrop-filter: blur\"], [style*=\"-webkit-backdrop-filter: blur\"]` failed: Waiting failed: 5000ms exceeded"
+    },
+    {
+      "name": "Performance Metrics",
+      "status": "passed",
+      "duration": 5,
+      "result": {
+        "pageLoad": 1157,
+        "domContentLoaded": 0.09999999986030161,
+        "firstPaint": 0,
+        "jsHeapUsedSize": 9555452,
+        "jsHeapTotalSize": 17354752
+      }
+    },
+    {
+      "name": "Browser Compatibility",
+      "status": "passed",
+      "duration": 3,
+      "result": {
+        "webgl": true,
+        "webrtc": true,
+        "serviceWorker": true,
+        "localStorage": true,
+        "webAssembly": true
+      }
+    }
+  ],
+  "performance": {
+    "pageLoad": 1157,
+    "domContentLoaded": 0.09999999986030161,
+    "firstPaint": 0,
+    "jsHeapUsedSize": 9555452,
+    "jsHeapTotalSize": 17354752
+  },
+  "errors": [],
+  "summary": {
+    "total": 6,
+    "passed": 4,
+    "failed": 2,
+    "warnings": 0
+  },
+  "passRate": 66.66666666666666,
+  "recommendation": "REJECTED: Major issues must be resolved before deployment"
+}

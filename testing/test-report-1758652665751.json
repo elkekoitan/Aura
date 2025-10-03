@@ -1,0 +1,167 @@
+{
+  "timestamp": "2025-09-23T18:36:48.130Z",
+  "tests": [
+    {
+      "name": "Page Load Performance",
+      "status": "failed",
+      "duration": 11154,
+      "error": "Page load time 11153ms exceeds 3 second threshold"
+    },
+    {
+      "name": "Authentication System",
+      "status": "failed",
+      "duration": 30010,
+      "error": "Waiting for selector `[data-testid=\"login-button\"]` failed"
+    },
+    {
+      "name": "Product Catalog",
+      "status": "failed",
+      "duration": 5913,
+      "error": "Waiting for selector `[data-testid=\"product-card\"], .product-card` failed"
+    },
+    {
+      "name": "Shopping Cart",
+      "status": "failed",
+      "duration": 8,
+      "error": "Cart icon not found"
+    },
+    {
+      "name": "Responsive Design",
+      "status": "passed",
+      "duration": 3736,
+      "result": {
+        "Mobile": {
+          "width": 375,
+          "height": 667,
+          "bodyHeight": 5044,
+          "rendered": true
+        },
+        "Tablet": {
+          "width": 768,
+          "height": 1024,
+          "bodyHeight": 3695,
+          "rendered": true
+        },
+        "Desktop": {
+          "width": 1280,
+          "height": 720,
+          "bodyHeight": 2810,
+          "rendered": true
+        }
+      }
+    },
+    {
+      "name": "Glassmorphism UI",
+      "status": "failed",
+      "duration": 21,
+      "error": "No glassmorphism elements with backdrop-filter found"
+    },
+    {
+      "name": "GlassCard Component",
+      "status": "failed",
+      "duration": 6128,
+      "error": "Waiting for selector `[style*=\"backdrop-filter: blur\"]` failed"
+    },
+    {
+      "name": "Performance Metrics",
+      "status": "passed",
+      "duration": 3,
+      "result": {
+        "pageLoad": 11153,
+        "domContentLoaded": 0,
+        "firstPaint": 0,
+        "jsHeapUsedSize": 3226928,
+        "jsHeapTotalSize": 4194304
+      }
+    },
+    {
+      "name": "Browser Compatibility",
+      "status": "passed",
+      "duration": 2,
+      "result": {
+        "webgl": true,
+        "webrtc": true,
+        "serviceWorker": true,
+        "localStorage": true,
+        "webAssembly": true
+      }
+    }
+  ],
+  "performance": {
+    "pageLoad": 11153,
+    "domContentLoaded": 0,
+    "firstPaint": 0,
+    "jsHeapUsedSize": 3226928,
+    "jsHeapTotalSize": 4194304
+  },
+  "errors": [
+    {
+      "type": "console",
+      "message": "Failed to load resource: the server responded with a status of 500 (Internal Server Error)",
+      "timestamp": "2025-09-23T18:36:59.255Z"
+    },
+    {
+      "type": "console",
+      "message": "Refused to execute script from 'http://localhost:8081/index.ts.bundle?platform=web&dev=true&hot=false&lazy=true&transform.engine=hermes&transform.routerRoot=app&unstable_transformProfile=hermes-stable' because its MIME type ('application/json') is not executable, and strict MIME type checking is enabled.",
+      "timestamp": "2025-09-23T18:36:59.255Z"
+    },
+    {
+      "type": "console",
+      "message": "Failed to load resource: the server responded with a status of 500 (Internal Server Error)",
+      "timestamp": "2025-09-23T18:37:30.714Z"
+    },
+    {
+      "type": "console",
+      "message": "Refused to execute script from 'http://localhost:8081/index.ts.bundle?platform=web&dev=true&hot=false&lazy=true&transform.engine=hermes&transform.routerRoot=app&unstable_transformProfile=hermes-stable' because its MIME type ('application/json') is not executable, and strict MIME type checking is enabled.",
+      "timestamp": "2025-09-23T18:37:30.714Z"
+    },
+    {
+      "type": "console",
+      "message": "Failed to load resource: the server responded with a status of 500 (Internal Server Error)",
+      "timestamp": "2025-09-23T18:37:36.369Z"
+    },
+    {
+      "type": "console",
+      "message": "Refused to execute script from 'http://localhost:8081/index.ts.bundle?platform=web&dev=true&hot=false&lazy=true&transform.engine=hermes&transform.routerRoot=app&unstable_transformProfile=hermes-stable' because its MIME type ('application/json') is not executable, and strict MIME type checking is enabled.",
+      "timestamp": "2025-09-23T18:37:36.369Z"
+    },
+    {
+      "type": "console",
+      "message": "Failed to load resource: the server responded with a status of 500 (Internal Server Error)",
+      "timestamp": "2025-09-23T18:37:37.754Z"
+    },
+    {
+      "type": "console",
+      "message": "Refused to execute script from 'http://localhost:8081/index.ts.bundle?platform=web&dev=true&hot=false&lazy=true&transform.engine=hermes&transform.routerRoot=app&unstable_transformProfile=hermes-stable' because its MIME type ('application/json') is not executable, and strict MIME type checking is enabled.",
+      "timestamp": "2025-09-23T18:37:37.754Z"
+    },
+    {
+      "type": "console",
+      "message": "Failed to load resource: the server responded with a status of 500 (Internal Server Error)",
+      "timestamp": "2025-09-23T18:37:38.933Z"
+    },
+    {
+      "type": "console",
+      "message": "Refused to execute script from 'http://localhost:8081/index.ts.bundle?platform=web&dev=true&hot=false&lazy=true&transform.engine=hermes&transform.routerRoot=app&unstable_transformProfile=hermes-stable' because its MIME type ('application/json') is not executable, and strict MIME type checking is enabled.",
+      "timestamp": "2025-09-23T18:37:38.933Z"
+    },
+    {
+      "type": "console",
+      "message": "Failed to load resource: the server responded with a status of 500 (Internal Server Error)",
+      "timestamp": "2025-09-23T18:37:40.088Z"
+    },
+    {
+      "type": "console",
+      "message": "Refused to execute script from 'http://localhost:8081/index.ts.bundle?platform=web&dev=true&hot=false&lazy=true&transform.engine=hermes&transform.routerRoot=app&unstable_transformProfile=hermes-stable' because its MIME type ('application/json') is not executable, and strict MIME type checking is enabled.",
+      "timestamp": "2025-09-23T18:37:40.088Z"
+    }
+  ],
+  "summary": {
+    "total": 9,
+    "passed": 3,
+    "failed": 6,
+    "warnings": 0
+  },
+  "passRate": 33.33333333333333,
+  "recommendation": "REJECTED: Major issues must be resolved before deployment"
+}

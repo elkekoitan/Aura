@@ -1,0 +1,122 @@
+{
+  "timestamp": "2025-09-23T18:39:37.004Z",
+  "baseUrl": "http://localhost:3000",
+  "tests": [
+    {
+      "name": "Page Load Performance",
+      "status": "passed",
+      "duration": 735,
+      "result": {
+        "loadTime": 735
+      }
+    },
+    {
+      "name": "Responsive Design",
+      "status": "passed",
+      "duration": 4027,
+      "result": {
+        "Mobile": {
+          "width": 375,
+          "height": 667,
+          "bodyHeight": 667,
+          "rendered": true
+        },
+        "Tablet": {
+          "width": 768,
+          "height": 1024,
+          "bodyHeight": 1024,
+          "rendered": true
+        },
+        "Desktop": {
+          "width": 1280,
+          "height": 720,
+          "bodyHeight": 720,
+          "rendered": true
+        }
+      }
+    },
+    {
+      "name": "Glassmorphism UI",
+      "status": "failed",
+      "duration": 29,
+      "error": "No glassmorphism elements with backdrop-filter found"
+    },
+    {
+      "name": "GlassCard Component",
+      "status": "failed",
+      "duration": 5991,
+      "error": "Waiting for selector `[style*=\"backdrop-filter: blur\"]` failed"
+    },
+    {
+      "name": "Performance Metrics",
+      "status": "passed",
+      "duration": 4,
+      "result": {
+        "pageLoad": 735,
+        "domContentLoaded": 0.10000000009313226,
+        "firstPaint": 0,
+        "jsHeapUsedSize": 3038396,
+        "jsHeapTotalSize": 3932160
+      }
+    },
+    {
+      "name": "Browser Compatibility",
+      "status": "passed",
+      "duration": 3,
+      "result": {
+        "webgl": true,
+        "webrtc": true,
+        "serviceWorker": true,
+        "localStorage": true,
+        "webAssembly": true
+      }
+    }
+  ],
+  "performance": {
+    "pageLoad": 735,
+    "domContentLoaded": 0.10000000009313226,
+    "firstPaint": 0,
+    "jsHeapUsedSize": 3038396,
+    "jsHeapTotalSize": 3932160
+  },
+  "errors": [
+    {
+      "type": "console",
+      "message": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "timestamp": "2025-09-23T18:39:37.541Z"
+    },
+    {
+      "type": "console",
+      "message": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "timestamp": "2025-09-23T18:39:37.590Z"
+    },
+    {
+      "type": "console",
+      "message": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "timestamp": "2025-09-23T18:39:38.252Z"
+    },
+    {
+      "type": "console",
+      "message": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "timestamp": "2025-09-23T18:39:40.284Z"
+    },
+    {
+      "type": "console",
+      "message": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "timestamp": "2025-09-23T18:39:41.324Z"
+    },
+    {
+      "type": "console",
+      "message": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "timestamp": "2025-09-23T18:39:42.307Z"
+    }
+  ],
+  "summary": {
+    "total": 6,
+    "passed": 4,
+    "failed": 2,
+    "warnings": 0
+  },
+  "passRate": 66.66666666666666,
+  "recommendation": "REJECTED: Major issues must be resolved before deployment"
+}

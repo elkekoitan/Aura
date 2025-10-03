@@ -98,6 +98,7 @@ export default function LoginScreen() {
             )}
 
             <GlassButton
+              testID="login-button"
               title="Sign In"
               onPress={handleLogin}
               loading={loading}
